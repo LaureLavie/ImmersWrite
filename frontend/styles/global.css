@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@300;400;500&family=Cormorant+Garamond:wght@300;400&display=swap');
+
+@layer base {
+  :root {
+    --color-midnight: #130F3B;
+    --color-gold: #B38839;
+    --color-lunar: #EBEBEB;
+  }
+
+  body {
+    @apply bg-midnight text-lunar font-serif;
+  }
+
+  /* Règles typographiques Immers'Write */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 400;
+    letter-spacing: 0.05em;
+  }
+
+  /* Pas de majuscules intégrales sauf logo */
+  .uppercase-exception {
+    text-transform: uppercase;
+  }
+
+  /* Emphase avec couleur ambre au lieu d'italique */
+  em, .emphasis {
+    font-style: normal;
+    color: var(--color-gold);
+  }
+
+  /* Bordure inférieure subtile au lieu de soulignement */
+  a {
+    text-decoration: none;
+    border-bottom: 1px solid rgba(179, 136, 57, 0.3);
+    transition: border-color 0.3s ease;
+  }
+
+  a:hover {
+    border-bottom-color: var(--color-gold);
+  }
+}
+
+@layer utilities {
+  /* Animations personnalisées */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes rotateCircle {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.8s ease-out;
+  }
+
+  .animate-slideUp {
+    animation: slideUp 0.8s ease-out 0.2s both;
+  }
+
+  .animate-rotateCircle {
+    animation: rotateCircle 60s linear infinite;
+    transform-origin: center;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s infinite linear;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(179, 136, 57, 0.1) 50%,
+      transparent 100%
+    );
+    background-size: 1000px 100%;
+  }
+
+  /* Effets de profondeur */
+  .glow-gold {
+    box-shadow: 0 0 20px rgba(179, 136, 57, 0.3);
+  }
+
+  .glow-gold-strong {
+    box-shadow: 0 0 40px rgba(179, 136, 57, 0.5);
+  }
+
+  /* Scrollbar personnalisée */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-midnight);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-gold);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(179, 136, 57, 0.8);
+  }
+
+  /* Selection personnalisée */
+  ::selection {
+    background-color: rgba(179, 136, 57, 0.3);
+    color: var(--color-lunar);
+  }
+}
