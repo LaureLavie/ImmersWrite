@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configuration
-DATABASE_URL = os.getenv("DATABASE_URL")  # Format: postgresql://user:password@host/dbname
+DATABASE_URL = os.getenv("DATABASE_URL")
 SECRET_KEY = os.getenv("SECRET_KEY", "votre-cle-secrete-tres-longue-et-complexe")
 ALGORITHM = "HS256"
 
