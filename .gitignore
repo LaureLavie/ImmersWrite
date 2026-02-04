@@ -1,0 +1,25 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Ignorer les environnements virtuels et fichiers sensibles
+venv/
+.env
+.env.local
+
+
+
+# Ignorer les fichiers volumineux
+frontend/.next/
+frontend/.next/dev
+frontend/node_modules/
+
+dist/
+build/
+*.log
