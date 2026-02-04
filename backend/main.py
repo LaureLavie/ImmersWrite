@@ -1,50 +1,76 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, EmailStr, validator
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, Enum
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
-from passlib.context import CryptContext
-from datetime import datetime
-import jwt
-from typing import Optional
-import enum
-import os
-from dotenv import load_dotenv
+from sqlalchemy.orm import Session
+from datetime import timedelta
 
-load_dotenv()
+from .database import engine, get_db, Base
+from .models.user import User
+from .schemas import UserRegister, UserResponse, Token
+from .auth import get_password_hash, verify_password, create_access_token, get_user_by_email, settings
 
-# Configuration
-DATABASE_URL = os.getenv("DATABASE_URL")
-SECRET_KEY = os.getenv("SECRET_KEY", "votre-cle-secrete-tres-longue-et-complexe")
-ALGORITHM = "HS256"
+# Créer les tables
+Base.metadata.create_all(bind=engine)
 
-# Vérification de la connexion à la base de données
-try:
-    engine = create_engine(DATABASE_URL)
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-    Base = declarative_base()
-    # Créer les tables si elles n'existent pas
-    Base.metadata.create_all(bind=engine)
-except Exception as e:
-    raise RuntimeError("Erreur lors de la connexion à la base de données : " + str(e))
-
-# Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-# FastAPI app
 app = FastAPI(title="Immers'Write API")
 
-# CORS
+# Configuration CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Next.js dev server
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
+<<<<<<< HEAD
+@app.get("/")
+def read_root():
+    return {"message": "Bienvenue sur l'API Immers'Write"}
+
+
+@app.post("/auth/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+def register(user_data: UserRegister, db: Session = Depends(get_db)):
+    # Vérifier si l'utilisateur existe déjà
+    db_user = get_user_by_email(db, email=user_data.email)
+    if db_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="cet email est déjà enregistré"
+        )
+    
+    # Créer le nouvel utilisateur
+    hashed_password = get_password_hash(user_data.password)
+    new_user = User(
+        email=user_data.email,
+        hashed_password=hashed_password,
+        role=user_data.role
+    )
+    
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    
+    return new_user
+
+
+@app.post("/auth/login", response_model=Token)
+def login(email: str, password: str, db: Session = Depends(get_db)):
+    user = get_user_by_email(db, email=email)
+    if not user or not verify_password(password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="email ou mot de passe incorrect",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
+    access_token = create_access_token(
+        data={"sub": user.email}, expires_delta=access_token_expires
+    )
+    
+    return {"access_token": access_token, "token_type": "bearer"}
+=======
 # Enums
 class UserTypeEnum(str, enum.Enum):
     lecteur = "lecteur"
@@ -190,6 +216,7 @@ async def login(email: EmailStr, password: str, db: Session = Depends(get_db)):
         token_type="bearer",
         user=UserResponse.from_orm(user)
     )
+>>>>>>> origin/main
 
 
 if __name__ == "__main__":
