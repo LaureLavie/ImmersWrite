@@ -1,3 +1,7 @@
+# Ignorer les fichiers volumineux
+frontend/.next/
+frontend/.next/dev
+frontend/node_modules/
 
 # dependencies
 /node_modules
@@ -32,6 +36,7 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 venv/
+.env.local
 
 # vercel
 .vercel
@@ -39,6 +44,7 @@ venv/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
 # dependencies
 /node_modules
 /.pnp
@@ -48,18 +54,6 @@ next-env.d.ts
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
-
-# Ignorer les environnements virtuels et fichiers sensibles
-venv/
-.env
-.env.local
-
-
-
-# Ignorer les fichiers volumineux
-frontend/.next/
-frontend/.next/dev
-frontend/node_modules/
 
 dist/
 build/
