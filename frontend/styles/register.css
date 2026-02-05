@@ -1,0 +1,141 @@
+.register-container {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+/* Colonne gauche */
+.left-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: var(--gradient-night);
+}
+
+.logo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  max-width: 500px;
+  width: 100%;
+}
+
+.LogoIW {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.LogoIW img {
+  max-width: 100%;
+  height: auto;
+}
+
+.tagline {
+  display: flex;
+  flex-direction: horizontal;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.tagline p{
+  text-align: left;
+  transition: opacity 300ms;
+  font-family: var(--font-title);
+  line-height: 1.6;
+  letter-spacing: 0.1em;
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 18px;
+}
+
+.tagline img{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  max-width: 2rem;
+  height: auto;
+}
+.footer_link p {
+  text-align: center;
+  color: var(--lunar);
+  font-weight: normal;
+  font-size: 14px;
+}
+
+.right-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: var(--gradient-night);
+}
+
+.right-container .card {
+  width: 100%;
+  max-width: 500px;
+}
+
+.footer_link a {
+  color: var(--amber);
+  font-weight: normal;
+  font-size: 14px;
+}
+
+form p {
+  color: var(--careful);
+  margin: 0;
+  padding: 0; 
+  font-family: var(--font-body); 
+  font-weight: 400; 
+  letter-spacing: 0.05em;
+  text-align: left;
+  display: block;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.role {
+  width: 100%;
+}
+
+.role .btn-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.role .btn-group button {
+  flex: 1;
+  margin: 0; 
+  max-width: none;
+}
+
+@media (max-width: 1024px) {
+  .register-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .left-container {
+    padding: 2rem 1rem;
+  }
+  
+  .logo-section {
+    gap: 2rem;
+  }
+  
+  .right-container {
+    padding: 1rem;
+  }
+}
