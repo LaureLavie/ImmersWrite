@@ -151,7 +151,7 @@ export default function RegisterPage() {
 
             {/* Role selection*/}
             <div className="role">
-              <label className="label-choice">Je Souhaite Rejoindre en Tant que ...</label>
+              <label className="label-choice">Je souhaite rejoindre en tant que ...</label>
               <div className="btn-group">
                 <button
                   type="button"
@@ -188,7 +188,7 @@ export default function RegisterPage() {
               disabled={isLoading}
               className="btn-gold"
             >
-              {isLoading ? "création en cours..." : "entrez dans l'univers"}
+              {isLoading ? "création en cours..." : "Entrez dans l'univers"}
             </button>
           </form>
 
