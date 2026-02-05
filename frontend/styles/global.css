@@ -1,40 +1,43 @@
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
-
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @font-face {
   font-family: 'Crimson Pro';
-  src: url('../assets/CrimsonPro-Regular.ttf') format('truetype');
+  src: url('../assets/crimsonPro.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family:'Inter';
+  src: url('../assets/inter.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Sego';
-  src: url('../assets/SEGO.ttf') format('truetype');
+  src: url('../assets/sego.ttf') format('truetype');
   font-weight: normal;
-  font-spacing: 0.5em;
 }
 
 :root {
-  
-  --font-subtitle: 'Crimson Text', serif;
-  --font-body: 'Inter', sans-serif;
-  --font-title: 'Sego', sans-serif;
+  --font-title: 'Sego';
+  --font-subtitle: 'Crimson Pro';
+  --font-body: 'Inter';
+  --font-label: 'Crimson Pro';
 
   --midnight: #130F3B;
-  --darknight:#1A1424;
-  --lightdark: #5C4A52;
+  --darknight: #1A1424;
+  --darklight: #5C4A52;
   --amber: #B38839;
   --lunar: #EBEBEB;
-  --careful:#FB7B40;
+  --careful: #FB7B40;
 
-  --gradient-night: linear-gradient(135deg, var(--darknight) 0%, var(--midnight) 50%, var(--darknight) 100%);
-  --gradient-gold: linear-gradient(135deg, var(--amber) 0%, var(--lunar) 50%, var(--amber) 100%);
-  --gradient-careful: linear-gradient(135deg, var(--careful) 0%, var(--lunar) 50%, var(--careful) 100%);
+  --gradient-night: linear-gradient(100deg, var(--darknight) 0%, var(--midnight) 50%, var(--darknight) 100%);
+  --gradient-gold: linear-gradient(90deg, var(--amber) 0%, var(--lunar) 50%, var(--amber) 100%);
+  --gradient-careful: linear-gradient(90deg, var(--careful) 0%, var(--lunar) 50%, var(--careful) 100%);
 }
 
 @layer base {
@@ -43,85 +46,167 @@
     color: var(--lunar);
     font-family: var(--font-body);
     font-weight: 400;
-  }
-  
-  strong, b {
-    font-weight: 500;
-  }
-  
-  em, i {
-    @apply not-italic;
-    color: var(--amber);
+    text-align: justify; 
   }
 
-  
-  input:-webkit-autofill,
-  input:-webkit-autofill:hover,
-  input:-webkit-autofill:focus {
-    -webkit-text-fill-color: var(--lunar) !important;
-    -webkit-box-shadow: 0 0 0px 1000px var(--midnight) inset !important;
-    transition: background-color 5000s ease-in-out 0s;
+  h1 {
+    font-family: var(--font-title);
+    font-size: 30px;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+    text-align: center;
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 500;
+  }
+
+  h2 {
+    font-family: var(--font-subtitle);
+    font-size: 20px;
+    line-height: 1.6;
+    text-align: center;
+    letter-spacing: 0.02em;
+    color: var(--lunar);
+    font-weight: 400;
+  }
+
+  label {
+    font-family: var(--font-label);
+    font-weight: 600; 
+    font-size: 20px;
+    color: var(--lunar);
+    text-align: left;
+    letter-spacing: 0.02em;
+    display: block;
+    margin-bottom: 0.5rem;
+    margin-top: 2rem;
   }
 }
 
 @layer components {
+ /* --- FORM --- */
+ form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+   max-width: 100%;
+   padding: 2rem;
+ }
+
+ form p {
+  color: var(--careful); 
+  font-family: var(--font-body); 
+  font-weight: 400; 
+  letter-spacing: 0.05em;
+  text-align: left;
+  display: block;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+  /* --- CARDS --- */
+  .card {
+    max-width: 100%;
+    background:var(--midnight);
+    background-clip: padding-box, border-box;
+    background-origin: border-box;
+    border: 1px solid var(--amber);
+    border-radius: 50px;
+    padding: 2rem;
+  }
+
+  /* --- BUTTONS --- */
+  .btn-gold, .btn-disabled, .btn-delete, .btn-choice {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 50px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    padding: 1rem;
+    margin: 1rem;
+    height: fit-content;
+    max-width: 100%;
+    cursor: pointer;
+  }
+
   .btn-gold {
     background: var(--gradient-gold);
     color: var(--midnight);
-    font-family: var(--font-body);
-    font-weight: normal;
-    padding: 1rem 1rem;
-    border-radius: 10%;
-    transition: all 0.3s ease;
+    border: 1px solid transparent;
   }
 
-  .btn-gold:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(179, 136, 57, 0.5);
-  }
-
-  .btn-gold:active {
-    transform: translateY(0);
-  }
-  
-  .text-balance {
-    text-wrap: balance;
-  }
-  
-  }
-
-/* Animation des placeholder */
-@keyframes shimmer {
-  0% {
+  .btn-disabled {
     opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(92, 74, 82, 0.3); 
+    border: 1px solid var(--amber);
+    color: var(--careful); 
   }
-  50% {
+
+  .btn-delete {
+    font-weight: 700; 
+    background: rgba(92, 74, 82, 0.3);
+    border: 1px solid var(--careful);
+    color: var(--careful);
+  }
+
+  .btn-choice {
+    border: 1px solid var(--amber);
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* --- INPUTS --- */
+  .input {
+    max-width: 100%;
+    padding: 1rem;
+    height: fit-content;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    transition: all 300ms;
+    border-radius: 50px;
+    background: rgba(92, 74, 82, 0.3);
+    border: 1px solid var(--amber);     
+    color: rgba(235, 235, 235, 0.7);
+    font-family: var(--font-body);
+    font-size: 16px;
+    text-align: left;
+  }
+
+  /* --- LINKS --- */
+  .link {
+    text-align: left;
+    transition: opacity 300ms;
+    font-family: var(--font-body);
+    color: var(--amber);
+    font-size: 16px;
+  }
+
+  .link-arrow {
+    text-align: left;
+    transition: opacity 300ms;
+    font-family: var(--font-body);
+    line-height: 1.6;
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 16px;
+  }
+
+  .link:hover {
     opacity: 0.8;
   }
-  100% {
-    opacity: 0.5;
+}
+
+@layer utilities {
+  .logoIW .img {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    max-width: 100%;
   }
-}
-
-input::placeholder {
-  animation: shimmer 2s ease-in-out infinite;
-}
-
-/* Scrollbar personnalisée */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(19, 15, 59, 0.3);
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(179, 136, 57, 0.5);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(179, 136, 57, 0.8);
 }
