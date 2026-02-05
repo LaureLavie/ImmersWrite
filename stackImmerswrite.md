@@ -1,333 +1,92 @@
-POURQUOI J'AI CHOISI CES STACKS - Justification personnelle
+---
+🛠️ Justification Technique & Stratégie : Immers'Write
 
-Contexte
+1. Contexte & Vision
+Formation : CDA spécialisée IA (Fabrique Numérique Paloise).
 
-Projet de fin de formation CDA spécialisée IA à la Fabrique Numérique Paloise.
-Objectif : plateforme d'écriture immersive enrichie par IA générative.
-Deadline MVP : Juin 2026 | Certification : Avril 2027
+Objectif : Plateforme d'écriture immersive enrichie par IA générative.
 
-Critères de décision
+Philosophie : "Le code est le corps, l'imagination est l'âme."
 
-Alignement avec formation : Valoriser compétences IA
+Deadline MVP : Juin 2026 | Certification : Avril 2027.
 
-Employabilité : Technologies demandées sur le marché
+2. Hébergement & Infrastructure (Le choix de la souveraineté)
+Choix : VPS Auto-hébergé avec Docker & Docker Compose
 
-Scalabilité : Capacité à gérer croissance utilisateurs
+Pourquoi ? Contrairement à Vercel ou Railway, le VPS offre un contrôle total sur l'environnement.
 
-Coûts maîtrisés : Viable en bootstrap
+Docker : Permet d'isoler le frontend, le backend et la base de données dans des conteneurs étanches.
 
-Écosystème mature : Documentation, communauté, support
+Nginx & Certbot : Gestion personnalisée du nom de domaine immerswrite.com et sécurisation SSL (HTTPS) gratuite et automatisée.
 
-Backend : Python + FastAPI
+Coût : Prix fixe mensuel (environ 5€ à 20€ selon le VPS), évitant les mauvaises surprises de la tarification à l'usage des plateformes PaaS.
 
-Choix : Python 3.11+ avec FastAPI
+3. Stack Logicielle (Le moteur)
+Backend : Python 3.11 + FastAPI
+IA-Ready : Langage natif des bibliothèques IA (OpenAI, Anthropic).
 
-Raisons :
+Performance : FastAPI est l'un des frameworks les plus rapides grâce à l'asynchrone.
 
-Python = langage de référence IA/ML (alignement formation)
+Documentation : Génération automatique de Swagger pour tester les API.
 
-FastAPI = framework moderne, performant, documentation automatique
+Frontend : Next.js 15 + Tailwind CSS
+Modernité : App Router pour une structure de projet claire et performante.
 
-Écosystème APIs IA optimisé pour Python (OpenAI, Anthropic, Stability)
+SEO & Immersion : Rendu hybride (SSR/SSG) pour un chargement instantané des mondes narratifs.
 
-Syntaxe claire et explicite (maintenance facilitée)
+Design : Tailwind pour une interface léchée et immersive sans perdre de temps en CSS pur.
 
-Async natif (performance sur I/O intensives comme appels API)
+Base de Données : PostgreSQL (via Neon ou Docker local)
+Fiabilité : Le standard pour les données relationnelles (utilisateurs, chapitres, univers).
 
-Alternatives considérées :
+Évolutivité : Support natif du JSON pour stocker des métadonnées issues de l'IA.
 
-Node.js + Express : Rejeté (moins pertinent pour spécialisation IA)
+Authentification : JWT (JSON Web Tokens)
+Sécurité : Standard de l'industrie pour les API REST.
 
-Django : Rejeté (trop lourd pour une API, moins moderne)
+Expérience : Permet une connexion fluide et sécurisée sur tous les appareils.
 
-Frontend : Next + Tailwind
+4. APIs Génératives (L'étincelle créative)
+Texte : Claude 3.5 Sonnet (Anthropic) pour sa plume plus "littéraire" et moins robotique.
 
-Choix : Next.js  15 avec App Router + Tailwind CSS
+Images : DALL-E 3 (OpenAI) pour la cohérence visuelle des univers.
 
-Raisons :
+Audio : ElevenLabs pour le réalisme émotionnel des voix narratives.
 
-Next.js  = framework react full-stack moderne, optimisé pour Vercel (hébergement natif)
+5. Ressources & To-Do List Apprentissage
+📂 Backend & API (Estimation : 30h)
+[ ] FastAPI : Maîtriser les routes, les schémas Pydantic et l'injection de dépendances.
 
-Routing automatique par fichiers → gain de temps et structure claire
+[ ] SQLAlchemy : Gérer les modèles de données et les migrations avec Alembic.
 
-SEO natif grâce au rendu côté serveur (SSR) et génération statique (SSG)
+[ ] JWT : Implémenter le flux Login / Register sécurisé.
 
-App Router = modularité + performance + gestion avancée des layouts
+📂 Frontend & UI (Estimation : 15h)
+[ ] Next.js 15 : Comprendre le fetching de données côté serveur (Server Components).
 
-Tailwind = productivité CSS, cohérence design sans effort
+[ ] Tailwind : Créer des layouts immersifs (mode sombre natif, animations légères).
 
-Écosystème riche : composants UI (shadcn/ui), gestion des métadonnées, middleware
+📂 DevOps & Déploiement (Estimation : 10h)
+[ ] Docker : Écrire des Dockerfiles optimisés pour le Back et le Front.
 
-Pré-rendering intelligent (ISR) → scalabilité sans surcharge serveur
+[ ] Nginx : Configurer le reverse-proxy pour diriger immerswrite.com vers les bons conteneurs.
 
-Support des API routes (non utilisé ici mais utile pour extensions futures)
+[ ] Certbot : Automatiser le renouvellement du cadenas HTTPS.
 
-Base de données : PostgreSQL
+6. Checklist de Validation (Avant de coder)
+Décisions Finalisées
+[x] Domaine : immerswrite.com pointé vers l'IP du VPS.
 
-Choix : PostgreSQL 15+ avec SQLAlchemy
+[x] Infrastructure : VPS Debian/Ubuntu avec Docker installé.
 
-Raisons :
+[x] Stack : FastAPI / Next.js / PostgreSQL / Docker.
 
-SGBD relationnel robuste et éprouvé
+Environnement de Travail
+[x] Local : Python 3.11, Node.js 20+, Git, VS Code.
 
-Support JSON natif (flexibilité données IA)
+[x] Docker : Docker Desktop (pour tester le déploiement localement avant d'envoyer sur le VPS).
 
-Gratuit et open-source
+Engagement Personnel
+"Je ne reviens pas sur mes choix technologiques avant le MVP de juin 2026. L'ennemi du progrès est la recherche constante de l'outil 'parfait'. Ma stack est solide, maintenant je construis."
 
-Excellente intégration Python
-
-Alternatives considérées :
-
-MongoDB : Rejeté (structure relationnelle nécessaire users/projets/chapters)
-
-MySQL : Rejeté (PostgreSQL plus features avancées)
-
-Authentification : JWT
-
-Choix : JSON Web Tokens avec python-jose
-
-Raisons :
-
-Stateless = scalable horizontalement
-
-Standard industrie RESTful APIs
-
-Refresh tokens = sécurité + UX
-
-Implémentation simple et documentée
-
-Alternatives considérées :
-
-OAuth2 complet : Over-engineering pour MVP
-
-Hébergement
-
-Choix : Vercel (front) + Railway (back+DB)
-
-Raisons :
-
-Vercel = déploiement nextjs optimal, gratuit jusqu'à gros trafic
-
-Railway = simplicité, pricing transparent
-
-Séparation front/back = architecture moderne et scalable
-
-Intégration Git automatique (CI/CD natif)
-
-Alternatives considérées :
-
-Render : Utilisé en dev (free tier) puis migré Railway (performance)
-
-Heroku : Rejeté (plus cher)
-
-AWS/GCP : Rejeté (complexité inutile pour MVP)
-
-APIs Génératives
-
-Texte : Claude Sonnet 4
-
-Raisons :
-
-Qualité créative supérieure sur contenu narratif
-
-Contexte 200k tokens (gère chapitres complets)
-
-Style moins "robotique" que GPT pour fiction
-
-Coût raisonnable (~0.68€/user/mois)
-
-Images : DALL-E 3
-
-Raisons :
-
-Qualité professionnelle polyvalente
-
-Intégration simple (même SDK qu'OpenAI texte)
-
-Suit bien les prompts (prévisibilité)
-
-Pricing clair (0.03€/image standard)
-
-Audio : ElevenLabs
-
-Raisons :
-
-Qualité voix imbattable (réalisme, émotions)
-
-API simple et bien documentée
-
-Multilingue (29 langues)
-
-Pricing prévisible (20€/mois pour 100k chars)
-
-Coûts estimés
-
-Dev (0-10 users) : ~20€/mois
-Beta (50 users) : ~70€/mois
-Production (200 users, 100 actifs) : ~200€/mois
-
-→ Rentable dès 10 clients à 20€/moi
-
-9. RESSOURCES COMPILÉES - TO-DO List Tech
-
-APPRENTISSAGE BACKEND
-
-Python Basics (si besoin refresh) :
-
-Python.org Tutorial - 2h
-
-Real Python - Python Basics - 5h
-
-FastAPI (priorité haute) :
-
-[ ] FastAPI Docs - Tutorial - Lire intégralement - 3h
-
-[ ] FastAPI freeCodeCamp Course - Suivre jusqu'à h10 minimum - 10h
-
-[ ] Full Stack FastAPI Template - Analyser le code - 2h
-
-SQLAlchemy + Alembic :
-
-[ ] SQLAlchemy 2.0 Tutorial - Sections 1-5 - 4h
-
-[ ] Alembic Tutorial - Complet - 2h
-
-Auth JWT :
-
-[ ] FastAPI Security Tutorial - 1h
-
-[ ] JWT.io Introduction - 30min
-
-TEMPS TOTAL BACKEND : ~30h → Réparti sur 2 semaines
-
-APPRENTISSAGE FRONTEND
-
-Next (si besoin refresh) :
-
-[ ] https://nextjs.org/docs  - Sections 1-8 - 5h
-
-[ ] https://nextjs.org/docs#app-router-and-pages-router  - App router - 1h
-
-Tailwind CSS :
-
-[ ] Tailwind Docs - Core Concepts - 2h
-
-[ ] Tailwind UI Components - Explorer - 1h
-
-[ ] shadcn/ui Installation - Mettre en place - 1h
-
-
-
-TEMPS TOTAL FRONTEND : ~15h → Réparti sur 1 semaine
-
-INTÉGRATION APIs IA
-
-OpenAI (DALL-E 3) :
-
-[ ] OpenAI Quickstart - 1h
-
-[ ] Images API Guide - 1h
-
-[ ] Tester en Python (script standalone) - 1h
-
-Anthropic Claude :
-
-[ ] Claude API Getting Started - 1h
-
-[ ] Messages API Reference - 1h
-
-[ ] Tester en Python (script standalone) - 1h
-
-ElevenLabs :
-
-[ ] ElevenLabs API Docs - 1h
-
-[ ] Voice Library - Explorer - 30min
-
-[ ] Tester génération audio - 1h
-
-TEMPS TOTAL APIs : ~10h → Réparti sur 3-4 jours
-
-DÉPLOIEMENT
-
-Vercel :
-
-[ ] Vercel Deploy Next - 30min
-
-[ ] Déployer projet test - 30min
-
-Railway :
-
-[ ] Railway Python Guide - 30min
-
-[ ] Railway PostgreSQL - 30min
-
-[ ] Déployer API test - 1h
-
-TEMPS TOTAL DÉPLOIEMENT : ~3h → 1 journée
-
-10. CHECKLIST AVANT DE CODER - Validation décisions
-
-DÉCISIONS FINALISÉES :
-
-[ ] Stack backend validée : Python + FastAPI
-
-[ ] Stack frontend validée : Next + Tailwind
-
-[ ] Base de données validée : PostgreSQL
-
-[ ] Hébergement choisi : Vercel + Railway
-
-[ ] API texte choisie : Claude Sonnet 4
-
-[ ] API images choisie : DALL-E 3
-
-[ ] API audio choisie : ElevenLabs
-
-COMPTES CRÉÉS :
-
-[ ] Compte GitHub (+ repo Immers'Write créé)
-
-[ ] Compte Vercel (lié à GitHub)
-
-[ ] Compte Railway (lié à GitHub)
-
-[ ] Compte Anthropic (API key obtenue)
-
-[ ] Compte OpenAI (API key obtenue, 5$ de crédit ajouté minimum)
-
-[ ] Compte ElevenLabs (free tier activé)
-
-ENVIRONNEMENT LOCAL :
-
-[ ] Python 3.11+ installé (python --version)
-
-[ ] Node.js 18+ installé (node --version)
-
-[ ] Git installé et configuré
-
-[ ] VS Code installé avec extensions (Python, ESLint, Tailwind CSS IntelliSense)
-
-[ ] PostgreSQL installé localement OU Docker installé
-
-DOCUMENTATION LUE :
-
-[ ] FastAPI Tutorial (au moins 50%)
-
-[ ] Next Docs (sections principales)
-
-[ ] Anthropic Claude API docs (quickstart)
-
-[ ] OpenAI Images API docs (quickstart)
-
-IMPORTANT :
-
-Je NE reviens PAS sur mes décisions avant juin 2026, même si je découvre une "meilleure" techno. L'ennemi du bien est le mieux. J'ai une stack solide. Je construis avec.
-
-Les seules exceptions acceptables pour changer :
-
-Une techno choisie est abandonnée par son créateur
-
-Une faille de sécurité critique non-patchable
-
-Un coût devient prohibitif (×10 prévu)
+---
