@@ -1,0 +1,32 @@
+
+  /* --- NAVBAR --- */
+  .navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    padding: 3rem;
+    background: var(--gradient-night);
+  }
+
+  .navlist {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .navlink {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--lunar);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .navlink:hover {
+    color: var(--amber);
+  }
