@@ -1,0 +1,125 @@
+.login-container {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+/* Colonne gauche */
+.left-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.logo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5rem;
+  max-width: 500px;
+  width: 100%;
+}
+
+.LogoIW {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.LogoIW img {
+  max-width: 100%;
+  height: auto;
+}
+
+.tagline {
+  display: flex;
+  flex-direction: horizontal;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.tagline p{
+  text-align: left;
+  transition: opacity 300ms;
+  font-family: var(--font-title);
+  line-height: 1.6;
+  letter-spacing: 0.1em;
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 1.5rem;
+}
+
+.tagline img{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  max-width: 3rem;
+  height: auto;
+}
+
+
+.right-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.right-container .card {
+  width: 100%;
+  max-width: 500px;
+}
+
+.right-container h1 {
+  font-family: var(--font-title);
+  font-size: 3rem;
+  line-height: 1.8;
+  letter-spacing: 0.03em;
+  text-align: center;
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 500;
+}
+
+.right-container .btn-gold {
+ margin-top: 4rem;
+}
+
+.footer_link p {
+  text-align: center;
+  color: var(--lunar);
+  font-weight: normal;
+  font-size: 14px;
+}
+
+.footer_link a {
+  color: var(--amber);
+  font-weight: normal;
+  font-size: 14px;
+}
+
+@media (max-width: 1024px) {
+  .login-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .left-container {
+    padding: 2rem 1rem;
+  }
+  
+  .logo-section {
+    gap: 2rem;
+  }
+  
+  .right-container {
+    padding: 1rem;
+  }
+}
