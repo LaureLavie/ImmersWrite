@@ -1,7 +1,6 @@
-
-
 import type { Metadata } from "next";
 import "@/styles/global.css";
+import "@/styles/responsive.css";
 
 export const metadata: Metadata = {
   title: "Immers'Write — where words become worlds",

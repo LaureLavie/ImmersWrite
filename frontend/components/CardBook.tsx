@@ -1,9 +1,10 @@
 import "@/styles/global.css";
 import "@/styles/cardbook.css";
+import "@/styles/responsive.css";
 import Image from "next/image";
 
 interface CardBookProps {
-  src: string; // Correction pour correspondre à l'utilisation dans page.tsx
+  src: string; // 
   title: string;
   description: string;
   link: string;

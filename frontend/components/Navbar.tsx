@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import "@/styles/navbar.css";
+import "@/styles/responsive.css";
 
 export default function Navbar() {
   const router = useRouter();
