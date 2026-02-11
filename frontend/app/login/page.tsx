@@ -88,7 +88,7 @@ export default function LoginPage() {
         <div className="card">
           <h1>Franchir le seuil</h1>
 
-          <form onSubmit={handleSubmit} className="p-0">
+          <form onSubmit={handleSubmit}>
             <label htmlFor="email">Votre Email</label>
             <input
               id="email"
@@ -129,6 +129,7 @@ export default function LoginPage() {
             )}
 
             {/* Submit button */}
+            <div className="button-container">
             <button
               type="submit"
               disabled={isLoading}
@@ -136,6 +137,7 @@ export default function LoginPage() {
             >
               {isLoading ? "connexion en cours..." : "Entrez dans l'univers"}
             </button>
+            </div>
           </form>
 
           {/* Footer link */}

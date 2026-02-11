@@ -100,7 +100,7 @@ export default function RegisterPage() {
         <div className="card">
           <h1>Franchir le seuil</h1>
 
-          <form onSubmit={handleSubmit} className="p-0">
+          <form onSubmit={handleSubmit}>
             <label htmlFor="email">Votre Email</label>
             <input
               id="email"
@@ -182,6 +182,7 @@ export default function RegisterPage() {
               </div>
             )}
 
+            <div className="button-container">
             {/* Submit button */}
             <button
               type="submit"
@@ -190,6 +191,7 @@ export default function RegisterPage() {
             >
               {isLoading ? "création en cours..." : "Entrez dans l'univers"}
             </button>
+            </div>
           </form>
 
           {/* Footer link */}
