@@ -1,9 +1,10 @@
 
 
 .card-book {
+  max-width: 100dvw; 
+  gap: 1rem; 
   border: 1px solid var(--amber);
   border-radius: 1rem;
-  padding: 1.5rem;
   background: var(--midnight);
   color: var(--lunar);
   text-align: center;
@@ -14,11 +15,6 @@
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(179, 136, 57, 0.5);
 }
-.card-book:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 5px rgba(179, 136, 57, 0.3);
-}
-
 
 .card-title {
   font-family: var(--font-title);
@@ -32,22 +28,9 @@
   margin-bottom: 1rem;
 }
 
-.btn-gold {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0; 
-  width: 120px;
-  height: 44px;
+.card-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  margin-bottom: 1rem;
 }
-
-.btn-gold:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(179, 136, 57, 0.5);
-}
-
-.btn-gold:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 5px rgba(179, 136, 57, 0.3);
-}
-

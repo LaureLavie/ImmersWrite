@@ -5,7 +5,7 @@ import Image from "next/image";
 import LogoIW from "../../public/LogoIW.png";
 import IWgold from "../../public/IWgold.png";
 import "@/styles/global.css";
-import "@/styles/register.css";
+import "@/styles/auth.css";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -78,7 +78,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="register-container">
+    <div className="container">
       <div className="left-container">
         <div className="logo-section ">
         {/* Logo */}

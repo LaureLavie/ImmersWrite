@@ -16,9 +16,11 @@ export default function CardBook({ src, title, description, link }: CardBookProp
       <Image src={src} alt={title} width={200} height={200} className="card-image" />
       <h2 className="card-title">{title}</h2>
       <p className="card-description">{description}</p>
-      <a href={link} className="btn-gold">
-        Lire
-      </a>
+      <button className="btn-gold">
+        <a href={link} target="_blank" rel="noopener noreferrer">
+          Lire
+        </a>
+      </button>
     </div>
   );
 }

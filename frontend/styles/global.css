@@ -41,6 +41,8 @@
 }
 
 @layer base {
+
+
   body {
     background: var(--gradient-night);
     color: var(--lunar);
@@ -51,17 +53,18 @@
 
   h1 {
     font-family: var(--font-title);
-    font-size: 30px;
-    line-height: 1.8;
+    font-size: 3rem;
     letter-spacing: 0.05em;
     text-align: center;
-    background: var(--gradient-gold);
+    background: var(--gradient-gold);      
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;  
     font-weight: 500;
   }
 
   h2 {
     font-family: var(--font-subtitle);
-    font-size: 20px;
+    font-size: 2rem;
     line-height: 1.6;
     text-align: center;
     letter-spacing: 0.02em;
@@ -113,7 +116,7 @@
   padding: 2rem;
 }
   
-  .btn-gold, .btn-disabled, .btn-delete, .btn-choice {
+  .btn-gold, .btn-delete, .btn-choice, .btn-logout {
     display: flex;
     align-items: center;
     align-content: center;
@@ -129,32 +132,36 @@
     cursor: pointer;
   }
 
+  .btn-gold, .btn-delete, .btn-logout, .btn-choice:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(179, 136, 57, 0.5);
+  }
+
   .btn-gold {
+    border: 1px solid var(--amber);
     background: var(--gradient-gold);
     color: var(--midnight);
   }
 
-  .btn-disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    background: rgba(92, 74, 82, 0.3); 
-    border: 1px solid var(--amber);
-    color: var(--careful); 
-  }
-
   .btn-delete {
-    font-weight: 700; 
-    background: rgba(92, 74, 82, 0.3);
+    font-weight: normal; 
+    background: var(--gradient-night);
     border: 1px solid var(--careful);
     color: var(--careful);
   }
 
   .btn-choice {
     border: 1px solid var(--amber);
-    background: var(--gradient-gold);
+    color: var(--amber);
+    background: var(--gradient-night);
   }
 
-  
+  .btn-logout {
+    border: 1px solid var(--lunar);
+    color: var(--lunar);
+    background: var(--gradient-night);
+  }
+
   .input {
     max-width: 100%;
     padding: 1rem;
@@ -171,7 +178,7 @@
     text-align: left;
   }
 
-  
+ 
   .link {
     text-align: left;
     transition: opacity 300ms;
@@ -194,6 +201,52 @@
   .link:hover {
     opacity: 0.8;
   }
+}
+
+
+.container {
+  min-height: 100dvh;
+  display: grid;
+  grid: center;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;  
+}
+
+/* Colonne gauche */
+.left-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.left-container .card {
+  width: 100%;
+  max-width: 500px;
+  margin: 0;
+}
+
+/* Colonne droite */
+.right-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.right-container .card {
+  width: 100%;
+  max-width: 500px;
+  align-content: center;
+}
+
+.button-container {
+  margin-top: 2rem;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+  min-width: fit-content;
 }
 
 @layer utilities {

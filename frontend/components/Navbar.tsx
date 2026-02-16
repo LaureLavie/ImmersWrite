@@ -24,12 +24,12 @@ export default function Navbar() {
           </button>
         </li>
         <li>
-          <Link href="/library" className="navlink">
+          <button onClick={() => router.push("/library")} className="btn-choice">
             Bibliothèque
-          </Link>
+          </button>
         </li>
         <li>
-          <button onClick={handleLogout} className="btn-choice">
+          <button onClick={handleLogout} className="btn-logout">
             Déconnexion
           </button>
         </li>
