@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import LogoIW from "../../public/LogoIW.png";
-import IWgold from "../../public/IWgold.png";
+import LogoIW from "../../public/LogoIW.svg";
+import IWgold from "../../public/IWgold.webp";
 import "@/styles/global.css";
 import "@/styles/auth.css";
 import "@/styles/responsive.css";

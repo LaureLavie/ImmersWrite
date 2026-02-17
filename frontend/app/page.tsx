@@ -1,36 +1,50 @@
 "use client";
+import { useEffect, useState } from "react";
 import "@/styles/global.css";
 import "@/styles/home.css";
-import "@/styles/cardbook.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CardBook from "@/components/CardBook";
-import booksData from "@/lib/data/books.json";
+import { getBooks, type Book } from "@/lib/api/books";
+import "@/styles/cardbook.css";
 import "@/styles/responsive.css";
 
-
 export default function Home() {
+  const [books, setBooks] = useState<Book[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchBooks() {
+      try {
+        const data = await getBooks();
+        setBooks(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchBooks();
+  }, []);
+
+  if (loading) return <div className="home-container">Chargement...</div>;
+
   return (
     <div className="home-container">
       <Navbar />
       <h1>Bibliothèque de Immers'Write</h1>
-      <h2>Vos histoires disponibles... prêtes à être explorées</h2>
-
       <div className="container-book">
-        {booksData.map((book) => (
+        {books.map((book) => (
           <CardBook
             key={book.id}
-            src={book.coverUrl}
+            src={book.cover_url}
             title={book.title}
             description={book.description}
             link={`/book/${book.slug}`}
-            status={book.status}
           />
         ))}
       </div>
-
-      
       <Footer />
-    </div>   
+    </div>
   );
 }
