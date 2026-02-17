@@ -1,22 +1,21 @@
 [
   {
-    "id": 1,
+    "id": 1,  
     "title": "L'Antre Deux Âmes",
-    "author": "Laure Lavie",
-    "description": "Swan, détective holistique auto-proclamée, vous invite à marcher sur les traces d'une enquête hors du commun...",
-    "coverUrl": "/books/antre_deux_ames.png",
-    "status": "available",
-    "chapters": 12,
-    "slug": "lantre-deux-ames"
+      "author": "Laure Lavie",
+      "description": "Swan, détective holistique auto-proclamée, vous invite à marcher sur les traces d'une enquête hors du commun. Avec son allié Aydan, elle navigue entre légendes oubliées, dimensions insoupçonnées et forces cosmiques menaçant l'équilibre universel.",
+      "cover_url": "/books/antre_deux_ames.webp",
+      "slug": "lantre-deux-ames",
+      "is_published": true
+    
   },
   {
     "id": 2,
     "title": "Mon Antre Deux Mondes",
     "author": "Laure Lavie",
     "description": "Bienvenue dans mon monde. Cher lecteur, je t'invite à franchir les portes d'un monde...",
-    "coverUrl": "/books/antre_deux_mondes.png",
-    "status": "read",
-    "chapters": 8,
-    "slug": "mon-antre-deux-mondes"
+    "coverUrl": "/books/antre_deux_mondes.webp",  
+    "slug": "mon-antre-deux-mondes",
+    "is_published": true
   }
 ]

@@ -2,7 +2,7 @@ from pydantic import BaseModel, EmailStr, field_validator
 from typing import Optional
 from datetime import datetime
 
-from .models.user import UserRole
+from models import UserRole
 
 
 class UserRegister(BaseModel):
@@ -43,3 +43,25 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: Optional[str] = None
+
+    
+
+class BookCreate(BaseModel):
+    title: str
+    author: str
+    description: Optional[str] = None
+    cover_url: Optional[str] = None
+    slug: str
+    is_published: bool = False
+
+class BookResponse(BaseModel):
+    id: int
+    title: str
+    author: str
+    description: Optional[str] = None
+    cover_url: Optional[str] = None
+    slug: str
+    is_published: bool
+    created_at: datetime
+    
+    model_config = {"from_attributes": True}
