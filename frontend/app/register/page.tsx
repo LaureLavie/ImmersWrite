@@ -6,6 +6,7 @@ import LogoIW from "../../public/LogoIW.png";
 import IWgold from "../../public/IWgold.png";
 import "@/styles/global.css";
 import "@/styles/auth.css";
+import "@/styles/responsive.css";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({

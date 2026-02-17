@@ -1,18 +1,6 @@
 .home-container {
   min-height: 100dvh;
-  }
-
-
-.home-container .btn-gold {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  background: var(--gradient-gold);
-  color: var(--midnight);
-  border-radius: 50px;
-  text-decoration: none;
-  transition: background-color 0.3s, color 0.3s;
+  width: 100%;
 }
 
 .home-container a {
@@ -32,10 +20,12 @@
 }
 
 .container-book {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 2rem;
-  padding: 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+ align-content: center;
+ justify-items: center;
+  gap: 2rem;  
 }

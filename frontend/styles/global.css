@@ -206,10 +206,11 @@
 
 .container {
   min-height: 100dvh;
-  display: grid;
-  grid: center;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;  
+  display: flex;
+  flex-direction: column; 
+  gap: 2rem;  
+  margin: 0;
+  padding: 0;
 }
 
 /* Colonne gauche */
@@ -217,12 +218,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
 }
 .left-container .card {
   width: 100%;
   max-width: 500px;
-  margin: 0;
+  align-content: center;
 }
 
 /* Colonne droite */
@@ -230,7 +230,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
 }
 
 .right-container .card {

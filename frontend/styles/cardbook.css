@@ -1,8 +1,14 @@
 
 
 .card-book {
-  max-width: 100dvw; 
-  gap: 1rem; 
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
   border: 1px solid var(--amber);
   border-radius: 1rem;
   background: var(--midnight);
@@ -19,18 +25,19 @@
 .card-title {
   font-family: var(--font-title);
   font-size: 1.5rem;
-  margin-bottom: 1rem;
+  padding: 0.5rem;
+  margin-bottom: 2rem;
 }
 
 .card-description {
   font-family: var(--font-body);
   font-size: 1rem;
-  margin-bottom: 1rem;
+  padding: 0.5rem;
+  margin-bottom: 2rem;
 }
 
 .card-image {
-  max-width: 100%;
-  height: auto;
-  border-radius: 1rem;
-  margin-bottom: 1rem;
+  object-position: center;
+  object-fit: cover;
+  max-height: 100%;
 }
