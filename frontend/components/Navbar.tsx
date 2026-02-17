@@ -20,11 +20,11 @@ export default function Navbar() {
       <ul className="navlist">
         <li>
           <button onClick={() => router.push("/login")} className="btn-gold">
-            Se connecter
+            Connexion
           </button>
         </li>
         <li>
-          <button onClick={() => router.push("/library")} className="btn-choice">
+          <button onClick={() => router.push("/")} className="btn-choice">
             Bibliothèque
           </button>
         </li>
