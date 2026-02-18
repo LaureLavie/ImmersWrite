@@ -3,18 +3,17 @@
     "id": 1,  
     "title": "L'Antre Deux Âmes",
       "author": "Laure Lavie",
-      "description": "Swan, détective holistique auto-proclamée, vous invite à marcher sur les traces d'une enquête hors du commun. Avec son allié Aydan, elle navigue entre légendes oubliées, dimensions insoupçonnées et forces cosmiques menaçant l'équilibre universel.",
-      "cover_url": "/books/antre_deux_ames.webp",
+      "description": "Une enquête au-delà du réel. Je m'appelle Swan, détective holistique. Mon métier ? Explorer les mystères que la raison ignore, traquer les vérités enfouies sous des couches d’illusions et percer les voiles de l’invisible. Ce qui n'était qu'une affaire ordinaire s'est transformé en un voyage initiatique aux confins de l’inconnu . Ouvrez ce livre… et laissez-vous emporter au-delà des limites du connu.",
+      "cover_url": "/books/antre_deux_ames_pro.webp",
       "slug": "lantre-deux-ames",
-      "is_published": true
-    
+      "is_published": true    
   },
   {
     "id": 2,
     "title": "Mon Antre Deux Mondes",
     "author": "Laure Lavie",
-    "description": "Bienvenue dans mon monde. Cher lecteur, je t'invite à franchir les portes d'un monde...",
-    "coverUrl": "/books/antre_deux_mondes.webp",  
+    "description": "Immergez dans l’invisible : Cher lecteur, je t’invite à franchir les portes d’un monde où la réalité dépasse l’entendement. Depuis l’enfance, j’ai été témoin d’expériences qui défient la logique ordinaire. Ce qui pouvait sembler étrange aux yeux des autres était pour moi une évidence : il existe bien plus que ce que l’on nous apprend. . Rien ne s’efface, tout est gravé, et chaque expérience a nourri ma compréhension d’une réalité plus vaste. Ce livre est aussi un témoignage et une invitation : celle d’oser explorer l’inconnu, de questionner l’inexplicable et, peut-être, de découvrir en vous cette étincelle qui vous relie à une autre réalité. Bienvenue dans mon univers.",
+    "coverUrl": "/books/antre_deux_mondes_pro.webp",
     "slug": "mon-antre-deux-mondes",
     "is_published": true
   }
