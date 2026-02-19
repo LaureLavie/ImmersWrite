@@ -30,7 +30,7 @@ export default function Home() {
   if (loading) return <div className="home-container">Chargement...</div>;
 
   return (
-    <div className="home-container">
+    <div className="home-page">
       <Navbar />
       <h1>Bibliothèque de Immers'Write</h1>
       <div className="container-book">
