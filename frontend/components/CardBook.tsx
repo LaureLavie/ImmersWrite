@@ -18,7 +18,7 @@ export default function CardBook({ src, title, description, link }: CardBookProp
       <p className="card-description">{description}</p>
       <button className="btn-gold">
         <a href={link} target="_blank" rel="noopener noreferrer">
-          Lire
+          Entrer dans l'histoire
         </a>
       </button>
     </div>

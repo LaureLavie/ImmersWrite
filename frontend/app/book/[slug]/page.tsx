@@ -60,6 +60,7 @@ export default function BookPage() {
           <div className="book-reading-inner">
 
             <p className="book-description">{book.description}</p>
+          
 
             <h2 className="book-chapters-title">Chapitres</h2>
             <div className="chapters-list">

@@ -12,10 +12,10 @@
   align-items: center;
   border: 1px solid var(--amber);
   border-radius: 1rem;
-  background: var(--midnight);
+  background: var(--gradient-night);
   color: var(--lunar);
   text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 10px rgba(92, 74, 82, 0.5);
   transition: transform 0.3s, box-shadow 0.3s;
 }
 .card-book:hover {

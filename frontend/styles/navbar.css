@@ -23,7 +23,7 @@
     justify-content: center;
   }
 
-  .navlink {
+  li .navlink {
     font-family: var(--font-body);
     font-size: 1.1rem;
     color: var(--lunar);
@@ -33,11 +33,12 @@
     letter-spacing: 0.05em;
   }
   
-  .navlink:hover {
+  li .navlink:hover {
     color: var(--amber);
   }
-  
-  .navlink.logout {
+
+
+  li .navlink.logout {
     color: var(--careful);
   }
   
