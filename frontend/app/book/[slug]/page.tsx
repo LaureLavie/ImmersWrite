@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { getBookBySlug, type Book } from "@/lib/api/books";
+import { getChaptersBySlug, type Chapter } from "@/lib/api/chapters";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import "@/styles/book.css";
@@ -11,15 +12,20 @@ export default function BookPage() {
   const params = useParams();
   const slug = params.slug as string;
   const [book, setBook] = useState<Book | null>(null);
+  const [chapters, setChapters] = useState<Chapter[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchBook() {
       try {
-        const data = await getBookBySlug(slug);
-        setBook(data);
-      } catch (err) {
+        const [bookData, chaptersData] = await Promise.all([
+          getBookBySlug(slug),
+          getChaptersBySlug(slug),
+        ]);
+        setBook(bookData);
+        setChapters(chaptersData);
+      } catch {
         setError("Ce livre n'existe pas ou n'est plus disponible.");
       } finally {
         setLoading(false);
@@ -34,7 +40,6 @@ export default function BookPage() {
   return (
     <div className={`book-page ${!book.cover_url ? "book-page-no-image" : ""}`}>
 
-      {/* Image de fond fixe */}
       {book.cover_url && (
         <img
           src={book.cover_url}
@@ -43,9 +48,7 @@ export default function BookPage() {
         />
       )}
 
-      {/* Tout le contenu défile par dessus */}
       <div className="book-page-content">
-
         <Navbar />
 
         {/* Hero plein écran */}
@@ -55,24 +58,36 @@ export default function BookPage() {
           <span className="book-scroll-hint">↓ commencer la lecture</span>
         </section>
 
-        {/* Zone de lecture opaque */}
+        {/* Zone de lecture */}
         <section className="book-reading-section">
           <div className="book-reading-inner">
 
             <p className="book-description">{book.description}</p>
-          
 
             <h2 className="book-chapters-title">Chapitres</h2>
+
             <div className="chapters-list">
-              <p className="chapters-empty">
-                Les chapitres arrivent bientôt...
-              </p>
+              {chapters.length === 0 ? (
+                <p className="chapters-empty">
+                  Les chapitres arrivent bientôt...
+                </p>
+              ) : (
+                chapters.map((chapter) => (
+                  <Link
+                    key={chapter.id}
+                    href={`/books/${slug}/${chapter.order}`}
+                    className="chapter-item"
+                  >
+                    <span className="chapter-number">{String(chapter.order).padStart(2, "0")}</span>
+                    <span className="chapter-title">{chapter.title}</span>
+                  </Link>
+                ))
+              )}
             </div>
 
           </div>
         </section>
 
-        {/* Retour bibliothèque */}
         <div className="book-footer-section">
           <Link href="/" className="book-back-link">
             ← retour à la bibliothèque
