@@ -22,7 +22,7 @@ class Book(Base):
     chapters     = relationship("Chapter", back_populates="book", order_by="Chapter.order", cascade="all, delete-orphan")
 
     class Chapter(Base):
-        __tablename__ = "chapter"
+        __tablename__ = "chapters"
     
         id           = Column(Integer, primary_key=True, index=True)
         book_id      = Column(Integer, ForeignKey("books.id", ondelete="CASCADE"), nullable=False)
