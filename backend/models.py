@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 from database import Base
 import enum
 
@@ -18,3 +19,24 @@ class Book(Base):
     slug         = Column(String, unique=True, index=True, nullable=False)
     is_published = Column(Boolean, default=False)
     created_at   = Column(DateTime(timezone=True), server_default=func.now())
+    chapters     = relationship("Chapter", back_populates="book", order_by="Chapter.order", cascade="all, delete-orphan")
+
+    class Chapter(Base):
+        __tablename__ = "chapter"
+    
+        id           = Column(Integer, primary_key=True, index=True)
+        book_id      = Column(Integer, ForeignKey("books.id", ondelete="CASCADE"), nullable=False)
+
+        order        = Column(Integer, nullable=False)
+        title        = Column(String, nullable=False)
+        content      = Column(Text)                             
+    
+        image_url    = Column(String)                           
+        sound_url    = Column(String)                           
+        sound_title  = Column(String)                           
+    
+        is_published = Column(Boolean, default=False)
+        created_at   = Column(DateTime(timezone=True), server_default=func.now())
+        updated_at   = Column(DateTime(timezone=True), onupdate=func.now())
+    
+        book         = relationship("Book", back_populates="chapters")
