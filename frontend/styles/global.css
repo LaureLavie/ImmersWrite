@@ -47,7 +47,6 @@
     background: var(--gradient-night);
     color: var(--lunar);
     font-family: var(--font-body);
-    font-weight: 400;
     text-align: justify; 
     text-rendering: optimizeLegibility;
   }
@@ -69,7 +68,7 @@
     line-height: 1.6;
     text-align: center;
     letter-spacing: 0.02em;
-    color: var(--lunar);
+    color: var(--amber);
     font-weight: 400;
   }
 

@@ -198,9 +198,9 @@ export default function RegisterPage() {
           {/* Footer link */}
           <div className="footer_link">
             <p>
-              Déjà membre ?{" "}
+              Déjà franchi ?{" "}
               <a href="/login" className="link">
-                Me Connecter
+                Reprendre la traversée
               </a>
             </p>
           </div>

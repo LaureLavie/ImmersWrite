@@ -32,7 +32,8 @@ export default function Home() {
   return (
     <div className="home-page">
       <Navbar />
-      <h1>Bibliothèque de Immers'Write</h1>
+      <h1>Bibliothèque Immers'Write</h1>
+      <h2>Découvrer les histoires, entrer dans les mondes...</h2>
       <div className="container-book">
         {books.map((book) => (
           <CardBook

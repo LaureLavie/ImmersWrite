@@ -144,9 +144,9 @@ export default function LoginPage() {
           {/* Footer link */}
           <div className="footer_link">
             <p>
-              Pas encore membre ?{" "}
+              Première fois ici ?{" "}
               <a href="/register" className="link">
-                S'inscrire
+                Rejoindre l'aventure
               </a>
             </p>
           </div>
