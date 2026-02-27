@@ -1,11 +1,6 @@
 "use client";
 
 import React, { useState } from 'react';
-import wonderful from '../echoes/wonderful.svg';
-import heart from '../echoes/heart.svg';
-import scare from '../echoes/scare.svg';
-import sad from '../echoes/sad.svg';
-import mystery from '../echoes/mystery.svg';
 import '../styles/echo.css';
 import '../styles/global.css';
 import '../styles/responsive.css';
@@ -21,11 +16,11 @@ export default function Echo({ onSelect }: EchoProps) {
   const [selected, setSelected] = useState<EchoType | null>(null);
 
   const echoes = [
-    { id: 'emerveillement', src: wonderful, label: 'Émerveillement' },
-    { id: 'resonance', src: heart, label: 'Résonance' },
-    { id: 'intrigue', src: scare, label: 'Intrigue' },
-    { id: 'tristesse', src: sad, label: 'Tristesse' },
-    { id: 'frisson', src: mystery, label: 'Frisson' },
+    { id: 'emerveillement', src:'https://res.cloudinary.com/immerswrite/image/upload/v1772203016/emerveillement_rcb6no.png', label: 'Émerveillement' },
+    { id: 'resonance', src:'https://res.cloudinary.com/immerswrite/image/upload/v1772203018/resonance_b6kdxm.png', label: 'Résonance' },
+    { id: 'intrigue', src:'https://res.cloudinary.com/immerswrite/image/upload/v1772203022/intrigue_wlxxyn.png', label: 'Intrigue' },
+    { id: 'tristesse', src:'https://res.cloudinary.com/immerswrite/image/upload/v1772203014/triste_gtxys6.png', label: 'Tristesse' },
+    { id: 'frisson', src:'https://res.cloudinary.com/immerswrite/image/upload/v1772203011/frisson_izjfue.png', label: 'Frisson' },
   ];
 
   const handleSelect = (id: EchoType) => {

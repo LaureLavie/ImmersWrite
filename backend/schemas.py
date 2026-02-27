@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, field_validator
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
 from models import UserRole
@@ -44,7 +44,37 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     email: Optional[str] = None
 
-    
+class ChapterCreate(BaseModel):
+    order: int
+    title: str
+    content: Optional[str] = None
+    image_url: Optional[str] = None       # URL Cloudinary
+    sound_url: Optional[str] = None       # URL SoundCloud embed
+    sound_title: Optional[str] = None
+    is_published: bool = False
+
+class ChapterUpdate(BaseModel):
+    title: Optional[str] = None
+    content: Optional[str] = None
+    image_url: Optional[str] = None
+    sound_url: Optional[str] = None
+    sound_title: Optional[str] = None
+    is_published: Optional[bool] = None
+
+class ChapterResponse(BaseModel):
+    id: int
+    book_id: int
+    order: int
+    title: str
+    content: Optional[str] = None
+    image_url: Optional[str] = None
+    sound_url: Optional[str] = None
+    sound_title: Optional[str] = None
+    is_published: bool
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    model_config = {"from_attributes": True}
 
 class BookCreate(BaseModel):
     title: str
@@ -63,5 +93,6 @@ class BookResponse(BaseModel):
     slug: str
     is_published: bool
     created_at: datetime
+    chapters: List[ChapterResponse] = []
     
     model_config = {"from_attributes": True}
