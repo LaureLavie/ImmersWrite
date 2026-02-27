@@ -15,12 +15,14 @@
     align-items: center;
     justify-items: center;
     list-style: none;
+    gap: 1rem;
   }
 
   .navlist li {
     display: flex;
     align-items: center;
     justify-content: center;
+    
   }
 
   li .navlink {

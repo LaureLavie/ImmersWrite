@@ -1,20 +1,29 @@
 [
   {
-    "id": 1,  
-    "title": "L'Antre Deux Âmes",
-      "author": "Laure Lavie",
-      "description": "Une enquête au-delà du réel. Je m'appelle Swan, détective holistique. Mon métier ? Explorer les mystères que la raison ignore, traquer les vérités enfouies sous des couches d’illusions et percer les voiles de l’invisible. Ce qui n'était qu'une affaire ordinaire s'est transformé en un voyage initiatique aux confins de l’inconnu . Ouvrez ce livre… et laissez-vous emporter au-delà des limites du connu.",
-      "cover_url": "/books/antre_deux_ames_pro.webp",
-      "slug": "lantre-deux-ames",
-      "is_published": true    
+    "id": 1,
+    "title": "Mon Antre Deux Mondes",
+    "author": "Laure Lavie",
+    "description": "Plongée dans l’invisible : un témoignage extra-ordinaire. Cher lecteur, je t’invite à franchir les portes d’un monde où la réalité dépasse l’entendement. Depuis l’enfance, j’ai été témoin d’expériences qui défient la logique ordinaire. Ce qui pouvait sembler étrange aux yeux des autres était pour moi une évidence : il existe bien plus que ce que l’on nous apprend. À travers ces pages, je partage mes souvenirs marquants, mes découvertes et mon évolution dans ce monde subtil où le paranormal s’entremêle au quotidien. Rien ne s’efface, tout est gravé, et chaque expérience a nourri ma compréhension d’une réalité plus vaste. Longtemps, j’ai cru être seule à percevoir ces dimensions invisibles. Puis, au fil du temps, j’ai rencontré d’autres âmes en quête de réponses, d’autres esprits ouverts aux mystères de l’existence. Ensemble, nous avons échangé, appris et évolué, loin des dogmes imposés par la société. Ce livre est un témoignage, un partage sincère de ce qui m’a construite et transformée. Il est aussi une invitation : celle d’oser explorer l’inconnu, de questionner l’inexplicable et, peut-être, de découvrir en vous cette étincelle qui vous relie à une autre réalité. Bienvenue dans mon univers.",
+    "cover_url": "https://res.cloudinary.com/immerswrite/image/upload/v1772197956/cover_Antre-deux-mondes_h3hhna.png",
+    "slug": "mon-antre-deux-mondes",
+    "is_published": true
   },
   {
     "id": 2,
-    "title": "Mon Antre Deux Mondes",
+    "title": "L'Antre Deux Mondes",
     "author": "Laure Lavie",
-    "description": "Immergez dans l’invisible : Cher lecteur, je t’invite à franchir les portes d’un monde où la réalité dépasse l’entendement. Depuis l’enfance, j’ai été témoin d’expériences qui défient la logique ordinaire. Ce qui pouvait sembler étrange aux yeux des autres était pour moi une évidence : il existe bien plus que ce que l’on nous apprend. . Rien ne s’efface, tout est gravé, et chaque expérience a nourri ma compréhension d’une réalité plus vaste. Ce livre est aussi un témoignage et une invitation : celle d’oser explorer l’inconnu, de questionner l’inexplicable et, peut-être, de découvrir en vous cette étincelle qui vous relie à une autre réalité. Bienvenue dans mon univers.",
-    "coverUrl": "/books/antre_deux_mondes_pro.webp",
-    "slug": "mon-antre-deux-mondes",
+    "description": "Tome 2: Récits mystiques des mondes subtils. Chroniques d’une détective holistique : plongée dans l’invisible. Il était une fois, dans les tréfonds de mon âme, un monde vibrant de mysticismes et de secrets insaisissables. Depuis l’enfance, j’ai appris à naviguer entre les dimensions, à écouter les voix de l’invisible et à dénouer les énigmes cachées derrière le voile du réel. Là où d’autres voient le hasard, je perçois des signes. Là où la logique s’arrête, commence mon enquête. Pendant des années, j’ai consigné ces aventures dans des cahiers, véritables grimoires de mon existence, remplis d’étranges coïncidences, de rencontres improbables et d’événements qui défient toute explication rationnelle. Et puis un jour, une petite voix intérieure – celle qui ne se trompe jamais – m’a soufflé qu’il était temps de partager ces histoires. Ainsi, cher lecteur, je t’invite à me suivre dans cet univers où l’intuition est reine, où la magie s’infiltre dans le quotidien, où les mystères de l’âme et du cosmos ne font qu'un. Tu découvriras mon parcours, mes questionnements, mes expériences et, qui sait, peut-être des réponses que tu ne soupçonnais pas.",
+    "cover_url": "https://res.cloudinary.com/immerswrite/image/upload/v1772200850/cover_book_xgaxoh.png",
+    "slug": "lantre-deux-mondes",
     "is_published": true
+  },
+  {
+    "id": 3,  
+    "title": "L'Antre Deux Âmes",
+      "author": "Laure Lavie",
+      "description": "L'Antre Deux Âmes – Une enquête au-delà du réel. Je m'appelle Swan, détective holistique. Mon métier ? Explorer les mystères que la raison ignore, traquer les vérités enfouies sous des couches d’illusions et percer les voiles de l’invisible. Ce qui n'était qu'une affaire ordinaire s'est transformé en un voyage initiatique aux confins de l’inconnu. Accompagnée d’Aydan, historien passionné par les légendes oubliées, j’ai découvert que notre monde repose sur un équilibre fragile, maintenu depuis des millénaires par une force ancestrale : l’Equilibrium. Mais cet équilibre vacille… et une ombre se lève. Némésis, entité maléfique tapie dans l’obscurité, cherche à briser cet ordre et à plonger l’univers dans le chaos. Pour l’arrêter, nous devons traverser des dimensions oubliées, déchiffrer des énigmes cosmiques et affronter nos propres peurs.Dans cette quête où le réel et le mystique s’entrelacent, chaque choix peut faire basculer l’univers tout entier. Sommes-nous prêts à affronter ce qui dépasse l’entendement ? Ouvrez ce livre… et laissez-vous emporter au-delà des limites du connu.",
+      "cover_url": "https://res.cloudinary.com/immerswrite/image/upload/v1772197492/Cover_ttfakc.png",
+      "slug": "lantre-deux-ames",
+      "is_published": true    
   }
 ]
