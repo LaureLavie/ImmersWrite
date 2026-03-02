@@ -33,18 +33,19 @@ export default function Echo({ onSelect }: EchoProps) {
       <h2 className="echo-title">Que ressentez-vous ?</h2>
       
       <div className="echo-card">
-        {echoes.map((echo) => (
-          <button
-            key={echo.id}
-            onClick={() => handleSelect(echo.id as EchoType)}
-            className={`echo-button ${selected === echo.id ? 'active' : ''}`}
-            aria-label={echo.label}
-          >
-            {echo.src}
-          </button>
-        ))}
-      </div>
-       <p className="echo-description">Partager votre ressenti pour continuer.</p>
+  {echoes.map((echo) => (
+    <button
+      key={echo.id}
+      onClick={() => handleSelect(echo.id as EchoType)}
+      className={`echo-button ${selected === echo.id ? 'active' : ''}`}
+      aria-label={echo.label}
+    >
+      <img src={echo.src} alt={echo.label} className="echo-icon" />
+      <span className="echo-tooltip">{echo.label}</span>
+    </button>
+  ))}
+</div>
+       <p className="echo-description">Merci de partager votre ressenti si vous le souhaitez</p>
     </div>
   );
 }

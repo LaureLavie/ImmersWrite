@@ -1,6 +1,5 @@
-/* styles/chapter.css */
 
-/* ── Fond immersif fixe ─────────────────────────── */
+
 .chapter-page {
   min-height: 100dvh;
   position: relative;
@@ -14,8 +13,8 @@
   height: 100%;
   object-fit: cover;
   z-index: 0;
-  filter: brightness(0.25) blur(2px);
-  transform: scale(1.05); /* évite les bordures blanches du blur */
+  filter: brightness(0.65) blur(1px);
+  transform: scale(1.05); 
 }
 
 .chapter-page-no-image {
@@ -27,7 +26,7 @@
   z-index: 1;
 }
 
-/* ── Hero du chapitre ───────────────────────────── */
+
 .chapter-hero {
   min-height: 60dvh;
   display: flex;
@@ -62,7 +61,7 @@
   line-height: 1.2;
 }
 
-/* ── Lecteur audio SoundCloud ───────────────────── */
+
 .chapter-audio-section {
   background: rgba(19, 15, 59, 0.7);
   backdrop-filter: blur(8px);
@@ -91,12 +90,12 @@
   border-radius: 12px;
 }
 
-/* ── Zone de lecture ────────────────────────────── */
+
 .chapter-reading-section {
   background: rgba(19, 15, 59, 0.88);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  padding: 5rem 2rem;
+  padding: 1rem 2rem;
 }
 
 .chapter-reading-inner {
@@ -110,17 +109,16 @@
   line-height: 2;
   color: var(--lunar);
   opacity: 0.92;
-  white-space: pre-wrap; /* conserve les sauts de ligne */
+  white-space: pre-wrap; 
   text-align: justify;
 }
 
-/* ── Séparateur décoratif ───────────────────────── */
 .chapter-divider {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  margin: 4rem 0;
+  margin: 1rem;
   opacity: 0.4;
 }
 
@@ -137,28 +135,27 @@
   color: var(--amber);
 }
 
-/* ── Zone Echo du lecteur ───────────────────────── */
 .chapter-echo-section {
   background: rgba(19, 15, 59, 0.88);
   backdrop-filter: blur(8px);
-  padding: 3rem 2rem 5rem;
+  padding: 1rem 2rem 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* ── Navigation prev/next ───────────────────────── */
 .chapter-nav {
-  background: rgba(19, 15, 59, 0.95);
+  background: rgba(19, 15, 59, 0.35);
   border-top: 1px solid rgba(179, 136, 57, 0.2);
-  padding: 2.5rem 2rem;
+  padding: 2rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  max-width: 720px;
-  margin: 0 auto;
-  width: 100%;
+  justify-items: center;
+  align-content: center;
+  justify-content: center;
+  gap: 3rem;
+  margin: 1rem;
+  width: 90%;
 }
 
 .chapter-nav-btn {
@@ -198,46 +195,16 @@
 .chapter-nav-center {
   font-family: var(--font-body);
   font-size: 0.75rem;
-  color: var(--amber);
+  color: var(--lunar);
   opacity: 0.4;
   letter-spacing: 0.1em;
   text-align: center;
 }
 
-/* ── Footer retour ──────────────────────────────── */
 .chapter-footer {
   background: rgba(19, 15, 59, 0.98);
   padding: 2rem;
+  opacity: 0.8;
   text-align: center;
 }
 
-/* ── Responsive ─────────────────────────────────── */
-@media (max-width: 768px) {
-  .chapter-hero {
-    min-height: 50dvh;
-    padding: 1.5rem 1.5rem 3rem;
-  }
-
-  .chapter-reading-section {
-    padding: 3rem 1.2rem;
-  }
-
-  .chapter-content {
-    font-size: 1rem;
-    line-height: 1.9;
-  }
-
-  .chapter-nav {
-    padding: 1.5rem 1rem;
-    gap: 0.5rem;
-  }
-
-  .chapter-nav-btn {
-    font-size: 0.8rem;
-    padding: 0.6rem 0.9rem;
-  }
-
-  .chapter-nav-center {
-    display: none;
-  }
-}

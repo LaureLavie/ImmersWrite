@@ -101,6 +101,34 @@
   right: 3rem;
   cursor: pointer;
 }
+
+.chapter-hero {
+  min-height: 50dvh;
+  padding: 1.5rem 1.5rem 3rem;
+}
+
+.chapter-reading-section {
+  padding: 3rem 1.2rem;
+}
+
+.chapter-content {
+  font-size: 1rem;
+  line-height: 1.9;
+}
+
+.chapter-nav {
+  padding: 1.5rem 1rem;
+  gap: 0.5rem;
+}
+
+.chapter-nav-btn {
+  font-size: 0.8rem;
+  padding: 0.6rem 0.9rem;
+}
+
+.chapter-nav-center {
+  display: none;
+}
 }
 
 
