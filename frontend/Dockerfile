@@ -1,22 +1,22 @@
-# Utilise une image Node stable et légère
-FROM node:20-alpine
+# --- Etape 1 : Build ---
+  FROM node:20-alpine AS builder
+  WORKDIR /app
+  COPY package*.json ./
+  RUN npm install
+  COPY . .
+  RUN npm run build
+  
 
-WORKDIR /app
-
-# Copie les fichiers de dépendances
-COPY package*.json ./
-
-# Installe les dépendances
-RUN npm install
-
-# Copie tout le reste du code source
-COPY . .
-
-# Build l'application Next.js (génère le dossier .next)
-RUN npm run build
-
-# Next.js écoute sur le port 3000 par défaut
-EXPOSE 3000
-
-# Commande pour lancer en mode production
-CMD ["npm", "start"]
+  FROM node:20-alpine AS runner
+  WORKDIR /app
+  ENV NODE_ENV production
+  
+  
+  COPY --from=builder /app/public ./public
+  COPY --from=builder /app/.next/standalone ./
+  COPY --from=builder /app/.next/static ./.next/static
+  
+  EXPOSE 3000
+  
+ 
+  CMD ["node", "server.js"]
