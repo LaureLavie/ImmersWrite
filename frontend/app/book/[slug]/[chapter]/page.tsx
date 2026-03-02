@@ -46,7 +46,7 @@ function ChapterNav({
     <div className="chapter-nav">
       {hasPrev ? (
         <Link
-          href={`/book/${slug}/${currentOrder - 1}`}
+          href={`/books/${slug}/${currentOrder - 1}`}
           className="chapter-nav-btn prev"
         >
           ← Chapitre précédent
@@ -61,7 +61,7 @@ function ChapterNav({
 
       {hasNext ? (
         <Link
-          href={`/book/${slug}/${currentOrder + 1}`}
+          href={`/books/${slug}/${currentOrder + 1}`}
           className="chapter-nav-btn next"
         >
           Chapitre suivant →
@@ -129,7 +129,7 @@ export default function ChapterPage() {
         <Navbar />
         <div style={{ minHeight: "80dvh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "2rem", opacity: 0.7 }}>
           <p>{error || "Chapitre introuvable"}</p>
-          <Link href={`/book/${slug}`} className="chapter-nav-btn">
+          <Link href={`/books/${slug}`} className="chapter-nav-btn">
             ← Retour au livre
           </Link>
         </div>
@@ -209,7 +209,7 @@ export default function ChapterPage() {
 
         {/* ── Footer retour au livre ── */}
         <div className="chapter-footer">
-          <Link href={`/book/${slug}`} className="book-back-link">
+          <Link href={`/books/${slug}`} className="book-back-link">
             ← retour au livre
           </Link>
         </div>
