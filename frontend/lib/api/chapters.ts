@@ -17,7 +17,7 @@ export interface Chapter {
 
 
 export async function getChaptersBySlug(slug: string): Promise<Chapter[]> {
-  const res = await fetch(`${API_URL}/books/${slug}/chapters`, {
+  const res = await fetch(`${API_URL}/book/${slug}/chapters`, {
     cache: "no-store",
   });
   if (!res.ok) throw new Error("Chapitres introuvables");
@@ -26,7 +26,7 @@ export async function getChaptersBySlug(slug: string): Promise<Chapter[]> {
 
 
 export async function getChapterByOrder(slug: string, order: number): Promise<Chapter> {
-  const res = await fetch(`${API_URL}/books/${slug}/chapters/${order}`, {
+  const res = await fetch(`${API_URL}/book/${slug}/chapters/${order}`, {
     cache: "no-store",
   });
   if (!res.ok) throw new Error("Chapitre introuvable");

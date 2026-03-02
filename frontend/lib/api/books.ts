@@ -14,7 +14,7 @@ export interface Book {
 }
 
 export async function getBooks(): Promise<Book[]> {
-  const response = await fetch(`${API_URL}/books`);
+  const response = await fetch(`${API_URL}/book`);
   if (!response.ok) {
     throw new Error('Erreur lors de la récupération des livres');
   }
@@ -22,7 +22,7 @@ export async function getBooks(): Promise<Book[]> {
 }
 
 export async function getBookBySlug(slug: string): Promise<Book> {
-  const response = await fetch(`${API_URL}/books/${slug}`);
+  const response = await fetch(`${API_URL}/book/${slug}`);
   if (!response.ok) {
     throw new Error('Livre non trouvé');
   }
