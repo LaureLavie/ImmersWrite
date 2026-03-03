@@ -2,9 +2,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
   width: 100%;
-  margin: 2rem 0;
+  margin: 1rem;
 }
 
 .echo-title {
@@ -19,16 +19,17 @@ p {
   font-family: var(--font-body);
   font-size: 0.9rem;
   color: var(--amber);
+  text-align: center;
 }
 
 
 .echo-card {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 90%;
   max-width: 600px;
-  padding: 1rem 2rem;
+  padding: 1rem;
   background: var(--midnight);
   border: 1px solid var(--amber);
   border-radius: 60px; 
@@ -41,10 +42,9 @@ p {
   color: var(--amber); 
   cursor: pointer;
   transition: all 0.3s ease;
-  padding: 10px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: stretch;
   opacity: 0.7;
 }
 

@@ -190,7 +190,7 @@ export default function ChapterPage() {
               onSelect={(echo) => {
                 console.log("Echo sélectionné :", echo);
                 setEchoSent(true);
-                // TODO: envoyer l'echo à l'API quand le backend sera prêt
+                
               }}
             />
           ) : (
