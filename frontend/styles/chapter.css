@@ -154,8 +154,7 @@
   align-content: center;
   justify-content: center;
   gap: 3rem;
-  margin: 1rem;
-  width: 90%;
+  width: 100%;
 }
 
 .chapter-nav-btn {
