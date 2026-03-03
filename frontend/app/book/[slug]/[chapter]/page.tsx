@@ -18,7 +18,7 @@ function SoundCloudPlayer({ url, title }: { url: string; title?: string | null }
 
   return (
     <div className="chapter-audio-section">
-      {title && <span className="audio-label">🎵 {title}</span>}
+      {title && <span className="audio-label"> {title} </span>}
       <iframe
         src={embedUrl}
         height="80"

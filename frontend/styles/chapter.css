@@ -67,7 +67,7 @@
   backdrop-filter: blur(8px);
   border-top: 1px solid rgba(179, 136, 57, 0.2);
   border-bottom: 1px solid rgba(179, 136, 57, 0.2);
-  padding: 1.5rem 2rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
