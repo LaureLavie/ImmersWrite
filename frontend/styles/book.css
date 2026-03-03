@@ -107,9 +107,11 @@
   font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.9;
+  text-align: justify;
   color: var(--lunar);
   opacity: 0.8;
   border-left: 2px solid var(--amber);
+  white-space: pre-wrap; 
   padding-left: 1.5rem;
   margin-bottom: 4rem;
 }
