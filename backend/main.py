@@ -118,7 +118,7 @@ def create_chapter(slug: str, chapter: schemas.ChapterCreate, db: Session = Depe
     if not book:
         raise HTTPException(status_code=404, detail="Livre non trouvé")
     
-    # Vérifier que l'ordre n'est pas déjà pris
+  
     existing = db.query(models.Chapter)\
                  .filter(
                      models.Chapter.book_id == book.id,

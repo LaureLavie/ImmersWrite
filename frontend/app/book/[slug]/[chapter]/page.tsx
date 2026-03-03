@@ -9,7 +9,7 @@ import { getChapterByOrder, getChaptersBySlug, type Chapter } from "@/lib/api/ch
 import "@/styles/chapter.css";
 import "@/styles/responsive.css";
 
-// ── Composant : Lecteur Audio SoundCloud ──────────────────────────
+
 function SoundCloudPlayer({ url, title }: { url: string; title?: string | null }) {
   
   const embedUrl = url.startsWith("https://w.soundcloud.com")
@@ -29,7 +29,7 @@ function SoundCloudPlayer({ url, title }: { url: string; title?: string | null }
   );
 }
 
-// ── Composant : Navigation prev/next ─────────────────────────────
+
 function ChapterNav({
   slug,
   currentOrder,
@@ -46,7 +46,7 @@ function ChapterNav({
     <div className="chapter-nav">
       {hasPrev ? (
         <Link
-          href={`/books/${slug}/${currentOrder - 1}`}
+          href={`/book/${slug}/${currentOrder - 1}`}
           className="chapter-nav-btn prev"
         >
           ← Chapitre précédent
@@ -61,7 +61,7 @@ function ChapterNav({
 
       {hasNext ? (
         <Link
-          href={`/books/${slug}/${currentOrder + 1}`}
+          href={`/book/${slug}/${currentOrder + 1}`}
           className="chapter-nav-btn next"
         >
           Chapitre suivant →
@@ -73,7 +73,7 @@ function ChapterNav({
   );
 }
 
-// ── Page principale ───────────────────────────────────────────────
+
 export default function ChapterPage() {
   const params = useParams();
   const slug = params.slug as string;
@@ -107,7 +107,7 @@ export default function ChapterPage() {
     if (slug && !isNaN(order)) fetchData();
   }, [slug, order]);
 
-  // Reset Echo quand on change de chapitre
+  
   useEffect(() => {
     setEchoSent(false);
   }, [order]);
@@ -129,7 +129,7 @@ export default function ChapterPage() {
         <Navbar />
         <div style={{ minHeight: "80dvh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "2rem", opacity: 0.7 }}>
           <p>{error || "Chapitre introuvable"}</p>
-          <Link href={`/books/${slug}`} className="chapter-nav-btn">
+          <Link href={`/book/${slug}`} className="chapter-nav-btn">
             ← Retour au livre
           </Link>
         </div>
@@ -167,12 +167,14 @@ export default function ChapterPage() {
         <section className="chapter-reading-section">
           <div className="chapter-reading-inner">
             {chapter.content ? (
-              <p className="chapter-content">{chapter.content}</p>
+              <div className="chapter-content">{chapter.content}</div>
             ) : (
               <p className="chapter-content" style={{ opacity: 0.4, fontStyle: "italic", textAlign: "center" }}>
                 Ce chapitre est en cours d'écriture...
               </p>
             )}
+
+            
 
             {/* Séparateur décoratif */}
             <div className="chapter-divider">
@@ -207,7 +209,7 @@ export default function ChapterPage() {
 
         {/* ── Footer retour au livre ── */}
         <div className="chapter-footer">
-          <Link href={`/books/${slug}`} className="book-back-link">
+          <Link href={`/book/${slug}`} className="book-back-link">
             ← retour au livre
           </Link>
         </div>

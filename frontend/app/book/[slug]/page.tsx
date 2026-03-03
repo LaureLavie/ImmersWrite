@@ -75,7 +75,7 @@ export default function BookPage() {
                 chapters.map((chapter) => (
                   <Link
                     key={chapter.id}
-                    href={`/books/${slug}/${chapter.order}`}
+                    href={`/book/${slug}/${chapter.order}`}
                     className="chapter-item"
                   >
                     <span className="chapter-number">{String(chapter.order).padStart(2, "0")}</span>

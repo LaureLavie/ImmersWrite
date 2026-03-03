@@ -21,7 +21,7 @@ class Book(Base):
     created_at   = Column(DateTime(timezone=True), server_default=func.now())
     chapters     = relationship("Chapter", back_populates="book", order_by="Chapter.order", cascade="all, delete-orphan")
 
-    class Chapter(Base):
+class Chapter(Base):
         __tablename__ = "chapters"
     
         id           = Column(Integer, primary_key=True, index=True)
