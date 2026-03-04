@@ -64,7 +64,6 @@ export default function RegisterPage() {
         throw new Error(data.detail || "Une erreur est survenue");
       }
 
-      // ✅ Redirect vers /login avec paramètre message
       router.push("/login?message=check-email");
 
     } catch (error) {
@@ -107,7 +106,7 @@ export default function RegisterPage() {
             />
             {errors.email && <p>{errors.email}</p>}
 
-            {/* ✅ Mot de passe avec œil */}
+ 
             <PasswordInput
               id="password"
               label="Votre Mot de Passe"
@@ -117,7 +116,6 @@ export default function RegisterPage() {
               error={errors.password}
             />
 
-            {/* ✅ Confirmation avec œil */}
             <PasswordInput
               id="passwordConfirm"
               label="Confirmer Votre Mot de Passe"
@@ -127,7 +125,7 @@ export default function RegisterPage() {
               error={errors.passwordConfirm}
             />
 
-            {/* ✅ Boutons rôle avec classe dédiée */}
+      
             <div className="role">
               <label className="label-choice">Je souhaite rejoindre en tant que ...</label>
               <div className="btn-group">
