@@ -116,7 +116,7 @@
   padding: 2rem;
 }
   
-  .btn-gold, .btn-delete, .btn-choice, .btn-logout {
+.btn-gold, .btn-delete, .btn-choice, .btn-logout {
     display: flex;
     align-items: center;
     align-content: center;
@@ -130,39 +130,40 @@
     min-width: fit-content;
     height: 44px;
     cursor: pointer;
-  }
+}
 
-  .btn-gold, .btn-delete, .btn-logout, .btn-choice:hover {
+.btn-gold, .btn-delete, .btn-logout, .btn-choice:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(179, 136, 57, 0.5);
   }
 
-  .btn-gold {
+.btn-gold {
     border: 1px solid var(--amber);
     background: var(--gradient-gold);
     color: var(--midnight);
   }
 
-  .btn-delete {
+.btn-delete {
     font-weight: normal; 
     background: var(--gradient-night);
     border: 1px solid var(--careful);
     color: var(--careful);
   }
 
-  .btn-choice {
+.btn-choice {
     border: 1px solid var(--amber);
     color: var(--amber);
     background: var(--gradient-night);
   }
 
-  .btn-logout {
+
+.btn-logout {
     border: 1px solid var(--lunar);
     color: var(--lunar);
     background: var(--gradient-night);
   }
 
-  .input {
+.input {
     max-width: 100%;
     padding: 1rem;
     height: fit-content;
@@ -179,7 +180,7 @@
   }
 
  
-  .link {
+.link {
     text-align: left;
     transition: opacity 300ms;
     font-family: var(--font-body);
@@ -187,7 +188,7 @@
     font-size: 16px;
   }
 
-  .link-arrow {
+.link-arrow {
     text-align: left;
     transition: opacity 300ms;
     font-family: var(--font-body);
@@ -198,7 +199,7 @@
     font-size: 16px;
   }
 
-  .link:hover {
+.link:hover {
     opacity: 0.8;
   }
 }

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import LogoIW from "../../../public/LogoIW.svg";
-import IWgold from "../../../public/IWgold.webp";
+import LogoIW from "../../public/LogoIW.svg";
+import IWgold from "../../public/IWgold.webp";
 import "@/styles/global.css";
 import "@/styles/auth.css";
 import "@/styles/responsive.css";
@@ -32,7 +32,7 @@ export default function ForgotPasswordPage() {
         body: JSON.stringify({ email }),
       });
 
-      // On affiche toujours le succès (sécurité : ne pas révéler si l'email existe)
+      const data = await response.json();
       setSuccess(true);
     } catch {
       setError("Une erreur est survenue. Réessaie dans un instant.");

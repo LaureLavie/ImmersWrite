@@ -5,13 +5,13 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import LogoIW from "../../public/LogoIW.svg";
 import IWgold from "../../public/IWgold.webp";
-import { saveAuthToken } from "@/lib/auth/cookies";
+import PasswordInput from "@/components/PasswordInput";
 import "@/styles/global.css";
 import "@/styles/auth.css";
 import "@/styles/responsive.css";
 
 export default function RegisterPage() {
-  const router= useRouter();
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -29,25 +29,17 @@ export default function RegisterPage() {
 
     const newErrors: Record<string, string> = {};
 
-    if (!formData.email) {
-      newErrors.email = "L'email est requis";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email))
       newErrors.email = "L'email n'est pas valide";
-    }
 
-    if (!formData.password) {
-      newErrors.password = "Le mot de passe est requis";
-    } else if (formData.password.length < 8) {
+    if (!formData.password || formData.password.length < 8)
       newErrors.password = "Le mot de passe doit contenir au moins 8 caractères";
-    }
 
-    if (formData.password !== formData.passwordConfirm) {
+    if (formData.password !== formData.passwordConfirm)
       newErrors.passwordConfirm = "Les mots de passe ne correspondent pas";
-    }
 
-    if (!formData.role) {
+    if (!formData.role)
       newErrors.role = "Veuillez choisir un rôle";
-    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -71,7 +63,9 @@ export default function RegisterPage() {
         const data = await response.json();
         throw new Error(data.detail || "Une erreur est survenue");
       }
-      router.push("/register/confirmation");
+
+      // ✅ Redirect vers /login avec paramètre message
+      router.push("/login?message=check-email");
 
     } catch (error) {
       setErrors({
@@ -79,88 +73,68 @@ export default function RegisterPage() {
       });
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="container">
       <div className="left-container">
-        <div className="logo-section ">
-        {/* Logo */}
+        <div className="logo-section">
           <div className="LogoIW">
-            <Image src={LogoIW} alt="Logo Immers'Write" loading="eager"/>
+            <Image src={LogoIW} alt="Logo Immers'Write" loading="eager" />
           </div>
-        {/* Tagline */}
           <div className="tagline">
-            <Image src={IWgold} alt="Plume Immers'Write" loading="eager"/>
-            <p>
-              where words become worlds
-            </p>
+            <Image src={IWgold} alt="Plume Immers'Write" loading="eager" />
+            <p>where words become worlds</p>
           </div>
+        </div>
       </div>
 
-      </div>
       <div className="right-container">
-        {/* Card */}
         <div className="card">
           <h1>Franchir le seuil</h1>
 
           <form onSubmit={handleSubmit}>
+            {/* Email */}
             <label htmlFor="email">Votre Email</label>
             <input
               id="email"
-                type="email"
-                placeholder="votre@email.com"
-                className="input"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                disabled={isLoading}
-              />
-              {errors.email && (
-                <p>{errors.email}</p>
-              )}
-            
+              type="email"
+              placeholder="votre@email.com"
+              className="input"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              disabled={isLoading}
+            />
+            {errors.email && <p>{errors.email}</p>}
 
-            {/* Password Input */}
+            {/* ✅ Mot de passe avec œil */}
+            <PasswordInput
+              id="password"
+              label="Votre Mot de Passe"
+              value={formData.password}
+              onChange={(v) => setFormData({ ...formData, password: v })}
+              disabled={isLoading}
+              error={errors.password}
+            />
 
-              <label htmlFor="password">Votre Mot de Passe</label>
-              <input
-                id="password"
-                type="password"
-                placeholder="••••••••••••"
-                className="input"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                disabled={isLoading}
-              />
-              {errors.password && (
-                <p>{errors.password}</p>
-              )} 
+            {/* ✅ Confirmation avec œil */}
+            <PasswordInput
+              id="passwordConfirm"
+              label="Confirmer Votre Mot de Passe"
+              value={formData.passwordConfirm}
+              onChange={(v) => setFormData({ ...formData, passwordConfirm: v })}
+              disabled={isLoading}
+              error={errors.passwordConfirm}
+            />
 
-            {/* Confirm Password Input */}
-
-              <label htmlFor="passwordConfirm">Confirmer Votre Mot de Passe</label>
-              <input
-                id="passwordConfirm"
-                type="password"
-                placeholder="••••••••••••"
-                className="input"
-                value={formData.passwordConfirm}
-                onChange={(e) => setFormData({ ...formData, passwordConfirm: e.target.value })}
-                disabled={isLoading}
-              />
-              {errors.passwordConfirm && (
-                <p>{errors.passwordConfirm}</p>
-              )}
-            
-
-            {/* Role selection*/}
+            {/* ✅ Boutons rôle avec classe dédiée */}
             <div className="role">
               <label className="label-choice">Je souhaite rejoindre en tant que ...</label>
               <div className="btn-group">
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, role: "lecteur" })}
-                  className={formData.role === "lecteur" ? "btn-gold" : "btn-choice"}
+                  className={formData.role === "lecteur" ? "btn-role-active" : "btn-choice"}
                   disabled={isLoading}
                 >
                   Lecteur
@@ -168,43 +142,30 @@ export default function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, role: "auteur" })}
-                  className={formData.role === "auteur" ? "btn-gold" : "btn-choice"}
+                  className={formData.role === "auteur" ? "btn-role-active" : "btn-choice"}
                   disabled={isLoading}
                 >
                   Auteur
                 </button>
               </div>
-              {errors.role && (
-                <p>{errors.role}</p>
-              )}
+              {errors.role && <p>{errors.role}</p>}
             </div>
 
-            {/* General error message */}
             {errors.general && (
-              <div className="errors">
-                <p>{errors.general}</p>
-              </div>
+              <div className="errors"><p>{errors.general}</p></div>
             )}
 
             <div className="button-container">
-            {/* Submit button */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="btn-gold"
-            >
-              {isLoading ? "création en cours..." : "Entrez dans l'univers"}
-            </button>
+              <button type="submit" disabled={isLoading} className="btn-gold">
+                {isLoading ? "création en cours..." : "Entrez dans l'univers"}
+              </button>
             </div>
           </form>
 
-          {/* Footer link */}
           <div className="footer_link">
             <p>
               Déjà franchi ?{" "}
-              <a href="/login" className="link">
-                Reprendre la traversée
-              </a>
+              <a href="/login" className="link">Reprendre la traversée</a>
             </p>
           </div>
         </div>

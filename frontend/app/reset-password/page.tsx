@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import LogoIW from "../../../public/LogoIW.svg";
-import IWgold from "../../../public/IWgold.webp";
+import LogoIW from "../../public/LogoIW.svg";
+import IWgold from "../../public/IWgold.webp";
 import "@/styles/global.css";
 import "@/styles/auth.css";
 import "@/styles/responsive.css";
