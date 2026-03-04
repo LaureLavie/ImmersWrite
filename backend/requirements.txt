@@ -9,15 +9,12 @@ sqlalchemy==2.0.25
 alembic==1.13.1
 psycopg2-binary==2.9.9
 
-# Cache
-redis==5.0.1
-hiredis==2.3.2
 
 # Authentication & Security
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
-pydantic[email]==2.5.3
-pydantic-settings==2.1.0
+pydantic[email]==2.12.5
+pydantic-settings==2.6.1
 
 # APIs IA
 anthropic==0.18.1
@@ -42,15 +39,12 @@ sqlalchemy==2.0.25
 alembic==1.13.1
 psycopg2-binary==2.9.9
 
-# Cache
-redis==5.0.1
-hiredis==2.3.2
 
 # Authentication & Security
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
-pydantic[email]==2.5.3
-pydantic-settings==2.1.0
+pydantic[email]==2.12.5
+pydantic-settings==2.6.1
 
 # APIs IA
 anthropic==0.18.1

@@ -1,8 +1,18 @@
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 import os
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
+from dotenv import load_dotenv
+from utils import hash_password, generate_confirmation_token, verify_confirmation_token
+import jwt
+from datetime import datetime, timedelta
+
+
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 import models
 import schemas
@@ -15,19 +25,75 @@ app = FastAPI()
 
 raw_origins = os.getenv("ALLOWED_ORIGINS", "")
 origins = raw_origins.split(",") if raw_origins else []
-origins.append("http://localhost:3000")
+origins.append("http://localhost:3000") 
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"], 
 )
 
+# Configuration de FastAPI Mail
+conf = ConnectionConfig(
+    MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
+    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),
+    MAIL_FROM=os.getenv("MAIL_FROM"),
+    MAIL_PORT=int(os.getenv("MAIL_PORT", 587)),
+    MAIL_SERVER=os.getenv("MAIL_SERVER"),
+    MAIL_STARTTLS=bool(os.getenv("MAIL_STARTTLS", True)),
+    MAIL_SSL_TLS=bool(os.getenv("MAIL_SSL_TLS", False)),
+    USE_CREDENTIALS=True,
+)
+
+
+
 @app.get("/")
-def read_root():
-    return {"message": "Bienvenue dans l'API Immers'Write!"}
+@app.post("/register")
+async def register(user: schemas.UserRegister, db: Session = Depends(get_db)):
+    existing_user = db.query(models.User).filter(models.User.email == user.email).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email déjà utilisé")
+
+    hashed_password = hash_password(user.password)
+    new_user = models.User(
+        email=user.email,
+        hashed_password=hashed_password,
+        role=user.role,
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    # Générer un jeton de confirmation
+    confirmation_token = generate_confirmation_token(new_user.email)
+
+    # Envoyer l'email de confirmation
+    message = MessageSchema(
+        subject="Confirmez votre compte Immers'Write",
+        recipients=[new_user.email],
+        body=f"Veuillez confirmer votre compte en cliquant sur ce lien : http://localhost:8000/confirm/{confirmation_token}",
+        subtype="html",
+    )
+    fm = FastMail(conf)
+    await fm.send_message(message)
+
+    return {"message": "Inscription réussie. Veuillez vérifier votre email pour confirmer votre compte."}
+
+
+@app.get("/confirm/{token}")
+async def confirm_email(token: str, db: Session = Depends(get_db)):
+    email = verify_confirmation_token(token)
+    user = db.query(models.User).filter(models.User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    if user.is_confirmed:
+        return {"message": "Compte déjà confirmé"}
+    
+    user.is_confirmed = True
+    db.commit()
+    return {"message": "Compte confirmé avec succès. Vous pouvez maintenant vous connecter."}
 
 @app.get("/books", response_model=List[schemas.BookResponse])
 def get_books(db: Session = Depends(get_db)):
