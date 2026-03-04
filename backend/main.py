@@ -50,6 +50,9 @@ conf = ConnectionConfig(
 
 
 @app.get("/")
+def read_root():
+    return {"message": "Welcome to Immers'Write API"}
+
 @app.post("/register")
 async def register(user: schemas.UserRegister, db: Session = Depends(get_db)):
     existing_user = db.query(models.User).filter(models.User.email == user.email).first()

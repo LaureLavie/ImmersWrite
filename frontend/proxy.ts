@@ -3,9 +3,9 @@ import type { NextRequest } from "next/server";
 
 const PUBLIC_PATHS = ["/login", "/register"];
 
-const STATIC_PREFIXES = ["/_next/", "/api/", "/favicon"];
+const STATIC_PREFIXES = ["/_next/", "/api/", "/favicon", "/.well-known/",];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const token = request.cookies.get("access_token")?.value;
