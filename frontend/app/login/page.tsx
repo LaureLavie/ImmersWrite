@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import LogoIW from "../../public/LogoIW.svg";
@@ -11,11 +12,9 @@ import "@/styles/global.css";
 import "@/styles/auth.css";
 import "@/styles/responsive.css";
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-
   const message = searchParams.get("message");
 
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -52,15 +51,14 @@ export default function LoginPage() {
       }
 
       const data = await response.json();
-      saveAuthToken(data.access_token, data.role);
 
+      saveAuthToken(data.access_token, data.role);
 
       if (data.role === "auteur") {
         router.push("/dashboard");
       } else {
         router.push("/");
       }
-
     } catch (error) {
       setErrors({
         general: error instanceof Error ? error.message : "Une erreur est survenue",
@@ -87,7 +85,6 @@ export default function LoginPage() {
         <div className="card">
           <h1>Franchir le seuil</h1>
 
-
           {message === "check-email" && (
             <div style={{
               background: "rgba(179, 136, 57, 0.1)",
@@ -98,7 +95,7 @@ export default function LoginPage() {
               textAlign: "center",
             }}>
               <p style={{ color: "var(--amber)", fontSize: "14px", margin: 0, lineHeight: "1.8" }}>
-                📬 Inscription réussie ! Vérifie ta boîte mail pour activer ton compte avant de te connecter.
+                Inscription réussie ! Vérifie ta boîte mail pour activer ton compte avant de te connecter.
               </p>
             </div>
           )}
@@ -114,8 +111,7 @@ export default function LoginPage() {
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               disabled={isLoading}
             />
-            {errors.email && <p>{errors.email}</p>}
-
+            {errors.email && <p style={{ color: "var(--amber)", fontSize: "14px" }}>{errors.email}</p>}
 
             <PasswordInput
               id="password"
@@ -149,5 +145,24 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="container">
+          <div className="right-container">
+            <div className="card">
+              <p style={{ color: "var(--lunar)", textAlign: "center" }}>Chargement...</p>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <LoginContent />
+    </Suspense>
   );
 }

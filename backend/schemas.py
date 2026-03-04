@@ -1,12 +1,13 @@
 from pydantic import BaseModel, EmailStr, field_validator
 from typing import Optional, List
 from datetime import datetime
-
 from models import UserRole
+
 
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
     
 class UserRegister(BaseModel):
     email: EmailStr
@@ -28,8 +29,10 @@ class UserRegister(BaseModel):
             raise ValueError('les mots de passe ne correspondent pas')
         return v
 
+
 class ForgotPasswordRequest(BaseModel):
     email: EmailStr
+
 
 class ResetPasswordRequest(BaseModel):
     token: str
@@ -50,6 +53,7 @@ class ResetPasswordRequest(BaseModel):
             raise ValueError("Les mots de passe ne correspondent pas")
         return v
 
+
 class UserResponse(BaseModel):
     id: int
     email: EmailStr
@@ -63,19 +67,24 @@ class UserResponse(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+    role: str 
 
 
 class TokenData(BaseModel):
     email: Optional[str] = None
 
+
+# ─── Chapitres ───────────────────────────────────────────────
+
 class ChapterCreate(BaseModel):
     order: int
     title: str
     content: Optional[str] = None
-    image_url: Optional[str] = None       # URL Cloudinary
-    sound_url: Optional[str] = None       # URL SoundCloud embed
+    image_url: Optional[str] = None
+    sound_url: Optional[str] = None
     sound_title: Optional[str] = None
     is_published: bool = False
+
 
 class ChapterUpdate(BaseModel):
     title: Optional[str] = None
@@ -84,6 +93,7 @@ class ChapterUpdate(BaseModel):
     sound_url: Optional[str] = None
     sound_title: Optional[str] = None
     is_published: Optional[bool] = None
+
 
 class ChapterResponse(BaseModel):
     id: int
@@ -100,6 +110,9 @@ class ChapterResponse(BaseModel):
 
     model_config = {"from_attributes": True}
 
+
+# ─── Livres ──────────────────────────────────────────────────
+
 class BookCreate(BaseModel):
     title: str
     author: str
@@ -107,6 +120,7 @@ class BookCreate(BaseModel):
     cover_url: Optional[str] = None
     slug: str
     is_published: bool = False
+
 
 class BookResponse(BaseModel):
     id: int
@@ -118,5 +132,5 @@ class BookResponse(BaseModel):
     is_published: bool
     created_at: datetime
     chapters: List[ChapterResponse] = []
-    
+
     model_config = {"from_attributes": True}
