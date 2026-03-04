@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import LogoIW from "../../public/LogoIW.svg";
@@ -9,7 +9,8 @@ import "@/styles/global.css";
 import "@/styles/auth.css";
 import "@/styles/responsive.css";
 
-export default function ResetPasswordPage() {
+
+function ResetPasswordContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get("token");
@@ -152,5 +153,36 @@ export default function ResetPasswordPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="container">
+          <div className="left-container">
+            <div className="logo-section">
+              <div className="LogoIW">
+                <Image src={LogoIW} alt="Logo Immers'Write" loading="eager" />
+              </div>
+              <div className="tagline">
+                <Image src={IWgold} alt="Plume Immers'Write" loading="eager" />
+                <p>where words become worlds</p>
+              </div>
+            </div>
+          </div>
+          <div className="right-container">
+            <div className="card">
+              <p style={{ color: "var(--lunar)", textAlign: "center" }}>Chargement...</p>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <ResetPasswordContent />
+    </Suspense>
   );
 }
