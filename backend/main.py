@@ -8,6 +8,10 @@ from dotenv import load_dotenv
 from utils import hash_password, generate_confirmation_token, verify_confirmation_token
 import jwt
 from datetime import datetime, timedelta
+from fastapi.security import OAuth2PasswordRequestForm
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 load_dotenv()
@@ -53,6 +57,34 @@ conf = ConnectionConfig(
 def read_root():
     return {"message": "Welcome to Immers'Write API"}
 
+@app.post("/login", response_model=schemas.Token)
+async def login(credentials: schemas.UserLogin, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.email == credentials.email).first()
+
+    # Utilisateur introuvable ou mauvais mot de passe
+    if not user or not pwd_context.verify(credentials.password, user.hashed_password):
+        raise HTTPException(
+            status_code=401,
+            detail="Email ou mot de passe incorrect"
+        )
+
+    # Compte pas encore confirmé
+    if not user.is_confirmed:
+        raise HTTPException(
+            status_code=403,
+            detail="Compte non confirmé. Vérifie ta boîte mail pour activer ton compte."
+        )
+
+    # Génération du JWT
+    token_data = {"sub": user.email, "role": user.role}
+    access_token = jwt.encode(
+        {**token_data, "exp": datetime.utcnow() + timedelta(hours=24)},
+        SECRET_KEY,
+        algorithm="HS256"
+    )
+
+    return {"access_token": access_token, "token_type": "bearer"}
+
 @app.post("/register")
 async def register(user: schemas.UserRegister, db: Session = Depends(get_db)):
     existing_user = db.query(models.User).filter(models.User.email == user.email).first()
@@ -97,6 +129,8 @@ async def confirm_email(token: str, db: Session = Depends(get_db)):
     user.is_confirmed = True
     db.commit()
     return {"message": "Compte confirmé avec succès. Vous pouvez maintenant vous connecter."}
+
+   
 
 @app.get("/books", response_model=List[schemas.BookResponse])
 def get_books(db: Session = Depends(get_db)):
