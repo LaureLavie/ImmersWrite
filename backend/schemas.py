@@ -30,7 +30,7 @@ class UserResponse(BaseModel):
     id: int
     email: EmailStr
     role: UserRole
-    is_active: bool
+    is_confirmed: bool
     created_at: datetime
     
     model_config = {"from_attributes": True}
