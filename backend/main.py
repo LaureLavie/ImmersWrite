@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
 from dotenv import load_dotenv
-from utils import hash_password, generate_confirmation_token, verify_confirmation_token
+from utils import hash_password, generate_confirmation_token, verify_confirmation_token,  generate_reset_token, verify_reset_token
 import jwt
 from datetime import datetime, timedelta
 from fastapi.security import OAuth2PasswordRequestForm
@@ -84,6 +84,45 @@ async def login(credentials: schemas.UserLogin, db: Session = Depends(get_db)):
     )
 
     return {"access_token": access_token, "token_type": "bearer"}
+
+@app.post("/forgot-password")
+async def forgot_password(request: schemas.ForgotPasswordRequest, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.email == request.email).first()
+
+    # Réponse identique que l'email existe ou non (sécurité anti-énumération)
+    if user:
+        reset_token = generate_reset_token(user.email)
+        reset_link = f"http://localhost:3000/reset-password?token={reset_token}"
+
+        message = MessageSchema(
+            subject="Réinitialisation de ton mot de passe Immers'Write",
+            recipients=[user.email],
+            body=f"""
+                <p>Tu as demandé à réinitialiser ton mot de passe.</p>
+                <p><a href="{reset_link}">Clique ici pour créer un nouveau mot de passe</a></p>
+                <p>Ce lien expire dans <strong>1 heure</strong>.</p>
+                <p>Si tu n'es pas à l'origine de cette demande, ignore cet email.</p>
+            """,
+            subtype="html",
+        )
+        fm = FastMail(conf)
+        await fm.send_message(message)
+
+    return {"message": "Si cet email existe, un lien de réinitialisation a été envoyé."}
+
+
+@app.post("/reset-password")
+async def reset_password(request: schemas.ResetPasswordRequest, db: Session = Depends(get_db)):
+    email = verify_reset_token(request.token)
+
+    user = db.query(models.User).filter(models.User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Utilisateur introuvable.")
+
+    user.hashed_password = hash_password(request.new_password)
+    db.commit()
+
+    return {"message": "Mot de passe réinitialisé avec succès."}
 
 @app.post("/register")
 async def register(user: schemas.UserRegister, db: Session = Depends(get_db)):
