@@ -138,6 +138,7 @@ export default function LoginPage() {
                 <p>{errors.general}</p>
               </div>
             )}
+              <a href="/forgot-password" className="link">Mot de passe oublié ?</a>
 
             {/* Submit button */}
             <div className="button-container">

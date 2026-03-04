@@ -80,12 +80,14 @@
   font-weight: normal;
   font-size: 14px;
 }
-
-.footer_link a {
+a {
+  margin-top: 1rem;
   color: var(--amber);
   font-weight: normal;
   font-size: 14px;
+
 }
+
 
 .role {
   width: 100%;

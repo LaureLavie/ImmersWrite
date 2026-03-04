@@ -28,6 +28,27 @@ class UserRegister(BaseModel):
             raise ValueError('les mots de passe ne correspondent pas')
         return v
 
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+    new_password_confirm: str
+
+    @field_validator("new_password")
+    @classmethod
+    def password_strength(cls, v):
+        if len(v) < 8:
+            raise ValueError("Le mot de passe doit contenir au moins 8 caractères")
+        return v
+
+    @field_validator("new_password_confirm")
+    @classmethod
+    def passwords_match(cls, v, info):
+        if "new_password" in info.data and v != info.data["new_password"]:
+            raise ValueError("Les mots de passe ne correspondent pas")
+        return v
 
 class UserResponse(BaseModel):
     id: int
