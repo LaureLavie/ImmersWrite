@@ -4,7 +4,10 @@ from datetime import datetime
 
 from models import UserRole
 
-
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+    
 class UserRegister(BaseModel):
     email: EmailStr
     password: str
