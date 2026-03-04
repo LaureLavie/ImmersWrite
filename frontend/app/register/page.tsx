@@ -71,19 +71,15 @@ export default function RegisterPage() {
         const data = await response.json();
         throw new Error(data.detail || "Une erreur est survenue");
       }
-      const data= await response.json();
-      saveAuthToken(data.access_token, data.role);
+      router.push("/register/confirmation");
 
-      router.push("/");
     } catch (error) {
       setErrors({
-        general:
-          error instanceof Error ? error.message : "Une erreur est survenue",
+        general: error instanceof Error ? error.message : "Une erreur est survenue",
       });
-    } finally {
       setIsLoading(false);
     }
-  };
+  }
 
   return (
     <div className="container">
