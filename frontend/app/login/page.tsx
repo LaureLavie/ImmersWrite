@@ -1,14 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import LogoIW from "../../public/LogoIW.svg";
 import IWgold from "../../public/IWgold.webp";
+import { saveAuthToken } from "@/lib/auth/cookies";
 import "@/styles/global.css";
 import "@/styles/auth.css";
 import "@/styles/responsive.css";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -42,7 +47,7 @@ export default function LoginPage() {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/auth/register", {
+      const response = await fetch("http://localhost:8000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -53,13 +58,18 @@ export default function LoginPage() {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.detail || "Une erreur est survenue");
+        throw new Error(data.detail || "Email ou Mot de passe incorrect");
       }
 
-      window.location.href = "/home";
+      const data = await response.json();
+      saveAuthToken(data.access_token, data.role);
+
+      const redirectTo = searchParams.get("redirect") || "/";
+      router.push(redirectTo);
     } catch (error) {
       setErrors({
-        general: error instanceof Error ? error.message : "Une erreur est survenue",
+        general:
+          error instanceof Error ? error.message : "Une erreur est survenue",
       });
     } finally {
       setIsLoading(false);
@@ -72,11 +82,11 @@ export default function LoginPage() {
         <div className="logo-section ">
         {/* Logo */}
           <div className="LogoIW">
-            <Image src={LogoIW} alt="Logo Immers'Write" />
+            <Image src={LogoIW} alt="Logo Immers'Write" loading="eager"/>
           </div>
         {/* Tagline */}
           <div className="tagline">
-            <Image src={IWgold} alt="Plume Immers'Write" />
+            <Image src={IWgold} alt="Plume Immers'Write" loading="eager"/>
             <p>
               where words become worlds
             </p>

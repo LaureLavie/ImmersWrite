@@ -1,14 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import LogoIW from "../../public/LogoIW.svg";
 import IWgold from "../../public/IWgold.webp";
+import { saveAuthToken } from "@/lib/auth/cookies";
 import "@/styles/global.css";
 import "@/styles/auth.css";
 import "@/styles/responsive.css";
 
 export default function RegisterPage() {
+  const router= useRouter();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -52,7 +56,7 @@ export default function RegisterPage() {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/auth/register", {
+      const response = await fetch("http://localhost:8000/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -67,11 +71,14 @@ export default function RegisterPage() {
         const data = await response.json();
         throw new Error(data.detail || "Une erreur est survenue");
       }
+      const data= await response.json();
+      saveAuthToken(data.access_token, data.role);
 
-      window.location.href = "/home";
+      router.push("/");
     } catch (error) {
       setErrors({
-        general: error instanceof Error ? error.message : "Une erreur est survenue",
+        general:
+          error instanceof Error ? error.message : "Une erreur est survenue",
       });
     } finally {
       setIsLoading(false);
@@ -84,11 +91,11 @@ export default function RegisterPage() {
         <div className="logo-section ">
         {/* Logo */}
           <div className="LogoIW">
-            <Image src={LogoIW} alt="Logo Immers'Write" />
+            <Image src={LogoIW} alt="Logo Immers'Write" loading="eager"/>
           </div>
         {/* Tagline */}
           <div className="tagline">
-            <Image src={IWgold} alt="Plume Immers'Write" />
+            <Image src={IWgold} alt="Plume Immers'Write" loading="eager"/>
             <p>
               where words become worlds
             </p>
