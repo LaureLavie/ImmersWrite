@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import LogoIW from "../../public/LogoIW.svg";
@@ -10,7 +10,7 @@ import "@/styles/auth.css";
 import "@/styles/responsive.css";
 
 
-function ResetPasswordContent() {
+export default function ResetPassword() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get("token");
@@ -47,7 +47,8 @@ function ResetPasswordContent() {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/reset-password", {
+      const API = process.env.NEXT_PUBLIC_API_URL;
+      const response = await fetch(`${API}/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -153,36 +154,5 @@ function ResetPasswordContent() {
         </div>
       </div>
     </div>
-  );
-}
-
-
-
-export default function ResetPasswordPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="container">
-          <div className="left-container">
-            <div className="logo-section">
-              <div className="LogoIW">
-                <Image src={LogoIW} alt="Logo Immers'Write" loading="eager" />
-              </div>
-              <div className="tagline">
-                <Image src={IWgold} alt="Plume Immers'Write" loading="eager" />
-                <p>where words become worlds</p>
-              </div>
-            </div>
-          </div>
-          <div className="right-container">
-            <div className="card">
-              <p style={{ color: "var(--lunar)", textAlign: "center" }}>Chargement...</p>
-            </div>
-          </div>
-        </div>
-      }
-    >
-      <ResetPasswordContent />
-    </Suspense>
   );
 }
