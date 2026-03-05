@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import LogoIW from "../../public/LogoIW.svg";
 import IWgold from "../../public/IWgold.webp";
-import PasswordInput from "@/components/PasswordInput";
 import "@/styles/global.css";
 import "@/styles/auth.css";
 import "@/styles/responsive.css";
@@ -29,33 +28,44 @@ export default function RegisterPage() {
 
     const newErrors: Record<string, string> = {};
 
-    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email))
+    // Validation des champs
+    if (!formData.email) {
+      newErrors.email = "L'email est requis";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "L'email n'est pas valide";
+    }
 
-    if (!formData.password || formData.password.length < 8)
+    if (!formData.password) {
+      newErrors.password = "Le mot de passe est requis";
+    } else if (formData.password.length < 8) {
       newErrors.password = "Le mot de passe doit contenir au moins 8 caractères";
+    }
 
-    if (formData.password !== formData.passwordConfirm)
+    if (formData.password !== formData.passwordConfirm) {
       newErrors.passwordConfirm = "Les mots de passe ne correspondent pas";
+    }
 
-    if (!formData.role)
+    if (!formData.role) {
       newErrors.role = "Veuillez choisir un rôle";
+    }
 
+    // Si des erreurs sont détectées, les afficher et arrêter l'exécution
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       setIsLoading(false);
       return;
     }
-
+  
+    // Envoi des données au backend
     try {
-      const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+      const API = process.env.NEXT_PUBLIC_API_URL;
       const response = await fetch(`${API}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: formData.email,
           password: formData.password,
-          password_confirm: formData.passwordConfirm,
+          passwordConfirm:formData.passwordConfirm,
           role: formData.role,
         }),
       });
@@ -65,11 +75,13 @@ export default function RegisterPage() {
         throw new Error(data.detail || "Une erreur est survenue");
       }
 
+      // Redirection après succès
       router.push("/login?message=check-email");
     } catch (error) {
       setErrors({
         general: error instanceof Error ? error.message : "Une erreur est survenue",
       });
+    } finally {
       setIsLoading(false);
     }
   };
@@ -92,7 +104,7 @@ export default function RegisterPage() {
         <div className="card">
           <h1>Franchir le seuil</h1>
 
-          <form onSubmit={handleSubmit} noValidate>
+          <form onSubmit={handleSubmit}>
             {/* Email */}
             <label htmlFor="email">Votre Email</label>
             <input
@@ -104,35 +116,48 @@ export default function RegisterPage() {
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               disabled={isLoading}
             />
-            {errors.email && <p>{errors.email}</p>}
+            {errors.email && <p className="error">{errors.email}</p>}
 
- 
-            <PasswordInput
+            {/* Mot de passe */}
+            <label htmlFor="password">Votre Mot de Passe</label>
+            <input
               id="password"
-              label="Votre Mot de Passe"
+              type="password"
+              placeholder="********"
+              className="input"
               value={formData.password}
-              onChange={(v) => setFormData({ ...formData, password: v })}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
               disabled={isLoading}
-              error={errors.password}
             />
+            {errors.password && <p className="error">{errors.password}</p>}
 
-            <PasswordInput
+
+            {/* Confirmation du mot de passe */}
+            <label htmlFor="passwordConfirm">Confirmer votre mot de passe</label>
+            <input
               id="passwordConfirm"
-              label="Confirmer Votre Mot de Passe"
+              type="password"
+              placeholder="********"
+              className="input"
               value={formData.passwordConfirm}
-              onChange={(v) => setFormData({ ...formData, passwordConfirm: v })}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setFormData({ ...formData, passwordConfirm: e.target.value })
+              }
               disabled={isLoading}
-              error={errors.passwordConfirm}
             />
+            {errors.passwordConfirm && <p className="error">{errors.passwordConfirm}</p>}
 
-      
+
+            {/* Rôle */}
             <div className="role">
               <label className="label-choice">Je souhaite rejoindre en tant que ...</label>
               <div className="btn-group">
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, role: "lecteur" })}
-                  className={formData.role === "lecteur" ? "role-btn role-btn--active" : "role-btn"}
+                  className={formData.role === "lecteur" ? "btn-gold" : "btn-choice"}
                   disabled={isLoading}
                 >
                   Lecteur
@@ -140,22 +165,26 @@ export default function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, role: "auteur" })}
-                  className={formData.role === "auteur" ? "role-btn role-btn--active" : "role-btn"}
+                  className={formData.role === "auteur" ? "btn-gold" : "btn-choice"}
                   disabled={isLoading}
                 >
                   Auteur
                 </button>
               </div>
-              {errors.role && <p>{errors.role}</p>}
+              {errors.role && <p className="error">{errors.role}</p>}
             </div>
 
+            {/* Erreurs générales */}
             {errors.general && (
-              <div className="errors"><p>{errors.general}</p></div>
+              <div className="errors">
+                <p>{errors.general}</p>
+              </div>
             )}
 
+            {/* Bouton de soumission */}
             <div className="button-container">
               <button type="submit" disabled={isLoading} className="btn-gold">
-                {isLoading ? "création en cours..." : "Entrez dans l'univers"}
+                {isLoading ? "Création en cours..." : "Entrez dans l'univers"}
               </button>
             </div>
           </form>

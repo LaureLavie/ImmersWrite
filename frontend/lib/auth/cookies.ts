@@ -1,75 +1,40 @@
 "use client";
 
+import Cookies from "js-cookie";
+
 const TOKEN_KEY = "access_token";
 const ROLE_KEY = "user_role";
+const TOKEN_EXPIRY_DAYS = 1;
 
 // true en production (HTTPS), false en local (HTTP)
-const IS_PROD = process.env.NODE_ENV === "production";
+const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
-// ── Helpers natifs ────────────────────────────────────────────────────────────
-
-function setCookie(name: string, value: string, days: number): void {
-  // Guard SSR : document n'existe pas côté serveur
-  if (typeof document === "undefined") return;
-
-  const expires = new Date();
-  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-  const secure = IS_PROD ? "; Secure" : "";
-
-  document.cookie = [
-    `${name}=${encodeURIComponent(value)}`,
-    `expires=${expires.toUTCString()}`,
-    "path=/",
-    "SameSite=Lax",
-    secure,
-  ]
-    .filter(Boolean)
-    .join("; ");
-}
-
-function getCookie(name: string): string | undefined {
-  if (typeof document === "undefined") return undefined;
-
-  const prefix = name + "=";
-  for (const raw of document.cookie.split(";")) {
-    const c = raw.trim();
-    if (c.startsWith(prefix)) {
-      return decodeURIComponent(c.slice(prefix.length));
-    }
-  }
-  return undefined;
-}
-
-function deleteCookie(name: string): void {
-  if (typeof document === "undefined") return;
-  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-}
-
-// ── API publique ──────────────────────────────────────────────────────────────
-
-/** Sauvegarde le token JWT et le rôle après connexion réussie. */
 export function saveAuthToken(token: string, role: string): void {
-  setCookie(TOKEN_KEY, token, 1); // 1 jour = aligné sur le JWT (24h)
-  setCookie(ROLE_KEY, role, 1);
+  Cookies.set(TOKEN_KEY, token, {
+    expires: TOKEN_EXPIRY_DAYS,
+    sameSite: "lax",
+    secure: IS_PRODUCTION,
+  });
+  Cookies.set(ROLE_KEY, role, {
+    expires: TOKEN_EXPIRY_DAYS,
+    sameSite: "lax",
+    secure: IS_PRODUCTION,
+  });
 }
 
-/** Récupère le token JWT stocké. */
 export function getAuthToken(): string | undefined {
-  return getCookie(TOKEN_KEY);
+  return Cookies.get(TOKEN_KEY);
 }
 
-/** Récupère le rôle de l'utilisateur connecté. */
 export function getAuthRole(): string | undefined {
-  return getCookie(ROLE_KEY);
+  return Cookies.get(ROLE_KEY);
 }
 
-/** Supprime le token et le rôle → déconnexion côté client. */
 export function removeAuthToken(): void {
-  deleteCookie(TOKEN_KEY);
-  deleteCookie(ROLE_KEY);
+  Cookies.remove(TOKEN_KEY);
+  Cookies.remove(ROLE_KEY);
 }
 
-/** true si un token est présent. */
 export function isAuthenticated(): boolean {
-  return !!getCookie(TOKEN_KEY);
+  return !!Cookies.get(TOKEN_KEY);
 }

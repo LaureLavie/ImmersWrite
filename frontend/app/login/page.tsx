@@ -1,17 +1,16 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState} from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import LogoIW from "../../public/LogoIW.svg";
 import IWgold from "../../public/IWgold.webp";
 import { saveAuthToken } from "@/lib/auth/cookies";
-import PasswordInput from "@/components/PasswordInput";
 import "@/styles/global.css";
 import "@/styles/auth.css";
 import "@/styles/responsive.css";
 
-function LoginForm() {
+export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -48,7 +47,7 @@ function LoginForm() {
     }
 
     try {
-      const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+      const API = process.env.NEXT_PUBLIC_API_URL;
       const response = await fetch(`${API}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -103,7 +102,7 @@ function LoginForm() {
         <div className="card">
           <h1>Franchir le seuil</h1>
 
-          <form onSubmit={handleSubmit} noValidate>
+          <form onSubmit={handleSubmit}>
             <label htmlFor="email">Votre Email</label>
             <input
               id="email"
@@ -120,16 +119,17 @@ function LoginForm() {
             
 
             {/* Password Input */}
-
-            <PasswordInput
+            <label htmlFor="password">Votre Mot de Passe</label>
+            <input
               id="password"
-              label="Votre Mot de Passe"
-              value={formData.password}
-              onChange={(v) => setFormData({ ...formData, password: v })}
-              disabled={isLoading}
-              error={errors.password}
-            />           
-            
+                type="password"
+                placeholder="*****"
+                className="input"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                disabled={isLoading}
+              />          
+            {errors.password && <p className="error">{errors.password}</p>}
 
             {/* General error message */}
             {errors.general && (
@@ -169,18 +169,3 @@ function LoginForm() {
 }
 
 
-export default function LoginPage() {
-  return (
-    <Suspense fallback={
-      <div className="container">
-        <div className="right-container">
-          <div className="card">
-            <p style={{ color: "var(--lunar)", textAlign: "center" }}>Chargement...</p>
-          </div>
-        </div>
-      </div>
-    }>
-      <LoginForm />
-    </Suspense>
-  );
-}

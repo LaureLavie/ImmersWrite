@@ -6,21 +6,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import LogoIW from "../public/LogoIW.svg";
-import { clearAuthToken } from "@/lib/auth/cookies";
+import {LogoutButton} from "@/components/LogoutButton";
 import "@/styles/navbar.css";
 import "@/styles/responsive.css";
 
 export default function Navbar() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-
-  const handleLogout = () => {
-   
-    clearAuthToken();
-
-    router.push("/login");
-    setIsOpen(false);
-  };
 
   const closeMenu = () => setIsOpen(false);
 
@@ -56,7 +48,7 @@ export default function Navbar() {
           </Link>
         </li>
         <li>
-          <span className="navlink logout" onClick={handleLogout}>
+          <span className="navlink logout" onClick={LogoutButton}>
             Déconnexion
           </span>
         </li>
