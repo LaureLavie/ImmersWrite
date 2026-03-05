@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
@@ -12,12 +11,14 @@ import "@/styles/global.css";
 import "@/styles/auth.css";
 import "@/styles/responsive.css";
 
-function LoginContent() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const message = searchParams.get("message");
 
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -27,11 +28,19 @@ function LoginContent() {
     setIsLoading(true);
 
     const newErrors: Record<string, string> = {};
-    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email))
-      newErrors.email = "L'email n'est pas valide";
-    if (!formData.password || formData.password.length < 8)
-      newErrors.password = "Le mot de passe doit contenir au moins 8 caractères";
 
+    if (!formData.email) {
+      newErrors.email = "L'email est requis";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "L'email n'est pas valide";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Le mot de passe est requis";
+    } else if (formData.password.length < 8) {
+      newErrors.password = "Le mot de passe doit contenir au moins 8 caractères";
+    }
+    
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       setIsLoading(false);
@@ -39,22 +48,25 @@ function LoginContent() {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/login", {
+      const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+      const response = await fetch(`${API}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: formData.email, password: formData.password }),
-      });
+      });      
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.detail || "Email ou mot de passe incorrect");
+        throw new Error(data.detail || "Email ou Mot de passe incorrect");
       }
 
       const data = await response.json();
-
       saveAuthToken(data.access_token, data.role);
 
-      if (data.role === "auteur") {
+      const redirectTo = searchParams.get("redirect");
+      if (redirectTo) {
+        router.push(redirectTo);
+      } else if (data.role === "auteur") {
         router.push("/dashboard");
       } else {
         router.push("/");
@@ -67,51 +79,47 @@ function LoginContent() {
     }
   };
 
+
   return (
     <div className="container">
       <div className="left-container">
-        <div className="logo-section">
+        <div className="logo-section ">
+        {/* Logo */}
           <div className="LogoIW">
-            <Image src={LogoIW} alt="Logo Immers'Write" loading="eager" />
+            <Image src={LogoIW} alt="Logo Immers'Write" loading="eager"/>
           </div>
+        {/* Tagline */}
           <div className="tagline">
-            <Image src={IWgold} alt="Plume Immers'Write" loading="eager" />
-            <p>where words become worlds</p>
+            <Image src={IWgold} alt="Plume Immers'Write" loading="eager"/>
+            <p>
+              where words become worlds
+            </p>
           </div>
-        </div>
       </div>
 
+      </div>
       <div className="right-container">
+        {/* Card */}
         <div className="card">
           <h1>Franchir le seuil</h1>
 
-          {message === "check-email" && (
-            <div style={{
-              background: "rgba(179, 136, 57, 0.1)",
-              border: "1px solid var(--amber)",
-              borderRadius: "20px",
-              padding: "1rem 1.5rem",
-              marginBottom: "1.5rem",
-              textAlign: "center",
-            }}>
-              <p style={{ color: "var(--amber)", fontSize: "14px", margin: 0, lineHeight: "1.8" }}>
-                Inscription réussie ! Vérifie ta boîte mail pour activer ton compte avant de te connecter.
-              </p>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} noValidate>
             <label htmlFor="email">Votre Email</label>
             <input
               id="email"
-              type="email"
-              placeholder="votre@email.com"
-              className="input"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              disabled={isLoading}
-            />
-            {errors.email && <p style={{ color: "var(--amber)", fontSize: "14px" }}>{errors.email}</p>}
+                type="email"
+                placeholder="votre@email.com"
+                className="input"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                disabled={isLoading}
+              />
+              {errors.email && (
+                <p>{errors.email}</p>
+              )}
+            
+
+            {/* Password Input */}
 
             <PasswordInput
               id="password"
@@ -120,25 +128,37 @@ function LoginContent() {
               onChange={(v) => setFormData({ ...formData, password: v })}
               disabled={isLoading}
               error={errors.password}
-            />
+            />           
+            
 
+            {/* General error message */}
             {errors.general && (
-              <div className="errors"><p>{errors.general}</p></div>
+              <div className="errors">
+                <p>{errors.general}</p>
+              </div>
             )}
 
+            {/* Submit button */}
             <div className="button-container">
-              <button type="submit" disabled={isLoading} className="btn-gold">
-                {isLoading ? "connexion en cours..." : "Entrez dans l'univers"}
-              </button>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="btn-gold"
+            >
+              {isLoading ? "connexion en cours..." : "Entrez dans l'univers"}
+            </button>
             </div>
           </form>
 
+          {/* Footer link */}
           <div className="footer_link">
             <p>
               Première fois ici ?{" "}
-              <a href="/register" className="link">Rejoindre l'aventure</a>
+              <a href="/register" className="link">
+                Rejoindre l'aventure
+              </a>
             </p>
-            <p style={{ marginTop: "0.5rem" }}>
+            <p>
               <a href="/forgot-password" className="link">Mot de passe oublié ?</a>
             </p>
           </div>
@@ -151,18 +171,16 @@ function LoginContent() {
 
 export default function LoginPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="container">
-          <div className="right-container">
-            <div className="card">
-              <p style={{ color: "var(--lunar)", textAlign: "center" }}>Chargement...</p>
-            </div>
+    <Suspense fallback={
+      <div className="container">
+        <div className="right-container">
+          <div className="card">
+            <p style={{ color: "var(--lunar)", textAlign: "center" }}>Chargement...</p>
           </div>
         </div>
-      }
-    >
-      <LoginContent />
+      </div>
+    }>
+      <LoginForm />
     </Suspense>
   );
 }

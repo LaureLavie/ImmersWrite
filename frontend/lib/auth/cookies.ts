@@ -1,70 +1,75 @@
+"use client";
+
 const TOKEN_KEY = "access_token";
-const COOKIE_MAX_AGE = 60 * 60 * 24 * 7; 
+const ROLE_KEY = "user_role";
 
+// true en production (HTTPS), false en local (HTTP)
+const IS_PROD = process.env.NODE_ENV === "production";
 
-export function saveAuthToken(token: string, role?: string): void {
-  if (typeof window === "undefined") return; 
+// ── Helpers natifs ────────────────────────────────────────────────────────────
 
+function setCookie(name: string, value: string, days: number): void {
+  // Guard SSR : document n'existe pas côté serveur
+  if (typeof document === "undefined") return;
 
-  localStorage.setItem(TOKEN_KEY, token);
-  if (role) {
-    localStorage.setItem("user_role", role);
-  }
-
-
-  const isProduction = process.env.NODE_ENV === "production";
-  const secureFlag = isProduction ? "; Secure" : "";
+  const expires = new Date();
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+  const secure = IS_PROD ? "; Secure" : "";
 
   document.cookie = [
-    `${TOKEN_KEY}=${encodeURIComponent(token)}`,
-    `Max-Age=${COOKIE_MAX_AGE}`,
-    "Path=/",
+    `${name}=${encodeURIComponent(value)}`,
+    `expires=${expires.toUTCString()}`,
+    "path=/",
     "SameSite=Lax",
-    secureFlag,
+    secure,
   ]
     .filter(Boolean)
     .join("; ");
+}
 
+function getCookie(name: string): string | undefined {
+  if (typeof document === "undefined") return undefined;
 
-  if (role) {
-    document.cookie = [
-      `user_role=${encodeURIComponent(role)}`,
-      `Max-Age=${COOKIE_MAX_AGE}`,
-      "Path=/",
-      "SameSite=Lax",
-      secureFlag,
-    ]
-      .filter(Boolean)
-      .join("; ");
+  const prefix = name + "=";
+  for (const raw of document.cookie.split(";")) {
+    const c = raw.trim();
+    if (c.startsWith(prefix)) {
+      return decodeURIComponent(c.slice(prefix.length));
+    }
   }
+  return undefined;
 }
 
-
-export function clearAuthToken(): void {
-  if (typeof window === "undefined") return;
-
- 
-  localStorage.removeItem(TOKEN_KEY);
-  localStorage.removeItem("user_role");
-
-
-  document.cookie = `${TOKEN_KEY}=; Max-Age=0; Path=/`;
-  document.cookie = `user_role=; Max-Age=0; Path=/`;
+function deleteCookie(name: string): void {
+  if (typeof document === "undefined") return;
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 }
 
+// ── API publique ──────────────────────────────────────────────────────────────
 
-export function getAuthToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem(TOKEN_KEY);
+/** Sauvegarde le token JWT et le rôle après connexion réussie. */
+export function saveAuthToken(token: string, role: string): void {
+  setCookie(TOKEN_KEY, token, 1); // 1 jour = aligné sur le JWT (24h)
+  setCookie(ROLE_KEY, role, 1);
 }
 
-
-export function getUserRole(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("user_role");
+/** Récupère le token JWT stocké. */
+export function getAuthToken(): string | undefined {
+  return getCookie(TOKEN_KEY);
 }
 
+/** Récupère le rôle de l'utilisateur connecté. */
+export function getAuthRole(): string | undefined {
+  return getCookie(ROLE_KEY);
+}
 
+/** Supprime le token et le rôle → déconnexion côté client. */
+export function removeAuthToken(): void {
+  deleteCookie(TOKEN_KEY);
+  deleteCookie(ROLE_KEY);
+}
+
+/** true si un token est présent. */
 export function isAuthenticated(): boolean {
-  return !!getAuthToken();
+  return !!getCookie(TOKEN_KEY);
 }
