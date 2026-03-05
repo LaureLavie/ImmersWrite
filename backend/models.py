@@ -4,19 +4,22 @@ from sqlalchemy.orm import relationship
 from database import Base
 import enum
 
-class User(Base):
-    __tablename__ = "users"
-
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
-    is_confirmed = Column(Boolean, default=False)
-    role = Column(String, nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 class UserRole(str, enum.Enum):
     auteur = "auteur"
     lecteur = "lecteur"
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id               = Column(Integer, primary_key=True, index=True)
+    email            = Column(String, unique=True, nullable=False)
+    hashed_password  = Column(String, nullable=False)
+    is_confirmed     = Column(Boolean, default=False)
+    role             = Column(String, nullable=False)
+    created_at       = Column(DateTime(timezone=True), server_default=func.now())
+
 
 class Book(Base):
     __tablename__ = "books"
@@ -29,24 +32,26 @@ class Book(Base):
     slug         = Column(String, unique=True, index=True, nullable=False)
     is_published = Column(Boolean, default=False)
     created_at   = Column(DateTime(timezone=True), server_default=func.now())
-    chapters     = relationship("Chapter", back_populates="book", order_by="Chapter.order", cascade="all, delete-orphan")
+    chapters     = relationship(
+        "Chapter",
+        back_populates="book",
+        order_by="Chapter.order",
+        cascade="all, delete-orphan"
+    )
+
 
 class Chapter(Base):
-        __tablename__ = "chapters"
-    
-        id           = Column(Integer, primary_key=True, index=True)
-        book_id      = Column(Integer, ForeignKey("books.id", ondelete="CASCADE"), nullable=False)
+    __tablename__ = "chapters"
 
-        order        = Column(Integer, nullable=False)
-        title        = Column(String, nullable=False)
-        content      = Column(Text)                             
-    
-        image_url    = Column(String)                           
-        sound_url    = Column(String)                           
-        sound_title  = Column(String)                           
-    
-        is_published = Column(Boolean, default=False)
-        created_at   = Column(DateTime(timezone=True), server_default=func.now())
-        updated_at   = Column(DateTime(timezone=True), onupdate=func.now())
-    
-        book         = relationship("Book", back_populates="chapters")
+    id           = Column(Integer, primary_key=True, index=True)
+    book_id      = Column(Integer, ForeignKey("books.id", ondelete="CASCADE"), nullable=False)
+    order        = Column(Integer, nullable=False)
+    title        = Column(String, nullable=False)
+    content      = Column(Text)
+    image_url    = Column(String)
+    sound_url    = Column(String)
+    sound_title  = Column(String)
+    is_published = Column(Boolean, default=False)
+    created_at   = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at   = Column(DateTime(timezone=True), onupdate=func.now())
+    book         = relationship("Book", back_populates="chapters")

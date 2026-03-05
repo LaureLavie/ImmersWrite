@@ -132,7 +132,7 @@
     cursor: pointer;
 }
 
-.btn-gold, .btn-delete, .btn-logout, .btn-choice:hover {
+.btn-gold:hover, .btn-delete:hover, .btn-logout:hover, .btn-choice:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(179, 136, 57, 0.5);
   }
@@ -247,6 +247,18 @@
   justify-content: center;
   justify-items: center;
   min-width: fit-content;
+}
+
+.errors { 
+  padding: 0.5rem;
+  margin: 0.5rem;
+ 
+}
+
+.errors p {
+  color: var(--careful);
+  font-size: 14px;
+  text-align: center;
 }
 
 @layer utilities {

@@ -48,7 +48,8 @@ export default function RegisterPage() {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/register", {
+      const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+      const response = await fetch(`${API}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -65,7 +66,6 @@ export default function RegisterPage() {
       }
 
       router.push("/login?message=check-email");
-
     } catch (error) {
       setErrors({
         general: error instanceof Error ? error.message : "Une erreur est survenue",
@@ -92,7 +92,7 @@ export default function RegisterPage() {
         <div className="card">
           <h1>Franchir le seuil</h1>
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} noValidate>
             {/* Email */}
             <label htmlFor="email">Votre Email</label>
             <input
@@ -132,7 +132,7 @@ export default function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, role: "lecteur" })}
-                  className={formData.role === "lecteur" ? "btn-role-active" : "btn-choice"}
+                  className={formData.role === "lecteur" ? "role-btn role-btn--active" : "role-btn"}
                   disabled={isLoading}
                 >
                   Lecteur
@@ -140,7 +140,7 @@ export default function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, role: "auteur" })}
-                  className={formData.role === "auteur" ? "btn-role-active" : "btn-choice"}
+                  className={formData.role === "auteur" ? "role-btn role-btn--active" : "role-btn"}
                   disabled={isLoading}
                 >
                   Auteur

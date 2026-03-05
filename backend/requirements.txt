@@ -1,6 +1,6 @@
-# FastAPI et serveur
+
+# FastAPI & serveur
 fastapi==0.109.0
-uvicorn
 uvicorn[standard]==0.27.0
 python-multipart==0.0.6
 
@@ -9,12 +9,14 @@ sqlalchemy==2.0.25
 alembic==1.13.1
 psycopg2-binary==2.9.9
 
-
-# Authentication & Security
-python-jose[cryptography]==3.3.0
+# Authentification & Sécurité
+PyJWT==2.8.0
 passlib[bcrypt]==1.7.4
 pydantic[email]==2.12.5
 pydantic-settings==2.6.1
+
+# Email
+fastapi-mail==1.4.1
 
 # APIs IA
 anthropic==0.18.1
@@ -29,33 +31,8 @@ pillow==10.2.0
 
 # Monitoring & Logs
 loguru==0.7.2
-# FastAPI et serveur
-fastapi==0.109.0
-uvicorn[standard]==0.27.0
-python-multipart==0.0.6
 
-# Base de données
-sqlalchemy==2.0.25
-alembic==1.13.1
-psycopg2-binary==2.9.9
-
-
-# Authentication & Security
-python-jose[cryptography]==3.3.0
-passlib[bcrypt]==1.7.4
-pydantic[email]==2.12.5
-pydantic-settings==2.6.1
-
-# APIs IA
-anthropic==0.18.1
-openai==1.12.0
-elevenlabs==0.2.27
-
-# Utilitaires
-python-dotenv==1.0.0
+# Tests
+pytest==8.1.1
+pytest-asyncio==0.23.5
 httpx==0.26.0
-aiofiles==23.2.1
-pillow==10.2.0
-
-# Monitoring & Logs
-loguru==0.7.2

@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 import os
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,19 +8,21 @@ from typing import List
 from dotenv import load_dotenv
 from utils import (
     hash_password,
+    verify_password,
     generate_confirmation_token,
     verify_confirmation_token,
     generate_reset_token,
     verify_reset_token,
 )
 import jwt
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = "HS256"
 
 import models
 import schemas
@@ -27,7 +30,7 @@ from database import engine, get_db
 
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(title="Immers'Write API", version="1.0.0")
 
 raw_origins = os.getenv("ALLOWED_ORIGINS", "")
 origins = raw_origins.split(",") if raw_origins else []
@@ -41,26 +44,118 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configuration FastAPI Mail
+def _env_bool(key: str, default: bool = False) -> bool:
+    val = os.getenv(key)
+    if val is None:
+        return default
+    return val.strip().lower() in ("1", "true", "yes")
+
+
 conf = ConnectionConfig(
     MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
     MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),
     MAIL_FROM=os.getenv("MAIL_FROM"),
     MAIL_PORT=int(os.getenv("MAIL_PORT", 587)),
     MAIL_SERVER=os.getenv("MAIL_SERVER"),
-    MAIL_STARTTLS=bool(os.getenv("MAIL_STARTTLS", True)),
-    MAIL_SSL_TLS=bool(os.getenv("MAIL_SSL_TLS", False)),
+    MAIL_STARTTLS=_env_bool("MAIL_STARTTLS", True),
+    MAIL_SSL_TLS=_env_bool("MAIL_SSL_TLS", False),
     USE_CREDENTIALS=True,
 )
 
+security = HTTPBearer()
+
+
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    db: Session = Depends(get_db),
+) -> models.User:
+    token = credentials.credentials
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if not email:
+            raise HTTPException(status_code=401, detail="Token invalide")
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Session expirée, reconnecte-toi")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Token invalide")
+
+    user = db.query(models.User).filter(models.User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Utilisateur introuvable")
+    return user
+
+
+def require_auteur(current_user: models.User = Depends(get_current_user)) -> models.User:
+    if current_user.role != models.UserRole.auteur:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Accès réservé aux auteurs",
+        )
+    return current_user
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ROUTES PUBLIQUES
+# ─────────────────────────────────────────────────────────────────────────────
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to Immers'Write API"}
+    return {"message": "Bienvenue sur l'API Immers'Write ✦"}
+
+
+@app.post("/register")
+async def register(user: schemas.UserRegister, db: Session = Depends(get_db)):
+    existing_user = db.query(models.User).filter(models.User.email == user.email).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email déjà utilisé")
+
+    new_user = models.User(
+        email=user.email,
+        hashed_password=hash_password(user.password),
+        role=user.role,
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    confirmation_token = generate_confirmation_token(new_user.email)
+    confirm_link = f"{os.getenv('FRONTEND_URL', 'http://localhost:3000')}/confirm/{confirmation_token}"
+
+    message = MessageSchema(
+        subject="Confirmez votre compte Immers'Write",
+        recipients=[new_user.email],
+        body=f"""
+            <p>Bienvenue sur Immers'Write !</p>
+            <p>Confirme ton compte en cliquant sur ce lien :</p>
+            <p><a href="{confirm_link}">{confirm_link}</a></p>
+            <p>Ce lien expire dans 24h.</p>
+        """,
+        subtype="html",
+    )
+    fm = FastMail(conf)
+    await fm.send_message(message)
+
+    return {"message": "Inscription réussie. Vérifie ton email pour confirmer ton compte."}
+
+
+@app.get("/confirm/{token}")
+async def confirm_email(token: str, db: Session = Depends(get_db)):
+    email = verify_confirmation_token(token)
+    user = db.query(models.User).filter(models.User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    if user.is_confirmed:
+        return {"message": "Compte déjà confirmé"}
+    user.is_confirmed = True
+    db.commit()
+    return {"message": "Compte confirmé avec succès. Tu peux maintenant te connecter."}
+
 
 @app.post("/login", response_model=schemas.Token)
 async def login(credentials: schemas.UserLogin, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == credentials.email).first()
+
 
     if not user or not pwd_context.verify(credentials.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Email ou mot de passe incorrect")
@@ -68,14 +163,17 @@ async def login(credentials: schemas.UserLogin, db: Session = Depends(get_db)):
     if not user.is_confirmed:
         raise HTTPException(
             status_code=403,
-            detail="Compte non confirmé. Vérifie ta boîte mail pour activer ton compte."
+            detail="Compte non confirmé. Vérifie ta boîte mail pour activer ton compte.",
         )
 
-    token_data = {"sub": user.email, "role": user.role}
     access_token = jwt.encode(
-        {**token_data, "exp": datetime.utcnow() + timedelta(hours=24)},
+        {
+            "sub": user.email,
+            "role": user.role,
+            "exp": datetime.now(timezone.utc) + timedelta(hours=24),
+        },
         SECRET_KEY,
-        algorithm="HS256",
+        algorithm=ALGORITHM,
     )
 
     return {
@@ -85,6 +183,15 @@ async def login(credentials: schemas.UserLogin, db: Session = Depends(get_db)):
     }
 
 
+@app.post("/logout")
+def logout(_: models.User = Depends(get_current_user)):
+    """
+    Le token JWT est stateless.
+    Le frontend doit supprimer le cookie `access_token` à la réception du 200.
+    """
+    return {"message": "Déconnexion réussie. À bientôt dans l'univers."}
+
+
 @app.post("/forgot-password")
 async def forgot_password(
     request: schemas.ForgotPasswordRequest, db: Session = Depends(get_db)
@@ -92,7 +199,7 @@ async def forgot_password(
     user = db.query(models.User).filter(models.User.email == request.email).first()
     if user:
         reset_token = generate_reset_token(user.email)
-        reset_link = f"http://localhost:3000/reset-password?token={reset_token}"
+        reset_link = f"{os.getenv('FRONTEND_URL', 'http://localhost:3000')}/reset-password?token={reset_token}"
         message = MessageSchema(
             subject="Réinitialisation de ton mot de passe Immers'Write",
             recipients=[user.email],
@@ -122,64 +229,19 @@ async def reset_password(
     return {"message": "Mot de passe réinitialisé avec succès."}
 
 
-@app.post("/register")
-async def register(user: schemas.UserRegister, db: Session = Depends(get_db)):
-    existing_user = db.query(models.User).filter(models.User.email == user.email).first()
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Email déjà utilisé")
-
-    hashed_password = hash_password(user.password)
-    new_user = models.User(
-        email=user.email,
-        hashed_password=hashed_password,
-        role=user.role,
-    )
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-
-    confirmation_token = generate_confirmation_token(new_user.email)
-    confirm_link = f"http://localhost:3000/confirm/{confirmation_token}"
-
-    message = MessageSchema(
-        subject="Confirmez votre compte Immers'Write",
-        recipients=[new_user.email],
-        body=f"""
-            <p>Bienvenue sur Immers'Write !</p>
-            <p>Confirme ton compte en cliquant sur ce lien :</p>
-            <p><a href="{confirm_link}">{confirm_link}</a></p>
-            <p>Ce lien expire dans 24h.</p>
-        """,
-        subtype="html",
-    )
-    fm = FastMail(conf)
-    await fm.send_message(message)
-
-    return {"message": "Inscription réussie. Vérifie ton email pour confirmer ton compte."}
-
-
-@app.get("/confirm/{token}")
-async def confirm_email(token: str, db: Session = Depends(get_db)):
-    email = verify_confirmation_token(token)
-    user = db.query(models.User).filter(models.User.email == email).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
-    if user.is_confirmed:
-        return {"message": "Compte déjà confirmé"}
-    user.is_confirmed = True
-    db.commit()
-    return {"message": "Compte confirmé avec succès. Vous pouvez maintenant vous connecter."}
-
-
-# ─── Livres ──────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────────
+# ROUTES LIVRES (lecture publique / écriture auteur uniquement)
+# ─────────────────────────────────────────────────────────────────────────────
 
 @app.get("/books", response_model=List[schemas.BookResponse])
 def get_books(db: Session = Depends(get_db)):
+    """Public — liste les livres publiés"""
     return db.query(models.Book).filter(models.Book.is_published == True).all()
 
 
 @app.get("/books/{slug}", response_model=schemas.BookResponse)
 def get_book(slug: str, db: Session = Depends(get_db)):
+    """Public — détail d'un livre"""
     book = db.query(models.Book).filter(models.Book.slug == slug).first()
     if not book:
         raise HTTPException(status_code=404, detail="Livre non trouvé")
@@ -187,7 +249,11 @@ def get_book(slug: str, db: Session = Depends(get_db)):
 
 
 @app.post("/books", response_model=schemas.BookResponse)
-def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
+def create_book(
+    book: schemas.BookCreate,
+    db: Session = Depends(get_db),
+    _: models.User = Depends(require_auteur),   # ← protégé auteur
+):
     existing = db.query(models.Book).filter(models.Book.slug == book.slug).first()
     if existing:
         raise HTTPException(status_code=400, detail="Ce slug existe déjà")
@@ -199,7 +265,12 @@ def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
 
 
 @app.put("/books/{slug}", response_model=schemas.BookResponse)
-def update_book(slug: str, book: schemas.BookCreate, db: Session = Depends(get_db)):
+def update_book(
+    slug: str,
+    book: schemas.BookCreate,
+    db: Session = Depends(get_db),
+    _: models.User = Depends(require_auteur),   # ← protégé auteur
+):
     db_book = db.query(models.Book).filter(models.Book.slug == slug).first()
     if not db_book:
         raise HTTPException(status_code=404, detail="Livre non trouvé")
@@ -210,10 +281,13 @@ def update_book(slug: str, book: schemas.BookCreate, db: Session = Depends(get_d
     return db_book
 
 
-# ─── Chapitres ───────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────────
+# ROUTES CHAPITRES
+# ─────────────────────────────────────────────────────────────────────────────
 
 @app.get("/books/{slug}/chapters", response_model=List[schemas.ChapterResponse])
 def get_chapters(slug: str, db: Session = Depends(get_db)):
+    """Public — liste les chapitres publiés d'un livre"""
     book = db.query(models.Book).filter(models.Book.slug == slug).first()
     if not book:
         raise HTTPException(status_code=404, detail="Livre non trouvé")
@@ -227,6 +301,7 @@ def get_chapters(slug: str, db: Session = Depends(get_db)):
 
 @app.get("/books/{slug}/chapters/{order}", response_model=schemas.ChapterResponse)
 def get_chapter(slug: str, order: int, db: Session = Depends(get_db)):
+    """Public — détail d'un chapitre publié"""
     book = db.query(models.Book).filter(models.Book.slug == slug).first()
     if not book:
         raise HTTPException(status_code=404, detail="Livre non trouvé")
@@ -245,7 +320,12 @@ def get_chapter(slug: str, order: int, db: Session = Depends(get_db)):
 
 
 @app.post("/books/{slug}/chapters", response_model=schemas.ChapterResponse)
-def create_chapter(slug: str, chapter: schemas.ChapterCreate, db: Session = Depends(get_db)):
+def create_chapter(
+    slug: str,
+    chapter: schemas.ChapterCreate,
+    db: Session = Depends(get_db),
+    _: models.User = Depends(require_auteur),   # ← protégé auteur
+):
     book = db.query(models.Book).filter(models.Book.slug == slug).first()
     if not book:
         raise HTTPException(status_code=404, detail="Livre non trouvé")
@@ -264,7 +344,13 @@ def create_chapter(slug: str, chapter: schemas.ChapterCreate, db: Session = Depe
 
 
 @app.put("/books/{slug}/chapters/{order}", response_model=schemas.ChapterResponse)
-def update_chapter(slug: str, order: int, chapter: schemas.ChapterUpdate, db: Session = Depends(get_db)):
+def update_chapter(
+    slug: str,
+    order: int,
+    chapter: schemas.ChapterUpdate,
+    db: Session = Depends(get_db),
+    _: models.User = Depends(require_auteur),
+):
     book = db.query(models.Book).filter(models.Book.slug == slug).first()
     if not book:
         raise HTTPException(status_code=404, detail="Livre non trouvé")
@@ -283,7 +369,12 @@ def update_chapter(slug: str, order: int, chapter: schemas.ChapterUpdate, db: Se
 
 
 @app.delete("/books/{slug}/chapters/{order}", status_code=204)
-def delete_chapter(slug: str, order: int, db: Session = Depends(get_db)):
+def delete_chapter(
+    slug: str,
+    order: int,
+    db: Session = Depends(get_db),
+    _: models.User = Depends(require_auteur),
+):
     book = db.query(models.Book).filter(models.Book.slug == slug).first()
     if not book:
         raise HTTPException(status_code=404, detail="Livre non trouvé")
