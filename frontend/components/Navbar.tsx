@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import LogoIW from "../public/LogoIW.svg";
-import {LogoutButton} from "@/components/LogoutButton";
+import LogoutButton from "@/components/LogoutButton";
 import "@/styles/navbar.css";
 import "@/styles/responsive.css";
 
@@ -48,9 +48,7 @@ export default function Navbar() {
           </Link>
         </li>
         <li>
-          <span className="navlink logout" onClick={LogoutButton}>
-            Déconnexion
-          </span>
+          <LogoutButton className="navlink logout" label="Déconnexion" />
         </li>
       </ul>
     </nav>
