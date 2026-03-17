@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import jwt 
 from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
+from openai import AsyncOpenAI
 
 load_dotenv()
 
@@ -14,7 +15,8 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+    truncated_password = password[:72]
+    return pwd_context.hash(truncated_password)
 
 
 def verify_password(plain: str, hashed: str) -> bool:
@@ -61,3 +63,16 @@ def verify_reset_token(token: str) -> str:
         raise HTTPException(status_code=400, detail="Le lien a expiré. Refais une demande.")
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=400, detail="Lien invalide.")
+    
+client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+async def generate_image(prompt: str) -> str:
+    """Appelle DALL-E 3 et retourne l'URL de l'image."""
+    response = await client.images.generate(
+        model="dall-e-3",
+        prompt=prompt,
+        size="1024x1024",
+        quality="standard", 
+        n=1,
+    )
+    return response.data[0].url
