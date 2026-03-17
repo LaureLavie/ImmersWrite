@@ -24,9 +24,8 @@ pycparser==3.0
 python-multipart==0.0.6
 
 # ── Validation & Config ───────────────────────────
-pydantic==2.12.25
+pydantic==2.12.5
 pydantic-settings==2.6.1
-pydantic_core==2.41.5
 annotated-types==0.7.0
 typing_extensions==4.15.0
 typing-inspection==0.4.2
