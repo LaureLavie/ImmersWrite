@@ -48,6 +48,7 @@ export function middleware(request: NextRequest) {
     if (role === "auteur") {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
+    if (role === "lecteur") return NextResponse.redirect(new URL("/", request.url));
     return NextResponse.redirect(new URL("/", request.url));
   }
 
@@ -55,8 +56,12 @@ export function middleware(request: NextRequest) {
   if (pathname.startsWith("/dashboard") && role !== "auteur") {
     return NextResponse.redirect(new URL("/", request.url));
   }
-
-  return NextResponse.next();
+  // ── 6. Toutes les autres pages privées sont accessibles → OK ─────────────
+  if (pathname.startsWith("/") && !token) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
 }
 
 export const config = {
