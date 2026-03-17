@@ -12,8 +12,7 @@ export default function ConfirmPage() {
   useEffect(() => {
     const confirm = async () => {
       try {
-        const API = process.env.NEXT_PUBLIC_API_URL;
-        const response = await fetch(`${API}/confirm/${token}`);
+        const response = await fetch(`/confirm/${token}`);
         const data = await response.json();
 
         if (response.ok) {
