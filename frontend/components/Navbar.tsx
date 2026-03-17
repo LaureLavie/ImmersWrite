@@ -38,8 +38,8 @@ export default function Navbar() {
         )}
 
         <li>
-          <Link href="/login" className="navlink" onClick={closeMenu}>
-            Connexion
+          <Link href="/dashboard" className="navlink" onClick={closeMenu}>
+            Dashboard
           </Link>
         </li>
         <li>
@@ -48,7 +48,7 @@ export default function Navbar() {
           </Link>
         </li>
         <li>
-          <LogoutButton className="navlink logout" label="Déconnexion" />
+          <LogoutButton className="btn-logout" label="Déconnexion" />
         </li>
       </ul>
     </nav>

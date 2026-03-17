@@ -40,10 +40,7 @@
   }
 
 
-  li .navlink.logout {
-    color: var(--careful);
-  }
-  
+ 
 
   .mobile-close-container {
     display: none;
