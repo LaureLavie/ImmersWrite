@@ -1,46 +1,49 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 
-import { use, useEffect } from "react";
-import { useRouter } from "next/navigation";
-
-interface ConfirmPageProps {
-  params: Promise<{ token: string }>;
-}
-
-export default function ConfirmPage({ params }: ConfirmPageProps) {
-  const { token } = use(params); 
+export default function ConfirmPage() {
+  const { token } = useParams();
   const router = useRouter();
+  const [message, setMessage] = useState("Confirmation en cours...");
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    if (!token) return;
-
-    async function confirmAccount() {
+    const confirm = async () => {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL;
-        const response = await fetch(`${API_URL}/confirm/${token}`);
+        const API = process.env.NEXT_PUBLIC_API_URL;
+        const response = await fetch(`${API}/confirm/${token}`);
+        const data = await response.json();
 
         if (response.ok) {
-          router.push("/login?message=confirmed");
+          setMessage("✅ Compte confirmé ! Redirection...");
+          setTimeout(() => router.push("/login?message=confirmed"), 2000);
         } else {
-          const data = await response.json();
-          console.error("Erreur confirmation :", data.detail);
-          router.push("/login?message=confirm-error");
+          setError(true);
+          setMessage(data.detail || "Lien invalide ou expiré.");
         }
-      } catch (error) {
-        console.error("Erreur réseau :", error);
-        router.push("/login?message=confirm-error");
+      } catch {
+        setError(true);
+        setMessage("Une erreur est survenue.");
       }
-    }
+    };
 
-    confirmAccount();
+    if (token) confirm();
   }, [token, router]);
 
   return (
-    <main style={{ textAlign: "center", padding: "4rem 2rem" }}>
-      <p style={{ fontSize: "1.2rem", color: "var(--lunar)" }}>
-        ✦ Confirmation de ton compte en cours...
+    <div style={{ 
+      display: "flex", 
+      justifyContent: "center", 
+      alignItems: "center", 
+      height: "100vh",
+      flexDirection: "column",
+      gap: "1rem"
+    }}>
+      <p style={{ color: error ? "red" : "green", fontSize: "1.2rem" }}>
+        {message}
       </p>
-    </main>
+    </div>
   );
 }
