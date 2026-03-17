@@ -9,13 +9,11 @@
 }
 
 .LogoIW {
-  width: 100%;
   display: flex;
   justify-content: center;
 }
 
 .LogoIW img {
-  width: 100%;
   height: auto;
   background: linear-gradient(200deg, var(--amber) 0%, var(--lunar) 50%, var(--amber) 100%);
   -webkit-mask-image: url('/LogoIW.svg');
