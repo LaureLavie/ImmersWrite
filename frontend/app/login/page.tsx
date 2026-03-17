@@ -67,6 +67,8 @@ export default function LoginPage() {
         router.push(redirectTo);
       } else if (data.role === "auteur") {
         router.push("/dashboard");
+      } else if (data.role === "lecteur") {
+        router.push("/");
       } else {
         router.push("/");
       }
