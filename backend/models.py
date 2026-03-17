@@ -55,3 +55,13 @@ class Chapter(Base):
     created_at   = Column(DateTime(timezone=True), server_default=func.now())
     updated_at   = Column(DateTime(timezone=True), onupdate=func.now())
     book         = relationship("Book", back_populates="chapters")
+
+class GeneratedImage(Base):
+    __tablename__ = "generated_images"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    chapter_id = Column(Integer, ForeignKey("chapters.id"), nullable=False)
+    prompt = Column(String, nullable=False)
+    url = Column(String, nullable=False) 
+    created_at = Column(DateTime(timezone=True), server_default=func.now())

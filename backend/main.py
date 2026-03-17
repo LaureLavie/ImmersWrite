@@ -13,6 +13,7 @@ from utils import (
     verify_confirmation_token,
     generate_reset_token,
     verify_reset_token,
+    generate_image,
 )
 import jwt
 from datetime import datetime, timedelta, timezone
@@ -227,6 +228,58 @@ async def reset_password(
     user.hashed_password = hash_password(request.new_password)
     db.commit()
     return {"message": "Mot de passe réinitialisé avec succès."}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ROUTES IMAGES (Génératiuon d'images par chapitre, protégées auteur uniquement)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def get_user_image_count(user_id: int, db: Session) -> int:
+    return db.query(models.GeneratedImage).filter(
+        models.GeneratedImage.user_id == user_id
+    ).count()
+
+
+def save_image_to_db(user_id: int, chapter_id: int, url: str, prompt: str, db: Session) -> models.GeneratedImage:
+    image = models.GeneratedImage(
+        user_id=user_id,
+        chapter_id=chapter_id,
+        url=url,
+        prompt=prompt
+    )
+    db.add(image)
+    db.commit()
+    db.refresh(image)
+    return image
+
+
+@app.post("/images/generate", response_model=schemas.ImageResponse)
+async def generate_chapter_image(
+    request: schemas.ImageRequest,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(require_auteur), 
+):
+    # 1. Vérifier le quota
+    count = get_user_image_count(current_user.id, db)
+    if count >= 10:
+        raise HTTPException(
+            status_code=429,
+            detail=f"Quota atteint : {count}/10 images utilisées pour la phase alpha."
+        )
+
+    # 2. Appeler DALL-E (generate_image vient de utils.py)
+    from utils import generate_image as dalle_generate
+    image_url = await dalle_generate(request.prompt)
+
+    # 3. Sauvegarder en BDD
+    saved_image = save_image_to_db(
+        user_id=current_user.id,
+        chapter_id=request.chapter_id,
+        url=image_url,
+        prompt=request.prompt,
+        db=db
+    )
+
+    return saved_image
 
 
 # ─────────────────────────────────────────────────────────────────────────────

@@ -15,7 +15,7 @@ export default function RegisterPage() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    passwordConfirm: "",
+    password_confirm: "",
     role: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -41,8 +41,8 @@ export default function RegisterPage() {
       newErrors.password = "Le mot de passe doit contenir au moins 8 caractères";
     }
 
-    if (formData.password !== formData.passwordConfirm) {
-      newErrors.passwordConfirm = "Les mots de passe ne correspondent pas";
+    if (formData.password !== formData.password_confirm) {
+      newErrors.password_confirm = "Les mots de passe ne correspondent pas";
     }
 
     if (!formData.role) {
@@ -65,7 +65,7 @@ export default function RegisterPage() {
         body: JSON.stringify({
           email: formData.email,
           password: formData.password,
-          passwordConfirm:formData.passwordConfirm,
+          password_confirm: formData.password_confirm,
           role: formData.role,
         }),
       });
@@ -141,13 +141,13 @@ export default function RegisterPage() {
               type="password"
               placeholder="********"
               className="input"
-              value={formData.passwordConfirm}
+              value={formData.password_confirm}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setFormData({ ...formData, passwordConfirm: e.target.value })
+                setFormData({ ...formData, password_confirm: e.target.value })
               }
               disabled={isLoading}
             />
-            {errors.passwordConfirm && <p className="error">{errors.passwordConfirm}</p>}
+            {errors.password_confirm && <p className="error">{errors.password_confirm}</p>}
 
 
             {/* Rôle */}

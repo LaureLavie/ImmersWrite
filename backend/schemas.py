@@ -134,3 +134,18 @@ class BookResponse(BaseModel):
     chapters: List[ChapterResponse] = []
 
     model_config = {"from_attributes": True}
+
+    # ─── Images ──────────────────────────────────────────────────
+class ImageRequest(BaseModel):
+    prompt: str
+    chapter_id: int
+
+class ImageResponse(BaseModel):
+    id: int
+    user_id: int
+    chapter_id: int
+    prompt: str
+    url: str
+    created_at: datetime
+
+    model_config = {"from_attributes": True}

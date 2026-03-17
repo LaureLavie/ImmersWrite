@@ -1,6 +1,6 @@
 "use client";
 
-import { useState} from "react";
+import { useState, Suspense} from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import LogoIW from "../../public/LogoIW.svg";
@@ -80,6 +80,7 @@ export default function LoginPage() {
 
 
   return (
+    <Suspense fallback={<div>Chargement...</div>}>
     <div className="container">
       <div className="left-container">
         <div className="logo-section ">
@@ -165,6 +166,7 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+    </Suspense>
   );
 }
 

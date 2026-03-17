@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import LogoIW from "../../public/LogoIW.svg";
@@ -15,7 +15,7 @@ export default function ResetPassword() {
   const router = useRouter();
   const token = searchParams.get("token");
 
-  const [formData, setFormData] = useState({ password: "", passwordConfirm: "" });
+  const [formData, setFormData] = useState({ password: "", password_confirm: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,8 +36,8 @@ export default function ResetPassword() {
     if (!formData.password || formData.password.length < 8) {
       newErrors.password = "Le mot de passe doit contenir au moins 8 caractères";
     }
-    if (formData.password !== formData.passwordConfirm) {
-      newErrors.passwordConfirm = "Les mots de passe ne correspondent pas";
+    if (formData.password !== formData.password_confirm) {
+      newErrors.password_confirm = "Les mots de passe ne correspondent pas";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -54,7 +54,7 @@ export default function ResetPassword() {
         body: JSON.stringify({
           token,
           new_password: formData.password,
-          new_password_confirm: formData.passwordConfirm,
+          new_password_confirm: formData.password_confirm,
         }),
       });
 
@@ -75,6 +75,7 @@ export default function ResetPassword() {
   };
 
   return (
+    <Suspense fallback={<div>Chargement...</div>}>
     <div className="container">
       <div className="left-container">
         <div className="logo-section">
@@ -125,11 +126,11 @@ export default function ResetPassword() {
                   type="password"
                   placeholder="••••••••••••"
                   className="input"
-                  value={formData.passwordConfirm}
-                  onChange={(e) => setFormData({ ...formData, passwordConfirm: e.target.value })}
+                  value={formData.password_confirm}
+                  onChange={(e) => setFormData({ ...formData, password_confirm: e.target.value })}
                   disabled={isLoading}
                 />
-                {errors.passwordConfirm && <p style={{ color: "var(--amber)", fontSize: "14px" }}>{errors.passwordConfirm}</p>}
+                {errors.password_confirm && <p style={{ color: "var(--amber)", fontSize: "14px" }}>{errors.password_confirm}</p>}
 
                 {errors.general && (
                   <div className="errors">
@@ -154,5 +155,6 @@ export default function ResetPassword() {
         </div>
       </div>
     </div>
+    </Suspense>
   );
 }
