@@ -12,9 +12,9 @@ export default function ConfirmPage() {
   useEffect(() => {
     const confirm = async () => {
       try {
-        const response = await fetch(`/confirm/${token}`);
+        const API = process.env.NEXT_PUBLIC_API_URL;
+        const response = await fetch(`${API}/confirm/${token}`);
         const data = await response.json();
-
         if (response.ok) {
           setMessage("✅ Compte confirmé ! Redirection...");
           setTimeout(() => router.push("/login?message=confirmed"), 2000);
