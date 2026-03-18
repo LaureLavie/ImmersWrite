@@ -121,7 +121,7 @@ async def register(user: schemas.UserRegister, db: Session = Depends(get_db)):
     db.refresh(new_user)
 
     confirmation_token = generate_confirmation_token(new_user.email)
-    confirm_link = f"{os.getenv('FRONTEND_URL', 'http://localhost:3000')}/confirm/{confirmation_token}"
+    confirm_link = f"{os.getenv('FRONTEND_URL')}/confirm?token={confirmation_token}"
 
     message = MessageSchema(
         subject="Confirmez votre compte Immers'Write",
