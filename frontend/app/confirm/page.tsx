@@ -1,20 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 
-export default function ConfirmPage() {
-  const { token } = useParams();
+function ConfirmToken() {
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
   const router = useRouter();
   const [message, setMessage] = useState("Confirmation en cours...");
   const [error, setError] = useState(false);
 
   useEffect(() => {
     const confirm = async () => {
+      if (!token) {
+        setError(true);
+        setMessage("Lien de confirmation invalide.");
+        return;
+      }
       try {
         const API = process.env.NEXT_PUBLIC_API_URL;
         const response = await fetch(`${API}/confirm/${token}`);
         const data = await response.json();
+
         if (response.ok) {
           setMessage("✅ Compte confirmé ! Redirection...");
           setTimeout(() => router.push("/login?message=confirmed"), 2000);
@@ -28,7 +35,7 @@ export default function ConfirmPage() {
       }
     };
 
-    if (token) confirm();
+    confirm();
   }, [token, router]);
 
   return (
@@ -44,5 +51,13 @@ export default function ConfirmPage() {
         {message}
       </p>
     </div>
+  );
+}
+
+export default function ConfirmPage() {
+  return (
+    <Suspense fallback={<div>Chargement...</div>}>
+      <ConfirmToken />
+    </Suspense>
   );
 }

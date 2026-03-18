@@ -76,7 +76,7 @@ export default function RegisterPage() {
       }
 
       // Redirection après succès
-      router.push("/login?message=check-email");
+      router.push("/register/confirmation");
     } catch (error) {
       setErrors({
         general: error instanceof Error ? error.message : "Une erreur est survenue",
