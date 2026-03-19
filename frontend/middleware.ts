@@ -5,6 +5,7 @@ import type { NextRequest } from "next/server";
 const PUBLIC_PATHS = [
   "/login",
   "/register",
+  "/confirm",
   "/register/confirmation",
   "/forgot-password",
   "/reset-password",
