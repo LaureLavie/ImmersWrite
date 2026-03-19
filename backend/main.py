@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
 from dotenv import load_dotenv
+from urllib.parse import quote, unquote
 from utils import (
     hash_password,
     verify_password,
@@ -121,7 +122,8 @@ async def register(user: schemas.UserRegister, db: Session = Depends(get_db)):
     db.refresh(new_user)
 
     confirmation_token = generate_confirmation_token(new_user.email)
-    confirm_link = f"{os.getenv('FRONTEND_URL')}/confirm?token={confirmation_token}"
+    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
+    confirm_link = f"{frontend_url.rstrip('/')}/confirm?token={confirmation_token}"
 
     message = MessageSchema(
         subject="Confirmez votre compte Immers'Write",
@@ -140,7 +142,7 @@ async def register(user: schemas.UserRegister, db: Session = Depends(get_db)):
     return {"message": "Inscription réussie. Vérifie ton email pour confirmer ton compte."}
 
 
-@app.get("/confirm/{token}")
+@app.get("/confirm/{token}") 
 async def confirm_email(token: str, db: Session = Depends(get_db)):
     email = verify_confirmation_token(token)
     user = db.query(models.User).filter(models.User.email == email).first()
@@ -149,7 +151,9 @@ async def confirm_email(token: str, db: Session = Depends(get_db)):
     if user.is_confirmed:
         return {"message": "Compte déjà confirmé"}
     user.is_confirmed = True
+    db.add(user)
     db.commit()
+    db.refresh(user)
     return {"message": "Compte confirmé avec succès. Tu peux maintenant te connecter."}
 
 
@@ -185,11 +189,7 @@ async def login(credentials: schemas.UserLogin, db: Session = Depends(get_db)):
 
 
 @app.post("/logout")
-def logout(_: models.User = Depends(get_current_user)):
-    """
-    Le token JWT est stateless.
-    Le frontend doit supprimer le cookie `access_token` à la réception du 200.
-    """
+def logout(_: models.User = Depends(get_current_user)):  
     return {"message": "Déconnexion réussie. À bientôt dans l'univers."}
 
 
