@@ -122,8 +122,8 @@ async def register(user: schemas.UserRegister, db: Session = Depends(get_db)):
     db.refresh(new_user)
 
     confirmation_token = generate_confirmation_token(new_user.email)
-    backend_url = os.getenv("BACKEND_URL", os.getenv("FRONTEND_URL", "http://localhost:8000"))
-    confirm_link = f"{backend_url.rstrip('/')}/confirmation/{quote(confirmation_token, safe='')}"
+    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
+    confirm_link = f"{frontend_url.rstrip('/')}/confirm?token={confirmation_token}"
 
     message = MessageSchema(
         subject="Confirmez votre compte Immers'Write",
@@ -142,12 +142,10 @@ async def register(user: schemas.UserRegister, db: Session = Depends(get_db)):
     return {"message": "Inscription réussie. Vérifie ton email pour confirmer ton compte."}
 
 
-@app.get("/confirmation/{token}")
+@app.get("/confirm/{token}") 
 async def confirm_email(token: str, db: Session = Depends(get_db)):
     email = verify_confirmation_token(token)
-    print(f"[CONFIRM] Email extrait du token : {email}")
     user = db.query(models.User).filter(models.User.email == email).first()
-    print(f"[CONFIRM] is_confirmed avant : {user.is_confirmed if user else 'N/A'}")
     if not user:
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
     if user.is_confirmed:
@@ -156,7 +154,6 @@ async def confirm_email(token: str, db: Session = Depends(get_db)):
     db.add(user)
     db.commit()
     db.refresh(user)
-    print(f"[CONFIRM] is_confirmed après commit : {user.is_confirmed}")
     return {"message": "Compte confirmé avec succès. Tu peux maintenant te connecter."}
 
 
