@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
 from dotenv import load_dotenv
+from urllib.parse import quote, unquote
 from utils import (
     hash_password,
     verify_password,
@@ -121,7 +122,8 @@ async def register(user: schemas.UserRegister, db: Session = Depends(get_db)):
     db.refresh(new_user)
 
     confirmation_token = generate_confirmation_token(new_user.email)
-    confirm_link = f"{os.getenv('FRONTEND_URL')}/confirm?token={confirmation_token}"
+    backend_url = os.getenv("BACKEND_URL", os.getenv("FRONTEND_URL", "http://localhost:8000"))
+    confirm_link = f"{backend_url.rstrip('/')}/confirmation/{quote(confirmation_token, safe='')}"
 
     message = MessageSchema(
         subject="Confirmez votre compte Immers'Write",
@@ -140,16 +142,21 @@ async def register(user: schemas.UserRegister, db: Session = Depends(get_db)):
     return {"message": "Inscription réussie. Vérifie ton email pour confirmer ton compte."}
 
 
-@app.get("/confirm/{token}")
+@app.get("/confirmation/{token}")
 async def confirm_email(token: str, db: Session = Depends(get_db)):
     email = verify_confirmation_token(token)
+    print(f"[CONFIRM] Email extrait du token : {email}")
     user = db.query(models.User).filter(models.User.email == email).first()
+    print(f"[CONFIRM] is_confirmed avant : {user.is_confirmed if user else 'N/A'}")
     if not user:
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
     if user.is_confirmed:
         return {"message": "Compte déjà confirmé"}
     user.is_confirmed = True
+    db.add(user)
     db.commit()
+    db.refresh(user)
+    print(f"[CONFIRM] is_confirmed après commit : {user.is_confirmed}")
     return {"message": "Compte confirmé avec succès. Tu peux maintenant te connecter."}
 
 
@@ -185,11 +192,7 @@ async def login(credentials: schemas.UserLogin, db: Session = Depends(get_db)):
 
 
 @app.post("/logout")
-def logout(_: models.User = Depends(get_current_user)):
-    """
-    Le token JWT est stateless.
-    Le frontend doit supprimer le cookie `access_token` à la réception du 200.
-    """
+def logout(_: models.User = Depends(get_current_user)):  
     return {"message": "Déconnexion réussie. À bientôt dans l'univers."}
 
 
