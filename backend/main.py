@@ -702,6 +702,8 @@ def publish_my_chapter(
         )
 
     chapter.is_published = True
+    if not project.is_published:
+        project.is_published = True
     db.commit()
     db.refresh(chapter)
     return chapter
