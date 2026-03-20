@@ -440,3 +440,346 @@ def delete_chapter(
         raise HTTPException(status_code=404, detail="Chapitre non trouvé")
     db.delete(db_chapter)
     db.commit()
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ROUTES AUTEUR  — PROJET 
+# ─────────────────────────────────────────────────────────────────────────────
+
+@app.get("/author/project", response_model=schemas.BookResponse)
+def get_my_project(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(require_auteur),
+):
+  
+    project = (
+        db.query(models.Book)
+        .filter(models.Book.user_id == current_user.id)
+        .first()
+    )
+    if not project:
+        raise HTTPException(status_code=404, detail="Aucun projet trouvé. Crée ton premier projet !")
+    return project
+
+
+@app.post("/author/project", response_model=schemas.BookResponse, status_code=201)
+def create_my_project(
+    data: schemas.ProjectCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(require_auteur),
+):
+   
+    existing = (
+        db.query(models.Book)
+        .filter(models.Book.user_id == current_user.id)
+        .first()
+    )
+    if existing:
+        raise HTTPException(
+            status_code=400,
+            detail="Tu as déjà un projet. Pour cette version test, 1 seul projet est autorisé.",
+        )
+
+    slug_exists = db.query(models.Book).filter(models.Book.slug == data.slug).first()
+    if slug_exists:
+        raise HTTPException(status_code=400, detail=f"Le slug '{data.slug}' est déjà utilisé. Choisis-en un autre.")
+
+
+    new_book = models.Book(
+        user_id     = current_user.id,
+        title       = data.title,
+        author      = data.author_name,
+        description = data.description,
+        cover_url   = data.cover_url,
+        slug        = data.slug,
+        is_published= False, 
+    )
+    db.add(new_book)
+    db.commit()
+    db.refresh(new_book)
+    return new_book
+
+
+@app.put("/author/project", response_model=schemas.BookResponse)
+def update_my_project(
+    data: schemas.ProjectUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(require_auteur),
+):
+ 
+    project = db.query(models.Book).filter(models.Book.user_id == current_user.id).first()
+    if not project:
+        raise HTTPException(status_code=404, detail="Projet introuvable.")
+
+    # exclude_unset=True → ne modifie QUE les champs envoyés
+    for key, value in data.model_dump(exclude_unset=True).items():
+        # "author_name" dans le schéma → "author" dans le modèle
+        if key == "author_name":
+            setattr(project, "author", value)
+        else:
+            setattr(project, key, value)
+
+    db.commit()
+    db.refresh(project)
+    return project
+
+@app.delete("/author/project", response_model=schemas.DeleteProjectResponse)
+def delete_my_project(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(require_auteur),
+):
+
+    # ── Récupère le projet ────────────────────────────────────────────────────
+    project = db.query(models.Book).filter(models.Book.user_id == current_user.id).first()
+    if not project:
+        raise HTTPException(status_code=404, detail="Aucun projet à supprimer.")
+ 
+    # ── Mémorise les infos AVANT suppression (elles seront perdues après) ─────
+    project_id    = project.id
+    project_title = project.title
+    # len() sur la relation lazy-loaded → compte les chapitres liés
+    chapters_count = len(project.chapters)
+ 
+    # ── Suppression en cascade ────────────────────────────────────────────────
+    # Grâce à cascade="all, delete-orphan" dans le modèle Book,
+    # SQLAlchemy supprime automatiquement :
+    #   • tous les Chapter liés au Book
+    #   • tous les Media liés à chaque Chapter
+    # Pas besoin de boucles manuelles.
+    db.delete(project)
+    db.commit()
+ 
+    # ── Réponse de confirmation ───────────────────────────────────────────────
+    return schemas.DeleteProjectResponse(
+        message=f"Le projet \"{project_title}\" a été supprimé définitivement.",
+        deleted_project_id=project_id,
+        deleted_project_title=project_title,
+        chapters_deleted=chapters_count,
+    )
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ROUTES AUTEUR  — CHAPITRES
+# ─────────────────────────────────────────────────────────────────────────────
+
+def _get_author_project_or_404(user_id: int, db: Session) -> models.Book:
+
+    project = db.query(models.Book).filter(models.Book.user_id == user_id).first()
+    if not project:
+        raise HTTPException(status_code=404, detail="Tu n'as pas encore de projet.")
+    return project
+
+
+def _get_chapter_or_404(book_id: int, order: int, db: Session) -> models.Chapter:
+
+    chapter = (
+        db.query(models.Chapter)
+        .filter(
+            models.Chapter.book_id == book_id,
+            models.Chapter.order == order,
+        )
+        .first()
+    )
+    if not chapter:
+        raise HTTPException(status_code=404, detail=f"Chapitre {order} introuvable.")
+    return chapter
+
+
+@app.get("/author/project/chapters", response_model=list[schemas.ChapterResponse])
+def get_my_chapters(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(require_auteur),
+):
+  
+    project = _get_author_project_or_404(current_user.id, db)
+    return (
+        db.query(models.Chapter)
+        .filter(models.Chapter.book_id == project.id)
+        .order_by(models.Chapter.order)
+        .all()
+    )
+
+
+@app.post("/author/project/chapters", response_model=schemas.ChapterResponse, status_code=201)
+def create_my_chapter(
+    chapter: schemas.ChapterCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(require_auteur),
+):
+  
+    project = _get_author_project_or_404(current_user.id, db)
+
+    # Vérification ordre unique
+    existing = (
+        db.query(models.Chapter)
+        .filter(
+            models.Chapter.book_id == project.id,
+            models.Chapter.order == chapter.order,
+        )
+        .first()
+    )
+    if existing:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Un chapitre avec l'ordre {chapter.order} existe déjà.",
+        )
+
+    db_chapter = models.Chapter(**chapter.model_dump(), book_id=project.id)
+    db.add(db_chapter)
+    db.commit()
+    db.refresh(db_chapter)
+    return db_chapter
+
+
+@app.get("/author/project/chapters/{order}", response_model=schemas.ChapterResponse)
+def get_my_chapter(
+    order: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(require_auteur),
+):
+
+    project = _get_author_project_or_404(current_user.id, db)
+    return _get_chapter_or_404(project.id, order, db)
+
+
+@app.put("/author/project/chapters/{order}", response_model=schemas.ChapterResponse)
+def update_my_chapter(
+    order: int,
+    data: schemas.ChapterUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(require_auteur),
+):
+
+    project = _get_author_project_or_404(current_user.id, db)
+    chapter = _get_chapter_or_404(project.id, order, db)
+
+    # Verrou : chapitre publié = lecture seule (PUB-04)
+    if chapter.is_published:
+        raise HTTPException(
+            status_code=403,
+            detail="Ce chapitre est publié. Tu ne peux plus le modifier.",
+        )
+
+    for key, value in data.model_dump(exclude_unset=True).items():
+        setattr(chapter, key, value)
+
+    db.commit()
+    db.refresh(chapter)
+    return chapter
+
+
+@app.delete("/author/project/chapters/{order}", status_code=204)
+def delete_my_chapter(
+    order: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(require_auteur),
+):
+    project = _get_author_project_or_404(current_user.id, db)
+    chapter = _get_chapter_or_404(project.id, order, db)
+
+
+    db.delete(chapter)
+    db.commit()
+
+
+@app.post("/author/project/chapters/{order}/publish", response_model=schemas.ChapterResponse)
+def publish_my_chapter(
+    order: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(require_auteur),
+):
+ 
+    project = _get_author_project_or_404(current_user.id, db)
+    chapter = _get_chapter_or_404(project.id, order, db)
+
+    if chapter.is_published:
+        raise HTTPException(status_code=400, detail="Ce chapitre est déjà publié.")
+
+    if not chapter.title or not chapter.content:
+        raise HTTPException(
+            status_code=400,
+            detail="Un titre et un contenu sont requis avant de publier.",
+        )
+
+    chapter.is_published = True
+    db.commit()
+    db.refresh(chapter)
+    return chapter
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ROUTES AUTEUR - MEDIA
+# ─────────────────────────────────────────────────────────────────────────────
+
+@app.get("/author/project/chapters/{order}/media", response_model=list[schemas.MediaResponse])
+def get_chapter_media(
+    order: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(require_auteur),
+):
+    """Liste les médias d'un chapitre."""
+    project = _get_author_project_or_404(current_user.id, db)
+    chapter = _get_chapter_or_404(project.id, order, db)
+    return chapter.medias
+
+
+@app.post("/author/project/chapters/{order}/media", response_model=schemas.MediaResponse, status_code=201)
+def add_chapter_media(
+    order: int,
+    media_data: schemas.MediaCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(require_auteur),
+):
+    
+    project = _get_author_project_or_404(current_user.id, db)
+    chapter = _get_chapter_or_404(project.id, order, db)
+
+    if chapter.is_published:
+        raise HTTPException(status_code=403, detail="Chapitre publié, impossible d'ajouter des médias.")
+
+
+    if media_data.type not in ("image", "sound"):
+        raise HTTPException(status_code=400, detail="Type invalide. Utilise 'image' ou 'sound'.")
+
+    existing_media = chapter.medias
+    images = [m for m in existing_media if m.type == "image"]
+    sounds = [m for m in existing_media if m.type == "sound"]
+
+    if media_data.type == "image" and len(images) >= 2:
+        raise HTTPException(status_code=400, detail="Max 2 images par chapitre pour l'alpha.")
+    if media_data.type == "sound" and len(sounds) >= 1:
+        raise HTTPException(status_code=400, detail="Max 1 son par chapitre pour l'alpha.")
+
+    new_media = models.Media(
+        chapter_id = chapter.id,
+        type       = media_data.type,
+        url        = media_data.url,
+        title      = media_data.title,
+    )
+    db.add(new_media)
+    db.commit()
+    db.refresh(new_media)
+    return new_media
+
+
+@app.delete("/author/project/chapters/{order}/media/{media_id}", status_code=204)
+def delete_chapter_media(
+    order: int,
+    media_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(require_auteur),
+):
+
+    project = _get_author_project_or_404(current_user.id, db)
+    chapter = _get_chapter_or_404(project.id, order, db)
+
+    media = db.query(models.Media).filter(
+        models.Media.id == media_id,
+        models.Media.chapter_id == chapter.id,
+    ).first()
+
+    if not media:
+        raise HTTPException(status_code=404, detail="Media introuvable.")
+
+    db.delete(media)
+    db.commit()

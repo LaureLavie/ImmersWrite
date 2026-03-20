@@ -5,39 +5,50 @@ from database import Base
 import enum
 
 
+
 class UserRole(str, enum.Enum):
-    auteur = "auteur"
+    auteur  = "auteur"
     lecteur = "lecteur"
+
 
 
 class User(Base):
     __tablename__ = "users"
 
-    id               = Column(Integer, primary_key=True, index=True)
-    email            = Column(String, unique=True, nullable=False)
-    hashed_password  = Column(String, nullable=False)
-    is_confirmed     = Column(Boolean, default=False)
-    role             = Column(String, nullable=False)
-    created_at       = Column(DateTime(timezone=True), server_default=func.now())
+    id              = Column(Integer, primary_key=True, index=True)
+    email           = Column(String, unique=True, nullable=False)
+    hashed_password = Column(String, nullable=False)
+    is_confirmed    = Column(Boolean, default=False)
+    role            = Column(String, nullable=False)
+    created_at      = Column(DateTime(timezone=True), server_default=func.now())
+
+    books = relationship("Book", back_populates="user")
 
 
 class Book(Base):
     __tablename__ = "books"
 
     id           = Column(Integer, primary_key=True, index=True)
+
+    user_id      = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+
     title        = Column(String, nullable=False)
-    author       = Column(String, nullable=False)
+    author       = Column(String, nullable=False)   
     description  = Column(Text)
     cover_url    = Column(String)
     slug         = Column(String, unique=True, index=True, nullable=False)
     is_published = Column(Boolean, default=False)
     created_at   = Column(DateTime(timezone=True), server_default=func.now())
-    chapters     = relationship(
+
+
+    user     = relationship("User", back_populates="books")
+    chapters = relationship(
         "Chapter",
         back_populates="book",
         order_by="Chapter.order",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
     )
+
 
 
 class Chapter(Base):
@@ -54,14 +65,42 @@ class Chapter(Base):
     is_published = Column(Boolean, default=False)
     created_at   = Column(DateTime(timezone=True), server_default=func.now())
     updated_at   = Column(DateTime(timezone=True), onupdate=func.now())
-    book         = relationship("Book", back_populates="chapters")
+
+
+    book   = relationship("Book", back_populates="chapters")
+
+    medias = relationship(
+        "Media",
+        back_populates="chapter",
+        cascade="all, delete-orphan",
+    )
+
+
+class Media(Base):
+    __tablename__ = "media"
+
+    id         = Column(Integer, primary_key=True, index=True)
+    chapter_id = Column(Integer, ForeignKey("chapters.id", ondelete="CASCADE"), nullable=False)
+
+    type       = Column(String, nullable=False)
+
+    url        = Column(String, nullable=False)
+
+    title      = Column(String, nullable=True)
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+    chapter = relationship("Chapter", back_populates="medias")
+
+
 
 class GeneratedImage(Base):
     __tablename__ = "generated_images"
 
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    id         = Column(Integer, primary_key=True, index=True)
+    user_id    = Column(Integer, ForeignKey("users.id"), nullable=False)
     chapter_id = Column(Integer, ForeignKey("chapters.id"), nullable=False)
-    prompt = Column(String, nullable=False)
-    url = Column(String, nullable=False) 
+    prompt     = Column(String, nullable=False)
+    url        = Column(String, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

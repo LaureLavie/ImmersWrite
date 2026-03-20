@@ -128,6 +128,38 @@
 .chapter-nav-center {
   display: none;
 }
+
+.dashboard-project-info {
+  flex-direction: column;
+}
+
+.dashboard-project-cover {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.dashboard-chapter-item {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.dashboard-chapter-actions {
+  align-self: flex-end;
+}
+
+.editor-toolbar {
+  gap: 0.5rem;
+}
+
+.editor-toolbar-actions {
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.editor-title-input {
+  font-size: 1.4rem;
+}
 }
 
 

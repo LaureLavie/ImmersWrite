@@ -1,56 +1,409 @@
 "use client";
 
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
+import { getAuthToken } from "@/lib/auth/cookies";
+import {
+  getMyProject,
+  createProject,
+  deleteChapter,
+  deleteProject,
+  type Project,
+} from "@/lib/api/projects";
 import "@/styles/global.css";
 import "@/styles/responsive.css";
+import "@/styles/dashboard.css";
+
+export interface DeleteProjectResponse {
+  message: string;
+  deleted_project_id: number;
+  deleted_project_title: string;
+  chapters_deleted: number;
+}
 
 export default function DashboardPage() {
+  const router = useRouter();
+
+  const [project, setProject] = useState<Project | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [deletingProject, setDeletingProject] = useState(false);
+
+
+  const [form, setForm] = useState({
+    title: "",
+    author_name: "",
+    description: "",
+    slug: "",
+  });
+
+  useEffect(() => {
+    loadProject();
+  }, []);
+
+  async function loadProject() {
+    const token = getAuthToken();
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+    try {
+      const data = await getMyProject(token);
+      setProject(data);
+    } catch {
+      setError("Impossible de charger le projet.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function titleToSlug(title: string): string {
+    return title
+      .toLowerCase()
+      .normalize("NFD")                
+      .replace(/[\u0300-\u036f]/g, "") 
+      .replace(/[^a-z0-9\s-]/g, "")  
+      .trim()
+      .replace(/\s+/g, "-");          
+  }
+
+  function handleTitleChange(title: string) {
+    setForm(f => ({ ...f, title, slug: titleToSlug(title) }));
+  }
+
+  async function handleCreate(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+
+    if (!form.title.trim()) {
+      setError("Le titre est obligatoire.");
+      return;
+    }
+    if (!form.author_name.trim()) {
+      setError("Ton nom d'auteur est obligatoire.");
+      return;
+    }
+
+    const token = getAuthToken();
+    if (!token) return;
+
+    setSaving(true);
+    try {
+      const newProject = await createProject(token, {
+        title: form.title,
+        author_name: form.author_name,
+        description: form.description || undefined,
+        slug: form.slug || titleToSlug(form.title),
+      });
+      setProject(newProject);
+      setCreating(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erreur lors de la création.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDeleteChapter(order: number) {
+    if (!confirm(`Supprimer le chapitre ${order} ? Cette action est irréversible.`)) return;
+    const token = getAuthToken();
+    if (!token) return;
+    try {
+      await deleteChapter(token, order);
+      await loadProject(); 
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Impossible de supprimer ce chapitre.");
+    }
+  }
+
+  async function handleDeleteProject() {
+
+    if (!confirm(`⚠️ Supprimer le projet "${project?.title}" ?\n\nTous les chapitres et médias seront effacés définitivement.\nCette action est irréversible.`)) return;
+    if (!confirm("Dernière confirmation : es-tu sûre de vouloir tout supprimer ?")) return;
+ 
+    const token = getAuthToken();
+    if (!token) return;
+ 
+    setError("");
+    setDeletingProject(true);
+    try {
+      const result = await deleteProject(token);
+      setProject(null);
+      alert(
+        `${result.message}\n` +
+        `(${result.chapters_deleted} chapitre${result.chapters_deleted > 1 ? "s" : ""} supprimé${result.chapters_deleted > 1 ? "s" : ""})`
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Impossible de supprimer le projet.");
+    } finally {
+      setDeletingProject(false);
+    }
+  }
+
+  function nextChapterOrder(): number {
+    if (!project || project.chapters.length === 0) return 1;
+    const maxOrder = Math.max(...project.chapters.map(c => c.order));
+    return maxOrder + 1;
+  }
+
+
+  if (loading) {
+    return (
+      <div className="dashboard-page">
+        <Navbar />
+        <div className="dashboard-loader">Ouverture de l'atelier...</div>
+      </div>
+    );
+  }
+
   return (
-    <div>
+    <div className="dashboard-page">
       <Navbar />
-      <main style={{
-        minHeight: "80dvh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "2rem",
-        padding: "2rem",
-      }}>
-        <h1 style={{
-          fontFamily: "var(--font-title)",
-          fontSize: "2.5rem",
-          background: "var(--gradient-gold)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          textAlign: "center",
-          fontWeight: 500,
-        }}>
-          L'Atelier de l'Artiste
-        </h1>
 
-        <p style={{
-          color: "var(--lunar)",
-          fontFamily: "var(--font-body)",
-          fontSize: "1rem",
-          textAlign: "center",
-          maxWidth: "500px",
-          lineHeight: "1.8",
-          opacity: 0.7,
-        }}>
-          Ton espace de création. Chaque mot est un monde qui prend vie.
-        </p>
+      <div className="dashboard-content">
 
-        {/* Carte squelette — à compléter avec les vraies features sprint 2 */}
-        <div className="card" style={{ maxWidth: "500px", width: "100%", textAlign: "center" }}>
-          <p style={{ color: "var(--amber)", fontFamily: "var(--font-body)", fontSize: "0.9rem", opacity: 0.6 }}>
-            ✦ L'atelier ouvre ses portes en avril ✦
+        {/* ── En-tête ── */}
+        <header className="dashboard-header">
+          <h1>L'Atelier de l'Artiste</h1>
+          <p className="dashboard-subtitle">
+            {project
+              ? `Ton univers prend forme. ${project.chapters.length} chapitre${project.chapters.length > 1 ? "s" : ""}.`
+              : "Ton premier monde t'attend."}
           </p>
-          <p style={{ color: "var(--lunar)", fontSize: "0.85rem", marginTop: "1rem", lineHeight: "1.8" }}>
-            Bientôt : créer ton projet, écrire tes chapitres, générer des images avec l'IA.
-          </p>
-        </div>
-      </main>
+        </header>
+
+        {/* ── Message d'erreur global ── */}
+        {error && (
+          <div className="dashboard-error">
+            <p>{error}</p>
+          </div>
+        )}
+
+        {/* ═══════════════════════════════════════════════════════════════════
+            PAS DE PROJET → Formulaire de création (US-03 : PROJ-04)
+            ═══════════════════════════════════════════════════════════════════ */}
+        {!project && !creating && (
+          <div className="dashboard-empty">
+            <div className="dashboard-empty-icon">✦</div>
+            <p>Tu n'as pas encore de projet.</p>
+            <p className="dashboard-empty-hint">
+              Pour l'alpha, tu peux créer un seul projet — ton chef-d'œuvre.
+            </p>
+            <button
+              className="btn-gold"
+              onClick={() => setCreating(true)}
+            >
+              Créer mon projet
+            </button>
+          </div>
+        )}
+
+        {!project && creating && (
+          <div className="card dashboard-form-card">
+            <h2>Nouveau projet</h2>
+            <form onSubmit={handleCreate}>
+              <label htmlFor="title">Titre de l'histoire *</label>
+              <input
+                id="title"
+                className="input"
+                type="text"
+                placeholder="Mon histoire Immersive..."
+                value={form.title}
+                onChange={e => handleTitleChange(e.target.value)}
+                required
+              />
+
+              <label htmlFor="author_name">Ton nom d'auteur *</label>
+              <input
+                id="author_name"
+                className="input"
+                type="text"
+                placeholder="Mon Nom de Plume"
+                value={form.author_name}
+                onChange={e => setForm(f => ({ ...f, author_name: e.target.value }))}
+                required
+              />
+
+              <label htmlFor="description">Description (optionnel)</label>
+              <textarea
+                id="description"
+                className="input dashboard-textarea"
+                placeholder="Une brève description de ton univers..."
+                value={form.description}
+                onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+                rows={3}
+              />
+
+              <label htmlFor="slug">Slug URL (auto-généré)</label>
+              <input
+                id="slug"
+                className="input dashboard-slug-input"
+                type="text"
+                value={form.slug}
+                onChange={e => setForm(f => ({ ...f, slug: e.target.value }))}
+                placeholder="mon-histoire"
+              />
+              <p className="dashboard-hint">
+                Sera utilisé dans l'URL : immerswrite.com/book/<strong>{form.slug || "..."}</strong>
+              </p>
+
+              {error && <p className="dashboard-error-inline">{error}</p>}
+
+              <div className="button-container">
+                <button
+                  type="button"
+                  className="btn-logout"
+                  onClick={() => setCreating(false)}
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  className="btn-gold"
+                  disabled={saving}
+                >
+                  {saving ? "Création..." : "Forger mon univers ✦"}
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {/* ═══════════════════════════════════════════════════════════════════
+            PROJET EXISTANT
+            ═══════════════════════════════════════════════════════════════════ */}
+        {project && (
+          <>
+            {/* ── Carte projet ── */}
+            <div className="dashboard-project-card card">
+              <div className="dashboard-project-info">
+                {project.cover_url && (
+                  <img
+                    src={project.cover_url}
+                    alt={project.title}
+                    className="dashboard-project-cover"
+                  />
+                )}
+                <div>
+                  <h2 className="dashboard-project-title">{project.title}</h2>
+                  <p className="dashboard-project-author">par {project.author}</p>
+                  {project.description && (
+                    <p className="dashboard-project-desc">{project.description}</p>
+                  )}
+                  <div className="dashboard-project-meta">
+                    <span className="dashboard-badge">
+                      {project.is_published ? "✓ Publié" : "Brouillon"}
+                    </span>
+                    <Link
+                      href={`/book/${project.slug}`}
+                      className="link dashboard-preview-link"
+                      target="_blank"
+                    >
+                      Prévisualiser →
+                    </Link>
+                  </div>
+                   {/* ── Bouton de suppression du projet ── */}
+                   <div className="dashboard-project-danger-zone">
+                    <p className="dashboard-danger-label">Zone de danger</p>
+                    <button
+                      className="btn-delete btn-sm"
+                      onClick={handleDeleteProject}
+                      disabled={deletingProject}
+                    >
+                      {deletingProject ? "Suppression..." : "🗑 Supprimer le projet"}
+                    </button>
+                    <p className="dashboard-danger-hint">
+                      Supprime le projet et tous ses chapitres. Irréversible.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── Liste des chapitres ── */}
+            <div className="dashboard-chapters-section">
+              <div className="dashboard-chapters-header">
+                <h2>Chapitres</h2>
+                <Link
+                  href={`/dashboard/chapter/new?order=${nextChapterOrder()}`}
+                  className="btn-gold btn-sm"
+                >
+                  + Nouveau chapitre
+                </Link>
+              </div>
+
+              {project.chapters.length === 0 ? (
+                <div className="dashboard-chapters-empty">
+                  <p>Aucun chapitre pour l'instant.</p>
+                  <p className="dashboard-hint">
+                    Commence à écrire ton premier chapitre !
+                  </p>
+                </div>
+              ) : (
+                <div className="dashboard-chapters-list">
+                  {project.chapters.map(chapter => (
+                    <div
+                      key={chapter.id}
+                      className={`dashboard-chapter-item ${chapter.is_published ? "published" : "draft"}`}
+                    >
+                      <div className="dashboard-chapter-info">
+                        <span className="dashboard-chapter-order">
+                          {String(chapter.order).padStart(2, "0")}
+                        </span>
+                        <div>
+                          <p className="dashboard-chapter-title">{chapter.title}</p>
+                          <div className="dashboard-chapter-meta">
+                            <span className={`dashboard-status ${chapter.is_published ? "published" : "draft"}`}>
+                              {chapter.is_published ? "✓ Publié" : "Brouillon"}
+                            </span>
+                            {chapter.image_url && <span className="dashboard-tag">🎨 Image IA</span>}
+                            {chapter.medias.some(m => m.type === "sound") && (
+                              <span className="dashboard-tag">🎵 Son</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="dashboard-chapter-actions">
+                        {!chapter.is_published && (
+                          <>
+                            <Link
+                              href={`/dashboard/chapter/${chapter.order}/edit`}
+                              className="btn-choice btn-sm"
+                            >
+                              Éditer
+                            </Link>
+                            <button
+                              className="btn-delete btn-sm"
+                              onClick={() => handleDeleteChapter(chapter.order)}
+                            >
+                              Supprimer
+                            </button>
+                          </>
+                        )}
+                        {chapter.is_published && (
+                          <Link
+                            href={`/book/${project.slug}/${chapter.order}`}
+                            className="link"
+                            target="_blank"
+                          >
+                            Lire →
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
