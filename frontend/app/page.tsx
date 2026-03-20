@@ -34,17 +34,24 @@ export default function Home() {
       <Navbar />
       <h1>Bibliothèque Immers'Write</h1>
       <h2>Découvrer les histoires, entrer dans les mondes...</h2>
-      <div className="container-book">
-        {books.map((book) => (
-          <CardBook
-            key={book.id}
-            src={book.cover_url}
-            title={book.title}
-            description={book.description}
-            link={`/book/${book.slug}`}
-          />
-        ))}
-      </div>
+      {books.length === 0 ? (     
+        <div className="home-empty">
+          <p>Aucune histoire disponible pour l'instant.</p>
+          <p className="home-empty-hint">Les auteurs préparent leurs mondes...</p>
+        </div>
+      ) : (
+        <div className="container-book">
+          {books.map((book) => (
+            <CardBook
+              key={book.id}
+              src={book.cover_url}
+              title={book.title}
+              description={book.description}
+              link={`/book/${book.slug}`}
+            />
+          ))}
+        </div>
+      )}
       <Footer />
     </div>
   );
