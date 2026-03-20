@@ -1,17 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Echo from "@/components/Echo";
-import { getChapterByOrder, getChaptersBySlug, type Chapter } from "@/lib/api/chapters";
+import { getChapterByOrder, getChaptersBySlug, type Chapter, type Media } from "@/lib/api/chapters";
 import "@/styles/chapter.css";
 import "@/styles/responsive.css";
 
-
 function SoundCloudPlayer({ url, title }: { url: string; title?: string | null }) {
-  
+
   const embedUrl = url.startsWith("https://w.soundcloud.com")
     ? url
     : `https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&color=%23B38839&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false`;
@@ -91,7 +90,7 @@ export default function ChapterPage() {
       setLoading(true);
       setError(null);
       try {
-        // Chargement en parallèle : chapitre + liste complète (pour le total)
+        
         const [chapterData, allChapters] = await Promise.all([
           getChapterByOrder(slug, order),
           getChaptersBySlug(slug),
@@ -137,6 +136,9 @@ export default function ChapterPage() {
     );
   }
 
+  const importedSounds  = chapter.medias.filter((m: Media) => m.type === "sound");
+  const importedImages  = chapter.medias.filter((m: Media) => m.type === "image");
+
   return (
     <div className={`chapter-page ${!chapter.image_url ? "chapter-page-no-image" : ""}`}>
 
@@ -174,7 +176,38 @@ export default function ChapterPage() {
               </p>
             )}
 
-            
+          {/* ── Sons importés (medias type "sound") ── */}
+            {importedSounds.length > 0 && (
+              <div className="chapter-imported-sounds">
+                {importedSounds.map((media: Media) => (
+                  <SoundCloudPlayer
+                    key={media.id}
+                    url={media.url}
+                    title={media.title}
+                  />
+                ))}
+              </div>
+            )}
+ 
+            {/* ── Images importées (medias type "image") ── */}
+            {importedImages.length > 0 && (
+              <div className="chapter-imported-images">
+                {importedImages.map((media: Media) => (
+                  <figure key={media.id} className="chapter-imported-figure">
+                    <img
+                      src={media.url}
+                      alt={media.title || "Illustration"}
+                      className="chapter-imported-image"
+                    />
+                    {media.title && (
+                      <figcaption className="chapter-imported-caption">
+                        {media.title}
+                      </figcaption>
+                    )}
+                  </figure>
+                ))}
+              </div>
+            )}   
 
             {/* Séparateur décoratif */}
             <div className="chapter-divider">

@@ -171,7 +171,9 @@
 
 
 .dashboard-project-card {
-  padding: 1.5rem;
+  padding: 1rem;
+  align-items: flex-start;
+  justify-content: center;
 }
 
 .dashboard-project-info {
@@ -195,6 +197,7 @@
   background: var(--gradient-gold);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  text-align: left;
 }
 
 .dashboard-project-author {

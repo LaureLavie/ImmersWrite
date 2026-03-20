@@ -1,5 +1,5 @@
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export interface Chapter {
   id: number;
@@ -11,9 +11,18 @@ export interface Chapter {
   sound_url: string | null;      
   sound_title: string | null;
   is_published: boolean;
+  medias: Media[];
   created_at: string;
 }
 
+export interface Media {
+  id: number;
+  chapter_id: number;
+  type: "image" | "sound";
+  url: string;
+  title: string | null;
+  created_at: string;
+}
 
 export async function getChaptersBySlug(slug: string): Promise<Chapter[]> {
   const res = await fetch(`${API_URL}/books/${slug}/chapters`, {
