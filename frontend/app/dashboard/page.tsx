@@ -1,10 +1,11 @@
 "use client";
 
-
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
+import ConfirmModal from "@/components/ConfirmModal";
+import { useModal } from "@/hooks/useModal";
 import { getAuthToken } from "@/lib/auth/cookies";
 import {
   getMyProject,
@@ -17,13 +18,6 @@ import "@/styles/global.css";
 import "@/styles/responsive.css";
 import "@/styles/dashboard.css";
 
-export interface DeleteProjectResponse {
-  message: string;
-  deleted_project_id: number;
-  deleted_project_title: string;
-  chapters_deleted: number;
-}
-
 export default function DashboardPage() {
   const router = useRouter();
 
@@ -35,6 +29,8 @@ export default function DashboardPage() {
   const [deletingProject, setDeletingProject] = useState(false);
 
 
+  const { isOpen, config, openModal, closeModal } = useModal();
+
   const [form, setForm] = useState({
     title: "",
     author_name: "",
@@ -42,16 +38,11 @@ export default function DashboardPage() {
     slug: "",
   });
 
-  useEffect(() => {
-    loadProject();
-  }, []);
+  useEffect(() => { loadProject(); }, []);
 
   async function loadProject() {
     const token = getAuthToken();
-    if (!token) {
-      router.push("/login");
-      return;
-    }
+    if (!token) { router.push("/login"); return; }
     try {
       const data = await getMyProject(token);
       setProject(data);
@@ -65,11 +56,11 @@ export default function DashboardPage() {
   function titleToSlug(title: string): string {
     return title
       .toLowerCase()
-      .normalize("NFD")                
-      .replace(/[\u0300-\u036f]/g, "") 
-      .replace(/[^a-z0-9\s-]/g, "")  
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9\s-]/g, "")
       .trim()
-      .replace(/\s+/g, "-");          
+      .replace(/\s+/g, "-");
   }
 
   function handleTitleChange(title: string) {
@@ -79,19 +70,10 @@ export default function DashboardPage() {
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-
-    if (!form.title.trim()) {
-      setError("Le titre est obligatoire.");
-      return;
-    }
-    if (!form.author_name.trim()) {
-      setError("Ton nom d'auteur est obligatoire.");
-      return;
-    }
-
+    if (!form.title.trim()) { setError("Le titre est obligatoire."); return; }
+    if (!form.author_name.trim()) { setError("Ton nom d'auteur est obligatoire."); return; }
     const token = getAuthToken();
     if (!token) return;
-
     setSaving(true);
     try {
       const newProject = await createProject(token, {
@@ -109,35 +91,65 @@ export default function DashboardPage() {
     }
   }
 
-  async function handleDeleteChapter(order: number) {
-    if (!confirm(`Supprimer le chapitre ${order} ? Cette action est irréversible.`)) return;
+  
+  async function doDeleteChapter(order: number) {
     const token = getAuthToken();
     if (!token) return;
     try {
       await deleteChapter(token, order);
-      await loadProject(); 
+      await loadProject();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Impossible de supprimer ce chapitre.");
     }
   }
 
-  async function handleDeleteProject() {
+  function handleDeleteChapter(order: number, isPublished: boolean) {
+    if (isPublished) {
+      openModal({
+        mode: "confirm",
+        variant: "warning",
+        title: "Supprimer un chapitre publié",
+        message: "Ce chapitre est actuellement visible par les lecteurs.",
+        detail: "Le supprimer le retirera définitivement. Les lecteurs ne pourront plus y accéder.",
+        confirmLabel: "Supprimer quand même",
+        cancelLabel: "Annuler",
+        onConfirm: () => { closeModal(); doDeleteChapter(order); },
+        onCancel: closeModal,
+      });
+    } else {
+      openModal({
+        mode: "confirm",
+        variant: "danger",
+        title: "Supprimer ce chapitre",
+        message: `Le chapitre ${String(order).padStart(2, "0")} sera supprimé définitivement.`,
+        detail: "Cette action est irréversible.",
+        confirmLabel: "Supprimer",
+        cancelLabel: "Annuler",
+        onConfirm: () => { closeModal(); doDeleteChapter(order); },
+        onCancel: closeModal,
+      });
+    }
+  }
 
-    if (!confirm(`⚠️ Supprimer le projet "${project?.title}" ?\n\nTous les chapitres et médias seront effacés définitivement.\nCette action est irréversible.`)) return;
-    if (!confirm("Dernière confirmation : es-tu sûre de vouloir tout supprimer ?")) return;
- 
+  
+  async function doDeleteProject() {
     const token = getAuthToken();
     if (!token) return;
- 
     setError("");
     setDeletingProject(true);
     try {
       const result = await deleteProject(token);
       setProject(null);
-      alert(
-        `${result.message}\n` +
-        `(${result.chapters_deleted} chapitre${result.chapters_deleted > 1 ? "s" : ""} supprimé${result.chapters_deleted > 1 ? "s" : ""})`
-      );
+      
+      openModal({
+        mode: "alert",
+        variant: "info",
+        title: "Projet supprimé",
+        message: result.message,
+        detail: `${result.chapters_deleted} chapitre${result.chapters_deleted > 1 ? "s" : ""} supprimé${result.chapters_deleted > 1 ? "s" : ""}.`,
+        confirmLabel: "Compris",
+        onConfirm: closeModal,
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Impossible de supprimer le projet.");
     } finally {
@@ -145,10 +157,40 @@ export default function DashboardPage() {
     }
   }
 
+  function openDeleteProjectModal2() {
+  
+    openModal({
+      mode: "confirm",
+      variant: "danger",
+      title: "Dernière confirmation",
+      message: "Toutes les données seront effacées définitivement.",
+      detail: "Chapitres, médias, images IA… Rien ne pourra être récupéré.",
+      confirmLabel: "Oui, tout supprimer",
+      cancelLabel: "Non, annuler",
+      onConfirm: () => { closeModal(); doDeleteProject(); },
+      onCancel: closeModal,
+    });
+  }
+
+  function handleDeleteProject() {
+   
+    openModal({
+      mode: "confirm",
+      variant: "warning",
+      title: `Supprimer "${project?.title}" ?`,
+      message: "Tous les chapitres et médias de ce projet seront effacés.",
+      detail: "Cette action est irréversible. Es-tu vraiment sûre ?",
+      confirmLabel: "Continuer",
+      cancelLabel: "Annuler",
+    
+      onConfirm: () => openDeleteProjectModal2(),
+      onCancel: closeModal,
+    });
+  }
+
   function nextChapterOrder(): number {
     if (!project || project.chapters.length === 0) return 1;
-    const maxOrder = Math.max(...project.chapters.map(c => c.order));
-    return maxOrder + 1;
+    return Math.max(...project.chapters.map(c => c.order)) + 1;
   }
 
 
@@ -167,7 +209,6 @@ export default function DashboardPage() {
 
       <div className="dashboard-content">
 
-        {/* ── En-tête ── */}
         <header className="dashboard-header">
           <h1>L'Atelier de l'Artiste</h1>
           <p className="dashboard-subtitle">
@@ -177,27 +218,19 @@ export default function DashboardPage() {
           </p>
         </header>
 
-        {/* ── Message d'erreur global ── */}
         {error && (
-          <div className="dashboard-error">
-            <p>{error}</p>
-          </div>
+          <div className="dashboard-error"><p>{error}</p></div>
         )}
 
-        {/* ═══════════════════════════════════════════════════════════════════
-            PAS DE PROJET → Formulaire de création (US-03 : PROJ-04)
-            ═══════════════════════════════════════════════════════════════════ */}
+        {/* PAS DE PROJET → création */}
         {!project && !creating && (
           <div className="dashboard-empty">
             <div className="dashboard-empty-icon">✦</div>
             <p>Tu n'as pas encore de projet.</p>
             <p className="dashboard-empty-hint">
-              Pour l'alpha, tu peux créer un seul projet — ton chef-d'œuvre.
+              Pour cette version Test, tu peux créer un seul projet — ton chef-d'œuvre.
             </p>
-            <button
-              className="btn-gold"
-              onClick={() => setCreating(true)}
-            >
+            <button className="btn-gold" onClick={() => setCreating(true)}>
               Créer mon projet
             </button>
           </div>
@@ -212,7 +245,7 @@ export default function DashboardPage() {
                 id="title"
                 className="input"
                 type="text"
-                placeholder="Mon histoire Immersive..."
+                placeholder="L'Ombre des Étoiles Perdues..."
                 value={form.title}
                 onChange={e => handleTitleChange(e.target.value)}
                 required
@@ -223,7 +256,7 @@ export default function DashboardPage() {
                 id="author_name"
                 className="input"
                 type="text"
-                placeholder="Mon Nom de Plume"
+                placeholder="Laure Lavie"
                 value={form.author_name}
                 onChange={e => setForm(f => ({ ...f, author_name: e.target.value }))}
                 required
@@ -249,24 +282,16 @@ export default function DashboardPage() {
                 placeholder="mon-histoire"
               />
               <p className="dashboard-hint">
-                Sera utilisé dans l'URL : immerswrite.com/book/<strong>{form.slug || "..."}</strong>
+                URL : immerswrite.com/book/<strong>{form.slug || "..."}</strong>
               </p>
 
               {error && <p className="dashboard-error-inline">{error}</p>}
 
               <div className="button-container">
-                <button
-                  type="button"
-                  className="btn-logout"
-                  onClick={() => setCreating(false)}
-                >
+                <button type="button" className="btn-logout" onClick={() => setCreating(false)}>
                   Annuler
                 </button>
-                <button
-                  type="submit"
-                  className="btn-gold"
-                  disabled={saving}
-                >
+                <button type="submit" className="btn-gold" disabled={saving}>
                   {saving ? "Création..." : "Forger mon univers ✦"}
                 </button>
               </div>
@@ -274,12 +299,9 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* ═══════════════════════════════════════════════════════════════════
-            PROJET EXISTANT
-            ═══════════════════════════════════════════════════════════════════ */}
+        {/* PROJET EXISTANT */}
         {project && (
           <>
-            {/* ── Carte projet ── */}
             <div className="dashboard-project-card card">
               <div className="dashboard-project-info">
                 {project.cover_url && (
@@ -307,15 +329,14 @@ export default function DashboardPage() {
                       Prévisualiser →
                     </Link>
                   </div>
-                   {/* ── Bouton de suppression du projet ── */}
-                   <div className="dashboard-project-danger-zone">
+                  <div className="dashboard-project-danger-zone">
                     <p className="dashboard-danger-label">Zone de danger</p>
                     <button
                       className="btn-delete btn-sm"
                       onClick={handleDeleteProject}
                       disabled={deletingProject}
                     >
-                      {deletingProject ? "Suppression..." : "🗑 Supprimer le projet"}
+                      {deletingProject ? "Suppression..." : "Supprimer le projet"}
                     </button>
                     <p className="dashboard-danger-hint">
                       Supprime le projet et tous ses chapitres. Irréversible.
@@ -325,7 +346,6 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* ── Liste des chapitres ── */}
             <div className="dashboard-chapters-section">
               <div className="dashboard-chapters-header">
                 <h2>Chapitres</h2>
@@ -340,9 +360,7 @@ export default function DashboardPage() {
               {project.chapters.length === 0 ? (
                 <div className="dashboard-chapters-empty">
                   <p>Aucun chapitre pour l'instant.</p>
-                  <p className="dashboard-hint">
-                    Commence à écrire ton premier chapitre !
-                  </p>
+                  <p className="dashboard-hint">Commence à écrire ton premier chapitre !</p>
                 </div>
               ) : (
                 <div className="dashboard-chapters-list">
@@ -368,23 +386,14 @@ export default function DashboardPage() {
                           </div>
                         </div>
                       </div>
-
                       <div className="dashboard-chapter-actions">
                         {!chapter.is_published && (
-                          <>
-                            <Link
-                              href={`/dashboard/chapter/${chapter.order}/edit`}
-                              className="btn-choice btn-sm"
-                            >
-                              Éditer
-                            </Link>
-                            <button
-                              className="btn-delete btn-sm"
-                              onClick={() => handleDeleteChapter(chapter.order)}
-                            >
-                              Supprimer
-                            </button>
-                          </>
+                          <Link
+                            href={`/dashboard/chapter/${chapter.order}/edit`}
+                            className="btn-choice btn-sm"
+                          >
+                            Éditer
+                          </Link>
                         )}
                         {chapter.is_published && (
                           <Link
@@ -395,6 +404,12 @@ export default function DashboardPage() {
                             Lire →
                           </Link>
                         )}
+                        <button
+                          className="btn-delete btn-sm"
+                          onClick={() => handleDeleteChapter(chapter.order, chapter.is_published)}
+                        >
+                          Supprimer
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -404,6 +419,11 @@ export default function DashboardPage() {
           </>
         )}
       </div>
+
+    
+      {config && (
+        <ConfirmModal isOpen={isOpen} {...config} />
+      )}
     </div>
   );
 }
