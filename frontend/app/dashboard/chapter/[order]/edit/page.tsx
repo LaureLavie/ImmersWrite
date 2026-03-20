@@ -388,14 +388,14 @@ export default function ChapterEditPage() {
                   className={mediaType === "image" ? "btn-gold btn-sm" : "btn-choice btn-sm"}
                   onClick={() => setMediaType("image")}
                 >
-                  📷 Image
+                  Image
                 </button>
                 <button
                   type="button"
                   className={mediaType === "sound" ? "btn-gold btn-sm" : "btn-choice btn-sm"}
                   onClick={() => setMediaType("sound")}
                 >
-                  🎵 Son
+                  Son
                 </button>
               </div>
               <input
