@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// Pages accessibles sans être connecté
-const PUBLIC_PATHS = [
+// Pages TOUJOURS accessibles à tous (même non connecté)
+// La page d'accueil "/" est publique — c'est la landing page Bienvenue
+const ALWAYS_PUBLIC = ["/"];
+
+// Pages d'authentification : accessibles sans connexion,
+// mais si l'utilisateur est connecté → on le redirige vers son espace
+const AUTH_PAGES = [
   "/login",
   "/register",
   "/confirm",
@@ -28,14 +33,24 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get("access_token")?.value;
   const role = request.cookies.get("user_role")?.value;
 
-  const isPublicPath = PUBLIC_PATHS.some(
+  const isAlwaysPublic = ALWAYS_PUBLIC.some(
+    (p) => pathname === p
+  );
+
+  const isAuthPage = AUTH_PAGES.some(
     (p) => pathname === p || pathname.startsWith(p + "/")
   );
 
-  // ── 3. Utilisateur NON connecté ──────────────────────────────────────────
+  // ── 3. Page toujours publique "/" → laisser passer tout le monde ─────────
+  // (le smart redirect est géré côté client dans le bouton CTA)
+  if (isAlwaysPublic) {
+    return NextResponse.next();
+  }
+
+  // ── 4. Utilisateur NON connecté ──────────────────────────────────────────
   if (!token) {
-    if (isPublicPath) {
-      // Page publique accessible → OK
+    if (isAuthPage) {
+    // Page d'auth accessible → OK
       return NextResponse.next();
     }
     // Page privée → redirection vers /login avec paramètre de retour
@@ -44,30 +59,26 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // ── 4. Utilisateur CONNECTÉ sur une page auth → redirection selon rôle ──
-  if (isPublicPath) {
+  // ── 5. Utilisateur CONNECTÉ sur une page d'auth → redirection selon rôle ─
+  if (isAuthPage) {
     if (role === "auteur") {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
-    if (role === "lecteur") return NextResponse.redirect(new URL("/", request.url));
-    return NextResponse.redirect(new URL("/", request.url));
+    // Lecteur ou rôle inconnu → bibliothèque
+    return NextResponse.redirect(new URL("/bibliotheque", request.url));
   }
 
-  // ── 5. Protection du dashboard : auteurs uniquement ──────────────────────
+  // ── 6. Protection du dashboard : auteurs uniquement ──────────────────────
   if (pathname.startsWith("/dashboard") && role !== "auteur") {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/bibliotheque", request.url));
   }
-  // ── 6. Toutes les autres pages privées sont accessibles → OK ─────────────
-  if (pathname.startsWith("/") && !token) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("redirect", pathname);
-    return NextResponse.redirect(loginUrl);
-  }
+
+  // ── 7. Toutes les autres pages privées sont accessibles → OK ─────────────
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-  
     "/((?!_next/static|_next/image|favicon.ico).*)",
   ],
 };

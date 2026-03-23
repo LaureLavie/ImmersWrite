@@ -89,7 +89,7 @@ export default function BookPage() {
         </section>
 
         <div className="book-footer-section">
-          <Link href="/" className="book-back-link">
+          <Link href="/bibliotheque" className="book-back-link">
             ← retour à la bibliothèque
           </Link>
         </div>
