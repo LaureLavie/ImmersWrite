@@ -60,7 +60,7 @@ export default function Navbar() {
         )}
         {/* Bibliothèque → tous les rôles */}
         <li>
-          <Link href="/" className="navlink" onClick={closeMenu}>
+          <Link href="/bibliotheque" className="navlink" onClick={closeMenu}>
             Bibliothèque
           </Link>
         </li>
