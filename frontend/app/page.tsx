@@ -84,7 +84,7 @@ export default function WelcomePage() {
 
         <p className="welcome-subtitle">
           Au seuil de deux mondes — là où l'imagination de l'auteur
-          <br />rencontre la sensibilité du lecteur.
+          <br />rencontre l'émotion du lecteur.
         </p>
       </section>
 
@@ -107,7 +107,6 @@ export default function WelcomePage() {
       <section className="welcome-propositions">
         <div className="welcome-card">
           <div className="welcome-card-header">
-            <span className="welcome-card-symbol">📖</span>
             <h2 className="welcome-card-title">Pour le Passeur</h2>
             <span className="welcome-card-role">Lecteur</span>
           </div>
@@ -117,7 +116,7 @@ export default function WelcomePage() {
           <p className="welcome-card-desc">
             Une expérience immersive chapitre par chapitre — les images générées
             par IA, les ambiances sonores et les mots de l'auteur se fondent
-            en un seul voyage sensoriel. Pour retrouver du sens et de la profondeur.
+            en un seul voyage immersif. Pour retrouver du sens et de la profondeur.
           </p>
           <ul className="welcome-card-features">
             <li>✦ Lecture immersive avec visuels IA</li>
@@ -127,14 +126,13 @@ export default function WelcomePage() {
         </div>
 
         <div className="welcome-card welcome-card-artiste">
-          <div className="welcome-card-header">
-            <span className="welcome-card-symbol">✍️</span>
+          <div className="welcome-card-header">          
             <h2 className="welcome-card-title">Pour l'Artiste</h2>
             <span className="welcome-card-role">Auteur</span>
           </div>
           <blockquote className="welcome-card-quote">
             "Tu n'écris pas seulement des histoires,
-            <br />tu explores des <em>mondes</em>."
+            <br />tu crées des <em>mondes</em>."
           </blockquote>
           <p className="welcome-card-desc">
             Un atelier tout-en-un pour donner vie à ton univers nativement.
@@ -145,6 +143,7 @@ export default function WelcomePage() {
             <li>✦ Éditeur de texte épuré</li>
             <li>✦ Génération d'images IA intégrée</li>
             <li>✦ Import de médias (sons, images)</li>
+            <li>✦ En Version 2, il y aura la génération musique et texte</li>
           </ul>
         </div>
       </section>
@@ -159,7 +158,7 @@ export default function WelcomePage() {
         <p className="welcome-vision-text">
           Immers'Write n'est pas une plateforme de plus.
           <br />C'est un <strong>seuil</strong>, un <strong>espace protégé</strong>,
-          une <strong>invitation au voyage intérieur</strong>.
+          une <strong>invitation à l'immersion dans leshistoires</strong>.
         </p>
         <p className="welcome-vision-sub">
           "Le code est le corps, l'imagination est l'âme."
@@ -177,29 +176,14 @@ export default function WelcomePage() {
           <span className="welcome-cta-label">Franchir le seuil</span>
           <span className="welcome-cta-arrow">→</span>
         </button>
-
-        {mounted && !isLoggedIn && (
-          <p className="welcome-cta-hint">
-            Déjà de l'autre côté ?{" "}
-            <Link href="/login" className="link">
-              Se connecter
-            </Link>
-          </p>
-        )}
-
-        {mounted && isLoggedIn && (
-          <p className="welcome-cta-hint">
-            Tu es déjà connecté·e. Bienvenue de retour ✦
-          </p>
-        )}
       </section>
 
       {/* ── Contexte projet (alpha) ── */}
       <section className="welcome-alpha-banner">
         <p>
-          <span className="welcome-alpha-badge">Phase Alpha · Juin 2026</span>
+          <span className="welcome-alpha-badge">Phase Alpha · Juin 2026</span><br/>
           Immers'Write est actuellement en développement actif.
-          Suis l'aventure sur{" "}
+          <br/>Suis l'aventure sur{" "}
           <a
             href="https://immerswrite.blogspot.com"
             target="_blank"
