@@ -38,26 +38,7 @@ export default function WelcomePage() {
   return (
     <div className="welcome-page">
 
-      {/* ── Navigation minimale ── */}
-      <nav className="welcome-nav">
-        <div className="welcome-nav-logo">
-          <Image src={LogoIW} alt="Logo Immers'Write" width={36} height={36} priority />
-          <span className="welcome-nav-brand">Immers'Write</span>
-        </div>
-        {mounted && (
-          <div className="welcome-nav-links">
-            {isLoggedIn ? (
-              <Link href={getAuthRole() === "auteur" ? "/dashboard" : "/bibliotheque"} className="welcome-nav-link">
-                Mon espace →
-              </Link>
-            ) : (
-              <Link href="/login" className="welcome-nav-link">
-                Se connecter
-              </Link>
-            )}
-          </div>
-        )}
-      </nav>
+      
 
       {/* ── Hero ── */}
       <section className="welcome-hero">
