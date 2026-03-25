@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import LogoIW from "../../public/LogoIW.svg";
-import IWgold from "../../public/IWgold.webp";
 import "@/styles/global.css";
 import "@/styles/auth.css";
 import "@/styles/responsive.css";
@@ -49,8 +48,7 @@ export default function ForgotPasswordPage() {
           <div className="LogoIW">
             <Image src={LogoIW} alt="Logo Immers'Write" loading="eager" />
           </div>
-          <div className="tagline">
-            <Image src={IWgold} alt="Plume Immers'Write" loading="eager" />
+          <div className="tagline">            
             <p>where words become worlds</p>
           </div>
         </div>
