@@ -124,7 +124,7 @@ export default function LoginPage() {
             <input
               id="password"
                 type="password"
-                placeholder="*****"
+                placeholder="********"
                 className="input"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
