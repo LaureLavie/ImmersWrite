@@ -3,17 +3,18 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 5rem;
-  max-width: 500px;
-  width: 100%;
+  max-width: 480px;
+  max-height: 100dvh;
 }
 
 .LogoIW {
   display: flex;
   justify-content: center;
+  align-content: center;
 }
 
 .LogoIW img {
+  max-width: 480px;
   height: auto;
   background: linear-gradient(200deg, var(--amber) 0%, var(--lunar) 50%, var(--amber) 100%);
   -webkit-mask-image: url('/LogoIW.svg');
@@ -34,29 +35,19 @@
   flex-direction: horizontal;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
   margin-bottom: 1rem;
 }
 
 .tagline p{
-  text-align: left;
+  text-align: center;
   transition: opacity 300ms;
   font-family: var(--font-title);
-  line-height: 1.6;
   letter-spacing: 0.1em;
   background: var(--gradient-gold);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   font-size: 1.5rem;
-}
-
-.tagline img{
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  max-width: 3rem;
-  height: auto;
 }
 
 

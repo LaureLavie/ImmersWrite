@@ -4,7 +4,6 @@ import { useState, Suspense} from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import LogoIW from "../../public/LogoIW.svg";
-import IWgold from "../../public/IWgold.webp";
 import { saveAuthToken } from "@/lib/auth/cookies";
 import "@/styles/global.css";
 import "@/styles/auth.css";
@@ -91,8 +90,7 @@ export default function LoginPage() {
             <Image src={LogoIW} alt="Logo Immers'Write" loading="eager"/>
           </div>
         {/* Tagline */}
-          <div className="tagline">
-            <Image src={IWgold} alt="Plume Immers'Write" loading="eager"/>
+          <div className="tagline">            
             <p>
               where words become worlds
             </p>

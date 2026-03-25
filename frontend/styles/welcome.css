@@ -92,69 +92,24 @@
   transform: scaleX(-1);
 }
 
-.welcome-subtitle {
-  position: relative;
-  z-index: 1;
-  font-family: var(--font-subtitle);
-  font-size: 1.1rem;
-  line-height: 1.85;
-  color: var(--lunar);
-  opacity: 0.65;
-  text-align: center;
-  animation: welcomeFadeUp 0.85s 0.6s ease both;
-}
-
-@keyframes welcomeFadeUp {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ── Séparateur décoratif ── */
-.welcome-divider {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  width: 100%;
-  max-width: 460px;
-  padding: 0.25rem 2rem;
-  opacity: 0.3;
-}
-
-.welcome-divider::before,
-.welcome-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--amber), transparent);
-}
-
-.welcome-divider span {
-  font-size: 0.85rem;
-  color: var(--amber);
-  flex-shrink: 0;
-}
 
 /* ── Manifeste ── */
 .welcome-manifeste {
   max-width: 560px;
-  padding: 1.75rem 2rem;
+  padding: 2rem;
   text-align: center;
 }
 
 .welcome-manifeste-text {
   font-family: var(--font-subtitle);
-  font-size: 1rem;
+  font-size: 1.1rem;
   line-height: 1.9;
-  color: var(--lunar);
-  opacity: 0.65;
-  font-style: italic;
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-style: normal;
 }
 
-.welcome-manifeste-text em {
-  color: var(--amber);
-  font-style: normal;
-  opacity: 1;
-}
 
 /* ── style cardBook ── */
 .welcome-propositions {
@@ -184,15 +139,6 @@
   box-shadow: 0 4px 10px rgba(179, 136, 57, 0.45);
 }
 
-.welcome-card-artiste {
-  border-color: rgba(107, 78, 154, 0.55);
-  box-shadow: 0 6px 10px rgba(107, 78, 154, 0.2);
-}
-
-.welcome-card-artiste:hover {
-  box-shadow: 0 4px 10px rgba(107, 78, 154, 0.4);
-}
-
 .welcome-card-header {
   display: flex;
   align-items: baseline;
@@ -203,7 +149,7 @@
 /* Titre card */
 .welcome-card-title {
   font-family: var(--font-subtitle);
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: 400;
   margin: 0;
   text-align: left;
@@ -220,48 +166,24 @@
   -webkit-text-fill-color: transparent;
 }
 
-.welcome-card-role {
-  font-family: var(--font-body);
-  font-size: 0.68rem;
-  color: var(--lunar);
-  opacity: 0.35;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
 
 .welcome-card-quote {
   font-family: var(--font-subtitle);
-  font-size: 0.95rem;
-  font-style: italic;
+  font-size: 1rem;
+  font-style: normal;
   color: var(--lunar);
-  opacity: 0.85;
   border-left: 1px solid rgba(179, 136, 57, 0.45);
   padding-left: 0.9rem;
   margin: 0;
   line-height: 1.7;
 }
 
-.welcome-card-artiste .welcome-card-quote {
-  border-left-color: rgba(107, 78, 154, 0.45);
-}
-
-.welcome-card-quote em {
-  font-style: normal;
-  color: var(--amber);
-}
-
-.welcome-card-artiste .welcome-card-quote em {
-  color: #9b77d4;
-}
 
 .welcome-card-desc {
   font-family: var(--font-body);
-  font-size: 0.88rem;
+  font-size: 1rem;
   line-height: 1.75;
   color: var(--lunar);
-  opacity: 0.5;
   margin: 0;
 }
 
@@ -271,12 +193,12 @@
   margin: 0.25rem 0 0;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.2rem;
 }
 
 .welcome-card-features li {
   font-family: var(--font-body);
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: var(--lunar);
   opacity: 0.42;
   letter-spacing: 0.01em;
@@ -293,24 +215,11 @@
   font-family: var(--font-subtitle);
   font-size: 1rem;
   line-height: 1.85;
-  color: var(--lunar);
-  opacity: 0.65;
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.welcome-vision-text strong {
-  color: var(--amber);
-  font-weight: 400;
-}
-
-.welcome-vision-sub {
-  font-family: var(--font-body);
-  font-size: 0.78rem;
-  color: var(--lunar);
-  opacity: 0.28;
-  margin-top: 0.75rem;
-  letter-spacing: 0.05em;
-  font-style: italic;
-}
 
 /* ── CTA ── */
 .welcome-cta-section {
@@ -332,7 +241,7 @@
   border: 1px solid var(--amber);
   cursor: pointer;
   font-family: var(--font-title);
-  font-size: 1.1rem;
+  font-size: 1.5rem;
   color: var(--midnight);
   letter-spacing: 0.06em;
   overflow: hidden;
@@ -357,14 +266,8 @@
   z-index: 1;
 }
 
-.welcome-cta-arrow {
-  position: relative;
-  z-index: 1;
-  font-size: 0.95rem;
-  transition: transform 0.3s ease;
-}
 
-.welcome-cta-btn:hover .welcome-cta-arrow {
+.welcome-cta-btn:hover  {
   transform: translateX(4px);
 }
 
@@ -378,9 +281,8 @@
 
 .welcome-alpha-banner p {
   font-family: var(--font-body);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: var(--lunar);
-  opacity: 0.35;
   line-height: 1.8;
   text-align: center;
 }
@@ -406,7 +308,7 @@
 /* ── Footer ── */
 .welcome-footer {
   width: 100%;
-  padding: 1.25rem 2rem;
+  padding:2rem;
   text-align: center;
   border-top: 1px solid rgba(179, 136, 57, 0.07);
 }

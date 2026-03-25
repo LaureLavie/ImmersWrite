@@ -3,9 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 import LogoIW from "../public/LogoIW.svg";
-import IWgold from "../public/IWgold.webp";
 import { getAuthToken, getAuthRole } from "@/lib/auth/cookies";
 import "@/styles/global.css";
 import "@/styles/welcome.css";
@@ -57,29 +55,20 @@ export default function WelcomePage() {
 
         <h1 className="welcome-title">Immers'Write</h1>
 
-        <div className="welcome-tagline-row">
-          <Image src={IWgold} alt="Plume dorée" width={28} height={28} />
-          <p className="welcome-tagline-text">where words become worlds</p>
-          <Image src={IWgold} alt="Plume dorée" width={28} height={28} className="welcome-tagline-flip" />
+        <div className="welcome-tagline-row">          
+          <p className="welcome-tagline-text">where words become worlds</p>          
         </div>
-
-        <p className="welcome-subtitle">
-          Au seuil de deux mondes — là où l'imagination de l'auteur
-          <br />rencontre l'émotion du lecteur.
-        </p>
       </section>
 
-      {/* ── Séparateur décoratif ── */}
-      <div className="welcome-divider" aria-hidden="true">
-        <span>✦</span>
-      </div>
 
       {/* ── Manifeste ── */}
       <section className="welcome-manifeste">
         <p className="welcome-manifeste-text">
           Dans un monde numérique saturé, Immers'Write est un refuge.
-          Une plateforme de <em>storytelling augmenté</em> qui marie littérature
-          et intelligence artificielle générative — pour que chaque histoire
+          <br />
+          Une plateforme de storytelling augmenté qui marie littérature
+          et intelligence artificielle générative 
+          <br /> — pour que chaque histoire
           devienne une expérience multisensorielle : texte, image, son.
         </p>
       </section>
@@ -89,16 +78,13 @@ export default function WelcomePage() {
         <div className="welcome-card">
           <div className="welcome-card-header">
             <h2 className="welcome-card-title">Pour le Passeur</h2>
-            <span className="welcome-card-role">Lecteur</span>
           </div>
           <blockquote className="welcome-card-quote">
-            "Tu ne lis pas des histoires. Tu les <em>vis</em>."
-          </blockquote>
-          <p className="welcome-card-desc">
-            Une expérience immersive chapitre par chapitre — les images générées
-            par IA, les ambiances sonores et les mots de l'auteur se fondent
+            "Tu ne lis pas des histoires. Tu les vis."
+            <br /> Une expérience immersive chapitre par chapitre 
+            <br /> — les images générées par IA, les ambiances sonores et les mots de l'auteur se fondent
             en un seul voyage immersif. Pour retrouver du sens et de la profondeur.
-          </p>
+          </blockquote>         
           <ul className="welcome-card-features">
             <li>✦ Lecture immersive avec visuels IA</li>
             <li>✦ Ambiances sonores intégrées</li>
@@ -106,43 +92,33 @@ export default function WelcomePage() {
           </ul>
         </div>
 
-        <div className="welcome-card welcome-card-artiste">
+        <div className="welcome-card">
           <div className="welcome-card-header">          
             <h2 className="welcome-card-title">Pour l'Artiste</h2>
-            <span className="welcome-card-role">Auteur</span>
           </div>
           <blockquote className="welcome-card-quote">
             "Tu n'écris pas seulement des histoires,
-            <br />tu crées des <em>mondes</em>."
-          </blockquote>
-          <p className="welcome-card-desc">
-            Un atelier tout-en-un pour donner vie à ton univers nativement.
-            Génère des illustrations avec DALL·E, importe tes ambiances sonores,
+            <br />tu crées des mondes."
+            <br /> Un atelier tout-en-un pour donner vie à ton univers nativement.
+            <br /> Génère des illustrations avec DALL·E, importe tes ambiances sonores,
             publie tes chapitres — sans jongler entre dix outils.
-          </p>
+          </blockquote>
           <ul className="welcome-card-features">
             <li>✦ Éditeur de texte épuré</li>
             <li>✦ Génération d'images IA intégrée</li>
             <li>✦ Import de médias (sons, images)</li>
-            <li>✦ En Version 2, il y aura la génération musique et texte</li>
+            <li>✦ En V2 : Génération de musique et de texte</li>
           </ul>
         </div>
       </section>
 
-      {/* ── Séparateur ── */}
-      <div className="welcome-divider" aria-hidden="true">
-        <span>◇</span>
-      </div>
 
       {/* ── Citation / vision ── */}
       <section className="welcome-vision">
         <p className="welcome-vision-text">
           Immers'Write n'est pas une plateforme de plus.
-          <br />C'est un <strong>seuil</strong>, un <strong>espace protégé</strong>,
-          une <strong>invitation à l'immersion dans leshistoires</strong>.
-        </p>
-        <p className="welcome-vision-sub">
-          "Le code est le corps, l'imagination est l'âme."
+          <br /> C'est un seuil, un espace protégé,
+          <br /> Une invitation à l'immersion dans les histoires.
         </p>
       </section>
 
@@ -155,7 +131,6 @@ export default function WelcomePage() {
         >
           <span className="welcome-cta-glow" aria-hidden="true" />
           <span className="welcome-cta-label">Franchir le seuil</span>
-          <span className="welcome-cta-arrow">→</span>
         </button>
       </section>
 
@@ -163,7 +138,7 @@ export default function WelcomePage() {
       <section className="welcome-alpha-banner">
         <p>
           <span className="welcome-alpha-badge">Phase Alpha · Juin 2026</span><br/>
-          Immers'Write est actuellement en développement actif.
+          Immers'Write est actuellement en cours de développement.
           <br/>Suis l'aventure sur{" "}
           <a
             href="https://immerswrite.blogspot.com"
