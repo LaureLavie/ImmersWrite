@@ -785,3 +785,258 @@ def delete_chapter_media(
 
     db.delete(media)
     db.commit()
+
+    # ─────────────────────────────────────────────────────────────────────────────
+# ROUTES VUES — incrémenter à chaque lecture
+# ─────────────────────────────────────────────────────────────────────────────
+
+@app.post("/books/{slug}/chapters/{order}/view", status_code=201)
+def record_view(slug: str, order: int, db: Session = Depends(get_db)):
+    """Public — appelé automatiquement quand un lecteur ouvre un chapitre."""
+    # On vérifie que le chapitre existe et est publié
+    book = db.query(models.Book).filter(models.Book.slug == slug).first()
+    if not book:
+        raise HTTPException(status_code=404, detail="Livre non trouvé")
+    chapter = (
+        db.query(models.Chapter)
+        .filter(
+            models.Chapter.book_id == book.id,
+            models.Chapter.order == order,
+            models.Chapter.is_published == True,
+        )
+        .first()
+    )
+    if not chapter:
+        raise HTTPException(status_code=404, detail="Chapitre non trouvé")
+
+    # On ajoute simplement une ligne dans chapter_views
+    view = models.ChapterView(chapter_id=chapter.id)
+    db.add(view)
+    db.commit()
+    return {"message": "Vue enregistrée"}
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ROUTES ÉCHOS
+# ─────────────────────────────────────────────────────────────────────────────
+
+@app.post("/books/{slug}/chapters/{order}/echo", status_code=201)
+def add_echo(
+    slug: str,
+    order: int,
+    data: schemas.EchoCreate,
+    db: Session = Depends(get_db),
+):
+    """Public — enregistre un clic sur un écho émotionnel."""
+    book = db.query(models.Book).filter(models.Book.slug == slug).first()
+    if not book:
+        raise HTTPException(status_code=404, detail="Livre non trouvé")
+    chapter = (
+        db.query(models.Chapter)
+        .filter(
+            models.Chapter.book_id == book.id,
+            models.Chapter.order == order,
+            models.Chapter.is_published == True,
+        )
+        .first()
+    )
+    if not chapter:
+        raise HTTPException(status_code=404, detail="Chapitre non trouvé")
+
+    echo = models.ChapterEcho(chapter_id=chapter.id, type=data.type)
+    db.add(echo)
+    db.commit()
+    return {"message": "Écho enregistré", "type": data.type}
+
+
+@app.get("/books/{slug}/chapters/{order}/echoes", response_model=schemas.EchoCountsResponse)
+def get_echoes(slug: str, order: int, db: Session = Depends(get_db)):
+    """Public — retourne les compteurs d'échos d'un chapitre."""
+    book = db.query(models.Book).filter(models.Book.slug == slug).first()
+    if not book:
+        raise HTTPException(status_code=404, detail="Livre non trouvé")
+    chapter = (
+        db.query(models.Chapter)
+        .filter(models.Chapter.book_id == book.id, models.Chapter.order == order)
+        .first()
+    )
+    if not chapter:
+        raise HTTPException(status_code=404, detail="Chapitre non trouvé")
+
+    # On initialise tous les types à 0
+    counts: dict[str, int] = {
+        "emerveillement": 0,
+        "resonance": 0,
+        "intrigue": 0,
+        "tristesse": 0,
+        "frisson": 0,
+    }
+    # On compte les échos depuis la BDD et on remplit le dict
+    echoes = db.query(models.ChapterEcho).filter(
+        models.ChapterEcho.chapter_id == chapter.id
+    ).all()
+    for echo in echoes:
+        if echo.type in counts:
+            counts[echo.type] += 1
+
+    total = sum(counts.values())
+    return schemas.EchoCountsResponse(chapter_id=chapter.id, total=total, counts=counts)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ROUTES COMMENTAIRES
+# ─────────────────────────────────────────────────────────────────────────────
+
+def _anonymize_email(email: str) -> str:
+    """Transforme 'laure@gmail.com' en 'lau***@gmail.com' pour l'affichage."""
+    if "@" not in email:
+        return "Lecteur"
+    local, domain = email.split("@", 1)
+    visible = local[:3] if len(local) >= 3 else local
+    return f"{visible}***@{domain}"
+
+
+def _build_comment_response(comment: models.Comment) -> schemas.CommentResponse:
+    """Construit un CommentResponse avec le label anonymisé et les réponses."""
+    user_label = None
+    if comment.user:
+        if comment.is_author_reply:
+            user_label = "✦ L'Auteur"
+        else:
+            user_label = _anonymize_email(comment.user.email)
+
+    return schemas.CommentResponse(
+        id=comment.id,
+        chapter_id=comment.chapter_id,
+        user_id=comment.user_id,
+        user_label=user_label,
+        parent_id=comment.parent_id,
+        content=comment.content,
+        is_author_reply=comment.is_author_reply,
+        created_at=comment.created_at,
+        # On construit récursivement les réponses
+        replies=[_build_comment_response(r) for r in comment.replies],
+    )
+
+
+@app.get("/books/{slug}/chapters/{order}/comments", response_model=list[schemas.CommentResponse])
+def get_comments(slug: str, order: int, db: Session = Depends(get_db)):
+    """Public — retourne les commentaires racine avec leurs réponses."""
+    book = db.query(models.Book).filter(models.Book.slug == slug).first()
+    if not book:
+        raise HTTPException(status_code=404, detail="Livre non trouvé")
+    chapter = (
+        db.query(models.Chapter)
+        .filter(models.Chapter.book_id == book.id, models.Chapter.order == order)
+        .first()
+    )
+    if not chapter:
+        raise HTTPException(status_code=404, detail="Chapitre non trouvé")
+
+    # Seulement les commentaires racine (parent_id = None)
+    root_comments = (
+        db.query(models.Comment)
+        .filter(
+            models.Comment.chapter_id == chapter.id,
+            models.Comment.parent_id == None,
+        )
+        .order_by(models.Comment.created_at.asc())
+        .all()
+    )
+    return [_build_comment_response(c) for c in root_comments]
+
+
+@app.post("/books/{slug}/chapters/{order}/comments", response_model=schemas.CommentResponse, status_code=201)
+def add_comment(
+    slug: str,
+    order: int,
+    data: schemas.CommentCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    """Authentifié — lecteur ou auteur peut commenter."""
+    book = db.query(models.Book).filter(models.Book.slug == slug).first()
+    if not book:
+        raise HTTPException(status_code=404, detail="Livre non trouvé")
+    chapter = (
+        db.query(models.Chapter)
+        .filter(
+            models.Chapter.book_id == book.id,
+            models.Chapter.order == order,
+            models.Chapter.is_published == True,
+        )
+        .first()
+    )
+    if not chapter:
+        raise HTTPException(status_code=404, detail="Chapitre non trouvé")
+
+    # Si parent_id fourni, vérifier que ce commentaire existe
+    if data.parent_id is not None:
+        parent = db.query(models.Comment).filter(
+            models.Comment.id == data.parent_id,
+            models.Comment.chapter_id == chapter.id,
+        ).first()
+        if not parent:
+            raise HTTPException(status_code=404, detail="Commentaire parent introuvable.")
+
+    # Est-ce que c'est l'auteur du livre qui répond ?
+    is_author_reply = (book.user_id == current_user.id)
+
+    new_comment = models.Comment(
+        chapter_id=chapter.id,
+        user_id=current_user.id,
+        parent_id=data.parent_id,
+        content=data.content,
+        is_author_reply=is_author_reply,
+    )
+    db.add(new_comment)
+    db.commit()
+    db.refresh(new_comment)
+    return _build_comment_response(new_comment)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ROUTE STATS AUTEUR — dashboard uniquement
+# ─────────────────────────────────────────────────────────────────────────────
+
+@app.get("/author/project/stats", response_model=schemas.ProjectStatsResponse)
+def get_project_stats(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(require_auteur),
+):
+    """Auteur uniquement — statistiques de vues et d'échos par chapitre."""
+    project = db.query(models.Book).filter(models.Book.user_id == current_user.id).first()
+    if not project:
+        raise HTTPException(status_code=404, detail="Aucun projet trouvé.")
+
+    chapters_stats = []
+    total_views = 0
+    total_echoes = 0
+
+    for chapter in project.chapters:
+        # Compter les vues de ce chapitre
+        view_count = db.query(models.ChapterView).filter(
+            models.ChapterView.chapter_id == chapter.id
+        ).count()
+
+        # Compter les échos de ce chapitre
+        echo_total = db.query(models.ChapterEcho).filter(
+            models.ChapterEcho.chapter_id == chapter.id
+        ).count()
+
+        total_views += view_count
+        total_echoes += echo_total
+
+        chapters_stats.append(schemas.ChapterStatsItem(
+            chapter_id=chapter.id,
+            order=chapter.order,
+            title=chapter.title,
+            view_count=view_count,
+            echo_total=echo_total,
+        ))
+
+    return schemas.ProjectStatsResponse(
+        total_views=total_views,
+        total_echoes=total_echoes,
+        chapters=chapters_stats,
+    )
