@@ -6,6 +6,9 @@ interface ImmersAudioPlayerProps {
   title?: string | null;
 }
 
+
+  
+
 export default function ImmersAudioPlayer({ url, title }: ImmersAudioPlayerProps) {
   
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -15,14 +18,26 @@ export default function ImmersAudioPlayer({ url, title }: ImmersAudioPlayerProps
   const [duration, setDuration] = useState(0);
 
 
-  const handlePlayPause = () => {
+  const handlePlayPause = async() => {
     if (!audioRef.current) return;
+
+ 
+    if (!url || url.trim() === "" || url === "null") {
+      console.error("Lecture impossible : l'URL audio est vide ou invalide.");
+      return;
+    }
+    
     if (isPlaying) {
       audioRef.current.pause();
+      setIsPlaying(false);
     } else {
-      audioRef.current.play();
+      try {
+        await audioRef.current.play();
+        setIsPlaying(false);
+    } catch (err){
+        console.error("echec de la lecture", err);
+      }
     }
-    setIsPlaying(!isPlaying);
   };
 
   const handleStop = () => {
