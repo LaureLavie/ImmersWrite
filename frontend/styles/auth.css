@@ -14,7 +14,7 @@
 }
 
 .LogoIW img {
-  max-width: 480px;
+  max-width: 380px;
   height: auto;
   background: linear-gradient(200deg, var(--amber) 0%, var(--lunar) 50%, var(--amber) 100%);
   -webkit-mask-image: url('/LogoIW.svg');
