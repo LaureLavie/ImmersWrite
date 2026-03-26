@@ -1,0 +1,200 @@
+.comment-section {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 2rem 0 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.comment-section-title {
+  font-family: var(--font-subtitle);
+  font-size: 1.2rem;
+  color: var(--amber);
+  text-align: left;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 0.04em;
+  margin: 0;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(179, 136, 57, 0.15);
+}
+
+/* ── Carte commentaire ── */
+
+.comment-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.25rem 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(179, 136, 57, 0.1);
+  border-radius: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.comment-card:hover {
+  border-color: rgba(179, 136, 57, 0.22);
+}
+
+/* Commentaire de l'auteur : léger fond doré */
+.comment-card-author {
+  background: rgba(179, 136, 57, 0.06);
+  border-color: rgba(179, 136, 57, 0.25);
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.comment-user-label {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--lunar);
+  opacity: 0.5;
+  letter-spacing: 0.05em;
+}
+
+.comment-author-badge {
+  color: var(--amber);
+  opacity: 1;
+  font-style: italic;
+}
+
+.comment-date {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  color: var(--lunar);
+  opacity: 0.3;
+}
+
+.comment-content {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--lunar);
+  opacity: 0.85;
+  white-space: pre-wrap;
+  text-align: left;
+  margin: 0;
+}
+
+/* Bouton "Répondre" */
+.comment-reply-btn {
+  background: transparent;
+  border: none;
+  color: var(--amber);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  opacity: 0.55;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  transition: opacity 0.2s;
+  letter-spacing: 0.06em;
+}
+
+.comment-reply-btn:hover {
+  opacity: 1;
+}
+
+/* Formulaire de réponse */
+.comment-reply-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  padding: 0.75rem;
+  background: rgba(19, 15, 59, 0.4);
+  border-radius: 12px;
+  border: 1px solid rgba(179, 136, 57, 0.12);
+}
+
+/* Réponses imbriquées — léger décalage vers la droite */
+.comment-replies {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  padding-left: 1.25rem;
+  border-left: 1px solid rgba(179, 136, 57, 0.15);
+}
+
+/* ── Formulaire principal ── */
+
+.comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  background: rgba(19, 15, 59, 0.5);
+  border: 1px solid rgba(179, 136, 57, 0.2);
+  border-radius: 16px;
+}
+
+.comment-textarea {
+  width: 100%;
+  background: rgba(92, 74, 82, 0.2);
+  border: 1px solid rgba(179, 136, 57, 0.2);
+  border-radius: 12px;
+  color: var(--lunar);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  padding: 0.85rem 1rem;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.comment-textarea:focus {
+  border-color: rgba(179, 136, 57, 0.5);
+}
+
+.comment-textarea::placeholder {
+  color: rgba(235, 235, 235, 0.2);
+  font-style: italic;
+}
+
+.comment-form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.comment-char-count {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  color: var(--lunar);
+  opacity: 0.3;
+  margin-right: auto;
+}
+
+.comment-error {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--careful);
+  margin: 0;
+  text-align: left;
+}
+
+.comment-login-hint {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--lunar);
+  opacity: 0.45;
+  text-align: center;
+  font-style: italic;
+  padding: 1.5rem;
+}

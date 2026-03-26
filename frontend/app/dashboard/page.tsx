@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useModal } from "@/hooks/useModal";
 import { getAuthToken } from "@/lib/auth/cookies";
+import { getProjectStats, type ProjectStats } from "@/lib/api/engagement";
 import {
   getMyProject,
   createProject,
@@ -27,6 +28,7 @@ export default function DashboardPage() {
   const [creating, setCreating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deletingProject, setDeletingProject] = useState(false);
+  const [stats, setStats] = useState<ProjectStats | null>(null);
 
 
   const { isOpen, config, openModal, closeModal } = useModal();
@@ -44,8 +46,12 @@ export default function DashboardPage() {
     const token = getAuthToken();
     if (!token) { router.push("/login"); return; }
     try {
-      const data = await getMyProject(token);
+      const [data, statsData] = await Promise.all([
+        getMyProject(token),
+        getProjectStats(token).catch(() => null),
+      ]);
       setProject(data);
+      setStats(statsData);
     } catch {
       setError("Impossible de charger le projet.");
     } finally {
@@ -345,6 +351,42 @@ export default function DashboardPage() {
                 </div>
               </div>
             </div>
+
+          {/* ── Bloc statistiques ── */}
+          {stats && (
+            <div className="dashboard-stats-section card">
+              <h2>Statistiques ✦</h2>
+              <div className="dashboard-stats-totals">
+                <div className="dashboard-stat-item">
+                  <span className="dashboard-stat-number">{stats.total_views}</span>
+                  <span className="dashboard-stat-label">lectures totales</span>
+                </div>
+                <div className="dashboard-stat-item">
+                  <span className="dashboard-stat-number">{stats.total_echoes}</span>
+                  <span className="dashboard-stat-label">échos reçus</span>
+                </div>
+              </div>
+
+              {stats.chapters.length > 0 && (
+                <div className="dashboard-stats-list">
+                  {stats.chapters.map(ch => (
+                    <div key={ch.chapter_id} className="dashboard-stats-row">
+                      <span className="dashboard-stats-chapter-order">
+                        {String(ch.order).padStart(2, "0")}
+                      </span>
+                      <span className="dashboard-stats-chapter-title">{ch.title}</span>
+                      <span className="dashboard-stats-badge">
+                        👁 {ch.view_count}
+                      </span>
+                      <span className="dashboard-stats-badge">
+                        ✦ {ch.echo_total}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
             <div className="dashboard-chapters-section">
               <div className="dashboard-chapters-header">
