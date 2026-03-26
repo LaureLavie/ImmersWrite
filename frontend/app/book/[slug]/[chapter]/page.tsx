@@ -5,28 +5,10 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Echo from "@/components/Echo";
+import ImmersAudioPlayer from "@/components/ImmersAudioPlayer";
 import { getChapterByOrder, getChaptersBySlug, type Chapter, type Media } from "@/lib/api/chapters";
 import "@/styles/chapter.css";
 import "@/styles/responsive.css";
-
-function SoundCloudPlayer({ url, title }: { url: string; title?: string | null }) {
-
-  const embedUrl = url.startsWith("https://w.soundcloud.com")
-    ? url
-    : `https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&color=%23B38839&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false`;
-
-  return (
-    <div className="chapter-audio-section">
-      {title && <span className="audio-label"> {title} </span>}
-      <iframe
-        src={embedUrl}
-        height="80"
-        allow="autoplay"
-        title={title || "Ambiance sonore"}
-      />
-    </div>
-  );
-}
 
 
 function ChapterNav({
@@ -84,6 +66,7 @@ export default function ChapterPage() {
   const [echoSent, setEchoSent] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
 
   useEffect(() => {
     async function fetchData() {
@@ -151,6 +134,16 @@ export default function ChapterPage() {
         />
       )}
 
+      {/* ── Audio principal du chapitre ── */}
+      {chapter.sound_url && (
+        <section className="chapter-audio-section">
+          <ImmersAudioPlayer
+            url={chapter.sound_url}
+            title={chapter.sound_title}
+          />
+        </section>
+      )}
+
       <div className="chapter-page-content">
         <Navbar />
 
@@ -158,12 +151,7 @@ export default function ChapterPage() {
         <section className="chapter-hero">
           <p className="chapter-number-label">Chapitre {chapter.order}</p>
           <h1 className="chapter-title">{chapter.title}</h1>
-        </section>
-
-        {/* ── Audio SoundCloud (si présent) ── */}
-        {chapter.sound_url && (
-          <SoundCloudPlayer url={chapter.sound_url} title={chapter.sound_title} />
-        )}
+        </section>    
 
         {/* ── Texte du chapitre ── */}
         <section className="chapter-reading-section">
@@ -176,18 +164,14 @@ export default function ChapterPage() {
               </p>
             )}
 
-          {/* ── Sons importés (medias type "sound") ── */}
-            {importedSounds.length > 0 && (
-              <div className="chapter-imported-sounds">
-                {importedSounds.map((media: Media) => (
-                  <SoundCloudPlayer
-                    key={media.id}
-                    url={media.url}
-                    title={media.title}
-                  />
-                ))}
-              </div>
-            )}
+            {/* les médias importés... */}
+            {importedSounds.map((media: Media) => (
+              <ImmersAudioPlayer
+                key={media.id}
+                url={media.url}
+                title={media.title}
+              />
+          ))}
  
             {/* ── Images importées (medias type "image") ── */}
             {importedImages.length > 0 && (

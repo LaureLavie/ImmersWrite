@@ -404,7 +404,7 @@ export default function ChapterEditPage() {
                 placeholder={
                   mediaType === "image"
                     ? "URL de l'image (Cloudinary, etc.)"
-                    : "URL embed SoundCloud (https://w.soundcloud.com/...)"
+                    : "URL de l'audio (soundcloud, etc)"
                 }
                 value={mediaUrl}
                 onChange={e => setMediaUrl(e.target.value)}

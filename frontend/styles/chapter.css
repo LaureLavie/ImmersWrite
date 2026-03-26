@@ -255,3 +255,127 @@
   text-align: center;
   letter-spacing: 0.03em;
 }
+
+/* ── Lecteur audio custom Immers'Write ── */
+
+.immersa-player {
+  background: rgba(19, 15, 59, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(179, 136, 57, 0.3);
+  border-radius: 50px;
+  padding: 0.85rem 1.5rem;
+  max-width: 620px;
+  width: 100%;
+  margin: 0 auto;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.immersa-player:hover {
+  border-color: rgba(179, 136, 57, 0.55);
+  box-shadow: 0 0 20px rgba(179, 136, 57, 0.08);
+}
+
+.immersa-player-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Boutons play / stop */
+.immersa-player-btn {
+  background: transparent;
+  border: 1px solid rgba(179, 136, 57, 0.35);
+  border-radius: 50%;
+  color: var(--amber);
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.immersa-player-btn:hover {
+  background: rgba(179, 136, 57, 0.12);
+  border-color: var(--amber);
+  box-shadow: 0 0 14px rgba(179, 136, 57, 0.2);
+  transform: scale(1.06);
+}
+
+.immersa-player-btn:disabled {
+  opacity: 0.25;
+  cursor: default;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Zone titre + barre + temps */
+.immersa-player-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0; /* empêche le débordement sur mobile */
+}
+
+.immersa-player-title {
+  font-family: var(--font-subtitle);
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--amber);
+  opacity: 0.8;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Barre de progression */
+.immersa-player-progress-container {
+  width: 100%;
+  cursor: pointer;
+  padding: 6px 0; /* zone cliquable plus grande */
+}
+
+.immersa-player-track {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  background: rgba(179, 136, 57, 0.18);
+  border-radius: 2px;
+}
+
+.immersa-player-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--gradient-gold);
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+
+/* Petit point curseur doré */
+.immersa-player-cursor {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: var(--amber);
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(179, 136, 57, 0.6);
+  transition: left 0.1s linear;
+}
+
+.immersa-player-time {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  color: var(--lunar);
+  opacity: 0.35;
+  letter-spacing: 0.1em;
+}
