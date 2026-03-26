@@ -6,10 +6,27 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Echo from "@/components/Echo";
 import ImmersAudioPlayer from "@/components/ImmersAudioPlayer";
+import EchoDisplay from "@/components/EchoDisplay";
+import CommentSection from "@/components/CommentSection";
+import { recordView, addEcho, getEchoes, getComments, type EchoCounts, type CommentType } from "@/lib/api/engagement";
 import { getChapterByOrder, getChaptersBySlug, type Chapter, type Media } from "@/lib/api/chapters";
+import "@/styles/echo-display.css";
+import "@/styles/comments.css";
 import "@/styles/chapter.css";
 import "@/styles/responsive.css";
 
+function SoundPlayer({ url, title }: { url: string; title?: string | null }) {
+  return (
+    <ImmersAudioPlayer
+      url={
+        url.startsWith("https://w.soundcloud.com")
+          ? url
+          : `https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}`
+      }
+      title={title}
+    />
+  );
+}
 
 function ChapterNav({
   slug,
@@ -66,6 +83,8 @@ export default function ChapterPage() {
   const [echoSent, setEchoSent] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [echoCounts, setEchoCounts] = useState<EchoCounts | null>(null);
+  const [comments, setComments] = useState<CommentType[]>([]);
 
 
   useEffect(() => {
@@ -74,12 +93,18 @@ export default function ChapterPage() {
       setError(null);
       try {
         
-        const [chapterData, allChapters] = await Promise.all([
+        const [chapterData, allChapters, echosData, commentsData] = await Promise.all([
           getChapterByOrder(slug, order),
           getChaptersBySlug(slug),
+          getEchoes(slug, order),
+          getComments(slug, order),
         ]);
         setChapter(chapterData);
         setTotalChapters(allChapters.length);
+        setEchoCounts(echosData);
+        setComments(commentsData);
+
+        recordView(slug, order);
       } catch {
         setError("Ce chapitre n'existe pas ou n'est plus disponible.");
       } finally {
@@ -206,10 +231,11 @@ export default function ChapterPage() {
         <section className="chapter-echo-section">
           {!echoSent ? (
             <Echo
-              onSelect={(echo) => {
-                console.log("Echo sélectionné :", echo);
+              onSelect={async (echo) => {
+                await addEcho(slug, order, echo);
+                const updated = await getEchoes(slug, order);
+                setEchoCounts(updated);
                 setEchoSent(true);
-                
               }}
             />
           ) : (
@@ -217,6 +243,22 @@ export default function ChapterPage() {
               Votre ressenti a été partagé. ✦
             </div>
           )}
+        </section>
+        
+        {/* ── Compteurs d'échos publics ── */}
+        {echoCounts && echoCounts.total > 0 && (
+          <div style={{ padding: "0 2rem" }}>
+            <EchoDisplay counts={echoCounts.counts} total={echoCounts.total} />
+          </div>
+        )}
+
+        {/* ── Section commentaires ── */}
+        <section className="chapter-reading-section">
+          <CommentSection
+            slug={slug}
+            order={order}
+            initialComments={comments}
+          />
         </section>
 
         {/* ── Navigation prev/next ── */}
