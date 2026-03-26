@@ -74,6 +74,14 @@ class Chapter(Base):
         back_populates="chapter",
         cascade="all, delete-orphan",
     )
+    views    = relationship("ChapterView",  back_populates="chapter", cascade="all, delete-orphan")
+    echoes   = relationship("ChapterEcho",  back_populates="chapter", cascade="all, delete-orphan")
+    comments = relationship(
+        "Comment",
+        back_populates="chapter",
+        cascade="all, delete-orphan",
+        primaryjoin="and_(Comment.chapter_id == Chapter.id, Comment.parent_id == None)",
+    )
 
 
 class Media(Base):
@@ -104,3 +112,47 @@ class GeneratedImage(Base):
     prompt     = Column(String, nullable=False)
     url        = Column(String, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class ChapterView(Base):
+    __tablename__ = "chapter_views"
+
+    id         = Column(Integer, primary_key=True, index=True)
+    chapter_id = Column(Integer, ForeignKey("chapters.id", ondelete="CASCADE"), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    chapter = relationship("Chapter", back_populates="views")
+
+
+class ChapterEcho(Base):
+    __tablename__ = "chapter_echoes"
+
+    id         = Column(Integer, primary_key=True, index=True)
+    chapter_id = Column(Integer, ForeignKey("chapters.id", ondelete="CASCADE"), nullable=False)
+    # emerveillement | resonance | intrigue | tristesse | frisson
+    type       = Column(String, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    chapter = relationship("Chapter", back_populates="echoes")
+
+
+class Comment(Base):
+    __tablename__ = "comments"
+
+    id               = Column(Integer, primary_key=True, index=True)
+    chapter_id       = Column(Integer, ForeignKey("chapters.id", ondelete="CASCADE"), nullable=False)
+    user_id          = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    parent_id        = Column(Integer, ForeignKey("comments.id", ondelete="CASCADE"), nullable=True)
+    content          = Column(Text, nullable=False)
+    is_author_reply  = Column(Boolean, default=False)
+    created_at       = Column(DateTime(timezone=True), server_default=func.now())
+
+    chapter  = relationship("Chapter", back_populates="comments")
+    user     = relationship("User")
+    replies  = relationship(
+        "Comment",
+        back_populates="parent",
+        foreign_keys="Comment.parent_id",
+        cascade="all, delete-orphan",
+    )
+    parent   = relationship("Comment", back_populates="replies", remote_side="Comment.id")
