@@ -210,3 +210,84 @@ class ImageResponse(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+    # ──────────────────────────────────────────────────────────────────────────────
+# Vues
+# ──────────────────────────────────────────────────────────────────────────────
+
+class ChapterViewsResponse(BaseModel):
+    chapter_id: int
+    view_count: int
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Échos
+# ──────────────────────────────────────────────────────────────────────────────
+
+VALID_ECHO_TYPES = {"emerveillement", "resonance", "intrigue", "tristesse", "frisson"}
+
+class EchoCreate(BaseModel):
+    type: str
+
+    @field_validator("type")
+    @classmethod
+    def validate_type(cls, v):
+        if v not in VALID_ECHO_TYPES:
+            raise ValueError(f"Type invalide. Choix possibles : {VALID_ECHO_TYPES}")
+        return v
+
+class EchoCountsResponse(BaseModel):
+    chapter_id: int
+    total: int
+    # ex: {"emerveillement": 5, "resonance": 3, "frisson": 1, ...}
+    counts: dict[str, int]
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Commentaires
+# ──────────────────────────────────────────────────────────────────────────────
+
+class CommentCreate(BaseModel):
+    content: str
+    parent_id: Optional[int] = None
+
+    @field_validator("content")
+    @classmethod
+    def content_not_empty(cls, v):
+        if not v.strip():
+            raise ValueError("Le commentaire ne peut pas être vide.")
+        if len(v) > 1000:
+            raise ValueError("Le commentaire ne peut pas dépasser 1000 caractères.")
+        return v.strip()
+
+
+class CommentResponse(BaseModel):
+    id: int
+    chapter_id: int
+    user_id: Optional[int] = None
+    # On affiche une version anonymisée de l'email : "lect***@gmail.com"
+    user_label: Optional[str] = None
+    parent_id: Optional[int] = None
+    content: str
+    is_author_reply: bool
+    created_at: datetime
+    replies: list["CommentResponse"] = []
+
+    model_config = {"from_attributes": True}
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Stats dashboard auteur
+# ──────────────────────────────────────────────────────────────────────────────
+
+class ChapterStatsItem(BaseModel):
+    chapter_id: int
+    order: int
+    title: str
+    view_count: int
+    echo_total: int
+
+class ProjectStatsResponse(BaseModel):
+    total_views: int
+    total_echoes: int
+    chapters: list[ChapterStatsItem]
