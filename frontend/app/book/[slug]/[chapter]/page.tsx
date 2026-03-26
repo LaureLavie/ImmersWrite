@@ -15,19 +15,6 @@ import "@/styles/comments.css";
 import "@/styles/chapter.css";
 import "@/styles/responsive.css";
 
-function SoundPlayer({ url, title }: { url: string; title?: string | null }) {
-  return (
-    <ImmersAudioPlayer
-      url={
-        url.startsWith("https://w.soundcloud.com")
-          ? url
-          : `https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}`
-      }
-      title={title}
-    />
-  );
-}
-
 function ChapterNav({
   slug,
   currentOrder,
@@ -243,7 +230,6 @@ export default function ChapterPage() {
               Votre ressenti a été partagé. ✦
             </div>
           )}
-        </section>
         
         {/* ── Compteurs d'échos publics ── */}
         {echoCounts && echoCounts.total > 0 && (
@@ -251,6 +237,7 @@ export default function ChapterPage() {
             <EchoDisplay counts={echoCounts.counts} total={echoCounts.total} />
           </div>
         )}
+        </section>
 
         {/* ── Section commentaires ── */}
         <section className="chapter-reading-section">

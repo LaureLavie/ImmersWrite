@@ -540,12 +540,7 @@ def delete_my_project(
     # len() sur la relation lazy-loaded → compte les chapitres liés
     chapters_count = len(project.chapters)
  
-    # ── Suppression en cascade ────────────────────────────────────────────────
-    # Grâce à cascade="all, delete-orphan" dans le modèle Book,
-    # SQLAlchemy supprime automatiquement :
-    #   • tous les Chapter liés au Book
-    #   • tous les Media liés à chaque Chapter
-    # Pas besoin de boucles manuelles.
+    # ── Suppression en cascade ──────────────────────────────────────────────── 
     db.delete(project)
     db.commit()
  
@@ -786,7 +781,7 @@ def delete_chapter_media(
     db.delete(media)
     db.commit()
 
-    # ─────────────────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────────
 # ROUTES VUES — incrémenter à chaque lecture
 # ─────────────────────────────────────────────────────────────────────────────
 

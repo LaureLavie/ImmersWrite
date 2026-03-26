@@ -55,12 +55,12 @@ export default function BookPage() {
         <section className="book-hero">
           <h1 className="book-title">{book.title}</h1>
           <p className="book-author">par {book.author}</p>
-          <span className="book-scroll-hint">↓ commencer la lecture</span>
         </section>
 
         {/* Zone de lecture */}
         <section className="book-reading-section">
           <div className="book-reading-inner">
+          <h2 className="book-chapters-title">Synopsis</h2>
 
             <p className="book-description">{book.description}</p>
 
