@@ -134,15 +134,7 @@ export default function ChapterPage() {
         />
       )}
 
-      {/* ── Audio principal du chapitre ── */}
-      {chapter.sound_url && (
-        <section className="chapter-audio-section">
-          <ImmersAudioPlayer
-            url={chapter.sound_url}
-            title={chapter.sound_title}
-          />
-        </section>
-      )}
+      
 
       <div className="chapter-page-content">
         <Navbar />
@@ -151,7 +143,17 @@ export default function ChapterPage() {
         <section className="chapter-hero">
           <p className="chapter-number-label">Chapitre {chapter.order}</p>
           <h1 className="chapter-title">{chapter.title}</h1>
-        </section>    
+        </section>   
+
+            {/* ── Audio principal du chapitre ── */}
+      {chapter.sound_url && (
+        <section className="chapter-audio-section">
+          <ImmersAudioPlayer
+            url={chapter.sound_url}
+            title={chapter.sound_title}
+          />
+        </section>
+      )}
 
         {/* ── Texte du chapitre ── */}
         <section className="chapter-reading-section">
@@ -163,7 +165,7 @@ export default function ChapterPage() {
                 Ce chapitre est en cours d'écriture...
               </p>
             )}
-
+        
             {/* les médias importés... */}
             {importedSounds.map((media: Media) => (
               <ImmersAudioPlayer
