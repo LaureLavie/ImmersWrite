@@ -7,16 +7,14 @@ interface ImmersAudioPlayerProps {
 }
 
 export default function ImmersAudioPlayer({ url, title }: ImmersAudioPlayerProps) {
-  // useRef = une "télécommande" directe vers la balise <audio> dans le DOM
+  
   const audioRef = useRef<HTMLAudioElement>(null);
-
-  // useState = la mémoire du composant (React re-dessine l'interface à chaque changement)
   const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);       // 0 à 100 (pour la barre %)
-  const [currentTime, setCurrentTime] = useState(0); // en secondes
-  const [duration, setDuration] = useState(0);       // durée totale en secondes
+  const [progress, setProgress] = useState(0); 
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
 
-  // Bascule Play ↔ Pause
+
   const handlePlayPause = () => {
     if (!audioRef.current) return;
     if (isPlaying) {
@@ -27,7 +25,6 @@ export default function ImmersAudioPlayer({ url, title }: ImmersAudioPlayerProps
     setIsPlaying(!isPlaying);
   };
 
-  // Stop = pause + retour au début
   const handleStop = () => {
     if (!audioRef.current) return;
     audioRef.current.pause();
@@ -37,7 +34,7 @@ export default function ImmersAudioPlayer({ url, title }: ImmersAudioPlayerProps
     setCurrentTime(0);
   };
 
-  // Appelé en continu pendant la lecture par l'événement onTimeUpdate de <audio>
+  
   const handleTimeUpdate = () => {
     if (!audioRef.current) return;
     const current = audioRef.current.currentTime;
@@ -46,19 +43,18 @@ export default function ImmersAudioPlayer({ url, title }: ImmersAudioPlayerProps
     if (total) setProgress((current / total) * 100);
   };
 
-  // Appelé une fois quand les métadonnées audio sont chargées (pour avoir la durée)
   const handleLoadedMetadata = () => {
     if (audioRef.current) setDuration(audioRef.current.duration);
   };
 
-  // Quand la musique se termine naturellement
+
   const handleEnded = () => {
     setIsPlaying(false);
     setProgress(0);
     setCurrentTime(0);
   };
 
-  // Clic sur la barre de progression → on calcule la position et on saute
+
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!audioRef.current || !duration) return;
     const rect = e.currentTarget.getBoundingClientRect();
@@ -69,7 +65,7 @@ export default function ImmersAudioPlayer({ url, title }: ImmersAudioPlayerProps
     setProgress(ratio * 100);
   };
 
-  // Convertit des secondes en "m:ss"
+
   const formatTime = (seconds: number): string => {
     if (isNaN(seconds) || seconds === 0) return "0:00";
     const mins = Math.floor(seconds / 60);
@@ -97,7 +93,7 @@ export default function ImmersAudioPlayer({ url, title }: ImmersAudioPlayerProps
           aria-label={isPlaying ? "Pause" : "Lecture"}
         >
           {isPlaying ? (
-            // Icône Pause (deux rectangles) — outline 1px comme ta charte
+          
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" strokeWidth="1" strokeLinecap="round">
               <rect x="6" y="4" width="4" height="16" rx="1"/>
