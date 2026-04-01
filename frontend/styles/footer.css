@@ -1,11 +1,48 @@
-.footer {
-  display: flex;
-  justify-content: center;
-  align-content: center;
-}
-.footer p {
-  text-align: center;
-  font-family: var(--font-body);
-  font-size: 1rem;
-  color: var(--lunar);
+
+  .footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 2rem 1rem;
+    border-top: 1px solid rgba(179, 136, 57, 0.08);
+  }
+  
+  .footer p {
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    color: var(--lunar);
+    opacity: 0.25;
+  }
+  
+  /* ── Liens légaux ── */
+  .footer-legal-links {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .footer-legal-link {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    color: var(--lunar);
+    opacity: 0.4;
+    text-decoration: none;
+    transition: opacity 0.2s ease, color 0.2s ease;
+  }
+  
+  .footer-legal-link:hover {
+    opacity: 0.85;
+    color: var(--amber);
+  }
+  
+  .footer-legal-sep {
+    font-size: 0.5rem;
+    color: var(--amber);
+    opacity: 0.25;
   }

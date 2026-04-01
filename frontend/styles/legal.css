@@ -1,0 +1,318 @@
+/* ── Pages légales Immers'Write ── */
+
+.legal-page {
+  min-height: 100dvh;
+  background: var(--gradient-night);
+  color: var(--lunar);
+}
+
+/* ── Hero compact ── */
+.legal-hero {
+  position: relative;
+  padding: 4rem 2rem 3rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(179, 136, 57, 0.12);
+  overflow: hidden;
+}
+
+.legal-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 60% 80% at 50% 0%,
+    rgba(179, 136, 57, 0.06) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.legal-badge {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--amber);
+  border: 1px solid rgba(179, 136, 57, 0.3);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  margin-bottom: 1.5rem;
+  opacity: 0.8;
+}
+
+.legal-hero h1 {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  margin: 0 0 1rem;
+}
+
+.legal-hero-meta {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--lunar);
+  opacity: 0.4;
+  letter-spacing: 0.05em;
+}
+
+/* ── Contenu ── */
+.legal-content {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 3rem 2rem 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+/* ── Section ── */
+.legal-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.legal-section-number {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--amber);
+  opacity: 0.55;
+}
+
+.legal-section h2 {
+  font-family: var(--font-subtitle);
+  font-size: 1.35rem;
+  color: var(--amber);
+  font-weight: 400;
+  text-align: left;
+  letter-spacing: 0.02em;
+  margin: 0;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(179, 136, 57, 0.15);
+}
+
+.legal-section p {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.85;
+  color: var(--lunar);
+  opacity: 0.8;
+  text-align: left;
+  margin: 0;
+}
+
+.legal-section a {
+  color: var(--amber);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(179, 136, 57, 0.3);
+  transition: border-color 0.2s ease, opacity 0.2s ease;
+  font-size: inherit;
+  margin: 0;
+}
+
+.legal-section a:hover {
+  border-color: var(--amber);
+  opacity: 1;
+}
+
+/* ── Listes ── */
+.legal-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.legal-list li {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--lunar);
+  opacity: 0.8;
+  padding-left: 1.4rem;
+  position: relative;
+}
+
+.legal-list li::before {
+  content: '✦';
+  position: absolute;
+  left: 0;
+  color: var(--amber);
+  opacity: 0.5;
+  font-size: 0.6rem;
+  top: 0.35rem;
+}
+
+/* ── Tableau de données ── */
+.legal-table-wrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid rgba(179, 136, 57, 0.15);
+}
+
+.legal-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+}
+
+.legal-table th {
+  background: rgba(179, 136, 57, 0.08);
+  color: var(--amber);
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  padding: 0.85rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(179, 136, 57, 0.15);
+}
+
+.legal-table td {
+  padding: 0.85rem 1rem;
+  color: var(--lunar);
+  opacity: 0.78;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  vertical-align: top;
+  line-height: 1.6;
+}
+
+.legal-table tr:last-child td {
+  border-bottom: none;
+}
+
+.legal-table tr:hover td {
+  background: rgba(179, 136, 57, 0.03);
+}
+
+/* ── Encart important ── */
+.legal-highlight {
+  background: rgba(179, 136, 57, 0.06);
+  border: 1px solid rgba(179, 136, 57, 0.2);
+  border-left: 3px solid var(--amber);
+  border-radius: 0 12px 12px 0;
+  padding: 1.25rem 1.5rem;
+}
+
+.legal-highlight p {
+  font-family: var(--font-subtitle);
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--lunar);
+  opacity: 0.9;
+  font-style: italic;
+  margin: 0;
+  text-align: left;
+}
+
+/* ── Contact card ── */
+.legal-contact-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(179, 136, 57, 0.2);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.legal-contact-label {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--amber);
+  opacity: 0.55;
+}
+
+.legal-contact-value {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--lunar);
+  opacity: 0.85;
+  text-align: left;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ── Séparateur ── */
+.legal-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  opacity: 0.2;
+}
+
+.legal-divider::before,
+.legal-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--amber);
+}
+
+.legal-divider-icon {
+  color: var(--amber);
+  font-size: 0.8rem;
+}
+
+/* ── Footer de la page légale ── */
+.legal-page-footer {
+  border-top: 1px solid rgba(179, 136, 57, 0.1);
+  padding: 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.legal-page-footer p {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--lunar);
+  opacity: 0.35;
+  text-align: center;
+}
+
+.legal-nav-links {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.legal-nav-link {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--amber);
+  opacity: 0.5;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.legal-nav-link:hover {
+  opacity: 1;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .legal-hero {
+    padding: 3rem 1.25rem 2rem;
+  }
+
+  .legal-content {
+    padding: 2rem 1.25rem 4rem;
+    gap: 2rem;
+  }
+
+  .legal-table th,
+  .legal-table td {
+    padding: 0.65rem 0.75rem;
+    font-size: 0.82rem;
+  }
+}
