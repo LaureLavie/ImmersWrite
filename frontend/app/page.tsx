@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Footer from "@/components/Footer";
 import Image from "next/image";
 import LogoIW from "../public/LogoIW.svg";
 import { getAuthToken, getAuthRole } from "@/lib/auth/cookies";
@@ -159,14 +160,7 @@ export default function WelcomePage() {
           </a>.
         </p>
       </section>
-
-      {/* ── Footer ── */}
-      <footer className="welcome-footer">
-        <p>© 2026 Immers'Write — Laure Lavie</p>
-        <p className="welcome-footer-sub">
-          <em>"Le code est le corps, l'imagination est l'âme."</em>
-        </p>
-      </footer>
+     <Footer />
     </div>
   );
 }
