@@ -19,6 +19,9 @@ export default function Footer() {
         </Link>
       </div>
       <p>© 2026 Immers'Write — Laure Lavie</p>
+      <p className="welcome-footer-sub">
+          "Le code est le corps, l'imagination est l'âme."
+        </p>
     </footer>
   );
 }
