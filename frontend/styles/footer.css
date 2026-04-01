@@ -28,7 +28,7 @@
     justify-content: center;
   }
   
-  .footer-legal-link a{
+  .footer-legal-link span{
     font-family: var(--font-body);
     font-size: 0.78rem;
     color: var(--lunar);

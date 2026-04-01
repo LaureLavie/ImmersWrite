@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useModal } from "@/hooks/useModal";
 import { getAuthToken } from "@/lib/auth/cookies";
@@ -351,7 +352,7 @@ export default function DashboardPage() {
                     </Link>
                   </div>
                   <div className="dashboard-project-danger-zone">
-                    <p className="dashboard-danger-label">Zone de danger</p>
+                    <p className="dashboard-danger-label">Espace Suppression</p>
                     <button
                       className="btn-delete btn-sm"
                       onClick={handleDeleteProject}
@@ -481,6 +482,7 @@ export default function DashboardPage() {
       {config && (
         <ConfirmModal isOpen={isOpen} {...config} />
       )}
+      <Footer />
     </div>
   );
 }

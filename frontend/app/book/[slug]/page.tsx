@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { getBookBySlug, type Book } from "@/lib/api/books";
 import { getChaptersBySlug, type Chapter } from "@/lib/api/chapters";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import Link from "next/link";
 import "@/styles/book.css";
 import "@/styles/responsive.css";
@@ -95,6 +96,7 @@ export default function BookPage() {
         </div>
 
       </div>
+      <Footer />
     </div>
   );
 }
