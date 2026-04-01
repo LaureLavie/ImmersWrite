@@ -5,8 +5,9 @@
     justify-content: center;
     align-content: center;
     align-items: center;
-    gap: 0.75rem;
-    padding: 2rem 1rem;
+    margin-top: 1rem;
+    gap: 1rem;
+    padding: 2rem;
     border-top: 1px solid rgba(179, 136, 57, 0.08);
   }
   
@@ -31,7 +32,7 @@
     font-family: var(--font-body);
     font-size: 0.78rem;
     color: var(--lunar);
-    opacity: 0.4;
+    opacity: 0.8;
     text-decoration: none;
     transition: opacity 0.2s ease, color 0.2s ease;
   }
@@ -44,5 +45,5 @@
   .footer-legal-sep {
     font-size: 0.5rem;
     color: var(--amber);
-    opacity: 0.25;
+    opacity: 0.7;
   }
