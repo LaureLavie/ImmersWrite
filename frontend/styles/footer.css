@@ -28,11 +28,11 @@
     justify-content: center;
   }
   
-  .footer-legal-link {
+  .footer-legal-link a{
     font-family: var(--font-body);
     font-size: 0.78rem;
     color: var(--lunar);
-    opacity: 0.8;
+    opacity: 0.6;
     text-decoration: none;
     transition: opacity 0.2s ease, color 0.2s ease;
   }
