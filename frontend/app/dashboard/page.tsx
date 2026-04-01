@@ -37,6 +37,7 @@ export default function DashboardPage() {
     title: "",
     author_name: "",
     description: "",
+    cover_url: "",
     slug: "",
   });
 
@@ -86,6 +87,7 @@ export default function DashboardPage() {
         title: form.title,
         author_name: form.author_name,
         description: form.description || undefined,
+        cover_url: form.cover_url || undefined,
         slug: form.slug || titleToSlug(form.title),
       });
       setProject(newProject);
@@ -234,7 +236,7 @@ export default function DashboardPage() {
             <div className="dashboard-empty-icon">✦</div>
             <p>Tu n'as pas encore de projet.</p>
             <p className="dashboard-empty-hint">
-              Pour cette version Test, tu peux créer un seul projet — ton chef-d'œuvre.
+              Pour cette version, tu peux créer un seul projet — ton chef-d'œuvre.
             </p>
             <button className="btn-gold" onClick={() => setCreating(true)}>
               Créer mon projet
@@ -277,6 +279,19 @@ export default function DashboardPage() {
                 onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                 rows={3}
               />
+
+              <label htmlFor="cover_url">URL de la couverture (optionnel)</label>
+              <input
+                id="cover_url"
+                className="input"
+                type="text"
+                placeholder="https://res.cloudinary.com/projet/ma-couverture.jpg"
+                value={form.cover_url}
+                onChange={e => setForm(f => ({ ...f, cover_url: e.target.value }))}
+              />
+              <p className="dashboard-hint">
+                Colle l'URL de ton image de couverture (ex: Cloudinary).
+              </p>
 
               <label htmlFor="slug">Slug URL (auto-généré)</label>
               <input
