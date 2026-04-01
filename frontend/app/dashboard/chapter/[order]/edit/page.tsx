@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useModal } from "@/hooks/useModal";
 import { getAuthToken } from "@/lib/auth/cookies";
@@ -438,6 +439,7 @@ export default function ChapterEditPage() {
       {config && (
         <ConfirmModal isOpen={isOpen} {...config} />
       )}
+      <Footer />
     </div>
   );
 }
