@@ -78,26 +78,7 @@ export default function WelcomePage() {
 
       {/* ── Deux propositions de valeur ── */}
       <section className="welcome-propositions">
-        <div className="welcome-card">
-          <div className="welcome-card-header">
-            <h2 className="welcome-card-title">Pour le Passeur</h2>
-          </div>
-          <blockquote className="welcome-card-quote">
-            "Tu ne lis pas des histoires. Tu les vis."
-            <br /> Une expérience immersive chapitre par chapitre 
-            <br /> — les images générées par IA, les ambiances sonores et les mots de l'auteur se fondent
-            en un seul voyage immersif. Pour retrouver du sens et de la profondeur.
-          </blockquote>         
-          <ul className="welcome-card-features">
-            <li>✦ Lecture immersive avec visuels IA</li>
-            <li>✦ Ambiances sonores intégrées</li>
-            <li>✦ Commentaires émotionnels, pas des likes</li>
-          </ul>
-        </div>
-
-        <div className="welcome-card">
         <AlphaTesterSection />
-        </div>
       </section>
 
 
