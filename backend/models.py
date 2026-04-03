@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, JSON
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from database import Base
@@ -23,6 +23,18 @@ class User(Base):
     created_at      = Column(DateTime(timezone=True), server_default=func.now())
 
     books = relationship("Book", back_populates="user")
+
+class AlphaRegistration(Base):
+    __tablename__ = "alpha_registrations"
+ 
+    id              = Column(Integer, primary_key=True, index=True)
+    role            = Column(String, nullable=False)
+    email           = Column(String, nullable=True)
+    answers         = Column(JSON, nullable=True)
+    echo_ressenti   = Column(String, nullable=True)
+    statut          = Column(String, default="en_attente")
+    notes_admin     = Column(Text, nullable=True) 
+    created_at      = Column(DateTime(timezone=True), server_default=func.now())
 
 
 class Book(Base):

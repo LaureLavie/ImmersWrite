@@ -1,0 +1,625 @@
+/* ═══════════════════════════════════════════════════════════════
+   IMMERS'WRITE — Section Devenir Testeur Alpha
+   Complète welcome.css — variables héritées de global.css
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Layout principal ── */
+
+.alpha-section {
+  position: relative;
+  width: 100%;
+  padding: 5rem 2rem;
+  overflow: hidden;
+}
+
+.alpha-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(179, 136, 57, 0.05) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.alpha-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* ── En-tête du formulaire ── */
+
+.alpha-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.alpha-badge {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--amber);
+  border: 1px solid rgba(179, 136, 57, 0.3);
+  padding: 0.2rem 0.65rem;
+  border-radius: 20px;
+}
+
+.alpha-heading {
+  font-family: var(--font-title);
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 500;
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+
+.alpha-subheading {
+  font-family: var(--font-subtitle);
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--lunar);
+  opacity: 0.75;
+  max-width: 520px;
+  margin: 0;
+}
+
+/* ── Barre de progression ── */
+
+.alpha-progress-bar {
+  width: 100%;
+  max-width: 400px;
+  height: 2px;
+  background: rgba(179, 136, 57, 0.15);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.alpha-progress-fill {
+  height: 100%;
+  background: var(--gradient-gold);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.alpha-step-label {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: var(--amber);
+  opacity: 0.55;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+/* ── Card du formulaire ── */
+
+.alpha-card {
+  background: rgba(19, 15, 59, 0.6);
+  border: 1px solid rgba(179, 136, 57, 0.2);
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* ── Titres d'étapes ── */
+
+.alpha-step-title {
+  font-family: var(--font-subtitle);
+  font-size: 1.6rem;
+  color: var(--amber);
+  font-weight: 400;
+  margin: 0 0 0.5rem;
+  text-align: left;
+}
+
+.alpha-step-desc {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--lunar);
+  opacity: 0.6;
+  line-height: 1.7;
+  margin: 0 0 2rem;
+  text-align: left;
+}
+
+/* ── Étape 1 : Rôle ── */
+
+.alpha-role-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.alpha-role-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.5rem;
+  border-radius: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  border: 1px solid rgba(179, 136, 57, 0.2);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.alpha-role-card:hover {
+  border-color: rgba(179, 136, 57, 0.45);
+  background: rgba(179, 136, 57, 0.04);
+}
+
+.alpha-role-card.active {
+  border: 1px solid var(--amber);
+  background: rgba(179, 136, 57, 0.08);
+  box-shadow: 0 0 24px rgba(179, 136, 57, 0.12);
+}
+
+.alpha-role-icon {
+  font-size: 1.5rem;
+  color: var(--amber);
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.alpha-role-title {
+  font-family: var(--font-subtitle);
+  font-size: 1.4rem;
+  color: var(--amber);
+  font-weight: 400;
+  line-height: 1.2;
+  display: block;
+}
+
+.alpha-role-subtitle {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lunar);
+  opacity: 0.45;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.alpha-role-desc {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--lunar);
+  opacity: 0.7;
+  line-height: 1.7;
+  margin: 0 0 1rem;
+}
+
+.alpha-role-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.alpha-role-feature-item {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--lunar);
+  opacity: 0.55;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.alpha-role-feature-item::before {
+  content: "✦";
+  color: var(--amber);
+  font-size: 10px;
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.alpha-role-checkmark {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--amber);
+  margin-top: auto;
+  padding-top: 0.5rem;
+  display: block;
+}
+
+/* ── Questions ── */
+
+.alpha-questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.alpha-question-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.alpha-question-label {
+  font-family: var(--font-subtitle);
+  font-size: 1rem;
+  color: var(--lunar);
+  font-weight: 400;
+  line-height: 1.5;
+  display: block;
+}
+
+.alpha-options-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.alpha-option-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  color: var(--lunar);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(179, 136, 57, 0.2);
+}
+
+.alpha-option-btn:hover {
+  border-color: rgba(179, 136, 57, 0.5);
+  background: rgba(179, 136, 57, 0.06);
+}
+
+.alpha-option-btn.selected {
+  border: 1px solid var(--amber);
+  background: rgba(179, 136, 57, 0.1);
+  color: var(--amber);
+}
+
+.alpha-textarea {
+  width: 100%;
+  background: rgba(92, 74, 82, 0.2);
+  border: 1px solid rgba(179, 136, 57, 0.2);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  color: var(--lunar);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  resize: vertical;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.alpha-textarea:focus {
+  border-color: rgba(179, 136, 57, 0.5);
+}
+
+.alpha-textarea::placeholder {
+  color: rgba(235, 235, 235, 0.2);
+  font-style: italic;
+}
+
+/* ── Étape 4 : Confirmation ── */
+
+.alpha-input-email {
+  width: 100%;
+  background: rgba(92, 74, 82, 0.2);
+  border: 1px solid rgba(179, 136, 57, 0.25);
+  border-radius: 50px;
+  padding: 0.85rem 1.25rem;
+  color: var(--lunar);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.alpha-input-email:focus {
+  border-color: var(--amber);
+}
+
+.alpha-input-email::placeholder {
+  color: rgba(235, 235, 235, 0.25);
+}
+
+.alpha-input-hint {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--lunar);
+  opacity: 0.35;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.alpha-input-error {
+  color: var(--careful);
+  font-family: var(--font-body);
+  font-size: 13px;
+  margin: 4px 0 0;
+}
+
+/* ── Échos de confirmation ── */
+
+.alpha-echo-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.alpha-echo-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  opacity: 0.45;
+}
+
+.alpha-echo-btn:hover {
+  opacity: 0.85;
+  transform: scale(1.1);
+}
+
+.alpha-echo-btn.active {
+  opacity: 1;
+  transform: scale(1.2);
+  filter: drop-shadow(0 0 8px rgba(179, 136, 57, 0.6));
+}
+
+.alpha-echo-icon {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.alpha-echo-label {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  color: var(--amber);
+  opacity: 0.7;
+  letter-spacing: 0.06em;
+}
+
+/* ── Navigation ── */
+
+.alpha-nav-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.alpha-btn-back {
+  background: transparent;
+  border: 1px solid rgba(235, 235, 235, 0.15);
+  border-radius: 50px;
+  padding: 0.75rem 1.5rem;
+  color: var(--lunar);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.alpha-btn-back:hover {
+  opacity: 1;
+}
+
+.alpha-btn-next {
+  background: transparent;
+  border: 1px solid rgba(179, 136, 57, 0.5);
+  border-radius: 50px;
+  padding: 0.75rem 2rem;
+  color: var(--amber);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  margin-left: auto;
+}
+
+.alpha-btn-next:hover:not(:disabled) {
+  background: rgba(179, 136, 57, 0.08);
+  border-color: var(--amber);
+  box-shadow: 0 4px 15px rgba(179, 136, 57, 0.2);
+}
+
+.alpha-btn-next:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.alpha-btn-submit {
+  background: var(--gradient-gold);
+  border: none;
+  border-radius: 50px;
+  padding: 0.9rem 2.5rem;
+  color: var(--midnight);
+  font-family: var(--font-title);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: auto;
+}
+
+.alpha-btn-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(179, 136, 57, 0.4);
+}
+
+.alpha-btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.alpha-disclaimer {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: var(--lunar);
+  opacity: 0.3;
+  text-align: center;
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+
+/* ── Message de bienvenue final ── */
+
+.alpha-welcome-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+  padding: 2rem 1rem;
+  animation: alphaFadeIn 0.6s ease both;
+}
+
+@keyframes alphaFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.alpha-welcome-glyph {
+  font-size: 2.5rem;
+  color: var(--amber);
+  opacity: 0.5;
+  animation: alphaPulse 3s ease-in-out infinite;
+}
+
+@keyframes alphaPulse {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50%       { opacity: 0.7;  transform: scale(1.08); }
+}
+
+.alpha-welcome-title {
+  font-family: var(--font-title);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 500;
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.alpha-welcome-text {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--lunar);
+  opacity: 0.8;
+  line-height: 1.9;
+  max-width: 520px;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.alpha-welcome-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.alpha-welcome-link {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--amber);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  transition: opacity 0.2s;
+  opacity: 0.8;
+}
+
+.alpha-welcome-link:hover {
+  opacity: 1;
+}
+
+.alpha-welcome-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  opacity: 0.2;
+  width: 100%;
+  max-width: 200px;
+}
+
+.alpha-welcome-divider::before,
+.alpha-welcome-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--amber);
+}
+
+.alpha-welcome-manifeste {
+  font-family: var(--font-subtitle);
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--amber);
+  opacity: 0.6;
+  margin: 0;
+  letter-spacing: 0.1em;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 768px) {
+  .alpha-section {
+    padding: 3rem 1.25rem;
+  }
+
+  .alpha-card {
+    padding: 1.75rem 1.25rem;
+    border-radius: 18px;
+  }
+
+  .alpha-role-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .alpha-nav-row {
+    flex-wrap: wrap;
+  }
+
+  .alpha-btn-next,
+  .alpha-btn-submit {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .alpha-echo-row {
+    gap: 1rem;
+  }
+}

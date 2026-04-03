@@ -229,6 +229,131 @@ async def reset_password(
     db.commit()
     return {"message": "Mot de passe réinitialisé avec succès."}
 
+# ─── ROUTE ALPHA REGISTRATION ───────────────────────────────────────────────
+ 
+@app.post("/alpha-registration", response_model=schemas.AlphaRegistrationResponse, status_code=201)
+async def register_alpha_tester(
+    data: schemas.AlphaRegistrationCreate,
+    db: Session = Depends(get_db),
+):
+    # Vérifie si cet email est déjà inscrit (seulement si un email est fourni)
+    if data.email:
+        already = db.query(models.AlphaRegistration).filter(
+            models.AlphaRegistration.email == data.email
+        ).first()
+        if already:
+            raise HTTPException(
+                status_code=400,
+                detail="Cette adresse email est déjà inscrite sur la liste alpha."
+            )
+ 
+    new_registration = models.AlphaRegistration(
+        role          = data.role,
+        email         = data.email,
+        answers       = data.answers,
+        echo_ressenti = data.echo_ressenti,
+        statut        = "en_attente",
+    )
+    db.add(new_registration)
+    db.commit()
+    db.refresh(new_registration)
+ 
+    # Email de confirmation si l'utilisateur a laissé son adresse
+    if new_registration.email:
+        message = MessageSchema(
+            subject="Immers'Write — Ta candidature alpha a bien été reçue ✦",
+            recipients=[new_registration.email],
+            body=f"""<div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #1a1a2e;">
+      <h1 style="color: #B38839; font-size: 1.6rem; margin-bottom: 1rem;">
+        {("L'atelier t'attend, Artiste." if data.role == 'auteur' else "Bienvenue de l'autre côté du seuil, Passeur.")}
+      </h1>
+      <p style="line-height: 1.8; font-size: 1rem;">
+        Ta candidature pour la phase alpha d'Immers'Write a bien été reçue.
+      </p>
+      <p style="line-height: 1.8; font-size: 1rem;">
+        Tu seras parmi les premiers à franchir le seuil quand l'alpha ouvrira
+        ses portes en <strong>juin 2026</strong>.
+      </p>
+      <p style="line-height: 1.8; font-size: 1rem;">
+        D'ici là, suis l'aventure sur le blog :
+        <a href="https://immerswrite.blogspot.com" style="color: #B38839;">
+          immerswrite.blogspot.com
+        </a>
+      </p>
+      <p style="margin-top: 2rem; font-style: italic; color: #B38839; font-size: 0.9rem;">
+        "Where words become worlds"
+      </p>
+      <p style="font-size: 0.8rem; color: #888; margin-top: 2rem;">
+        Tu reçois cet email car tu t'es inscrit sur immerswrite.com.
+        Pour te désinscrire, réponds à cet email avec "désabonnement".
+      </p>
+    </div>""",
+            subtype="html",
+        )
+        fm = FastMail(conf)
+        await fm.send_message(message)
+ 
+    return new_registration
+ 
+ 
+# ─── ROUTES ADMIN — consultation des candidatures (protégées) ────────────────
+ 
+@app.get("/admin/alpha-registrations", response_model=list[schemas.AlphaRegistrationAdmin])
+def get_alpha_registrations(
+    statut: str = None,
+    role: str = None,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    
+    ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "immerswrite@gmail.com")
+    if current_user.email != ADMIN_EMAIL:
+        raise HTTPException(status_code=403, detail="Accès réservé à l'administratrice.")
+ 
+    query = db.query(models.AlphaRegistration)
+    if statut:
+        query = query.filter(models.AlphaRegistration.statut == statut)
+    if role:
+        query = query.filter(models.AlphaRegistration.role == role)
+ 
+    return query.order_by(models.AlphaRegistration.created_at.desc()).all()
+ 
+ 
+@app.patch("/admin/alpha-registrations/{registration_id}", response_model=schemas.AlphaRegistrationAdmin)
+def update_alpha_registration(
+    registration_id: int,
+    statut: str = None,
+    notes_admin: str = None,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    
+    ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "immerswrite@gmail.com")
+    if current_user.email != ADMIN_EMAIL:
+        raise HTTPException(status_code=403, detail="Accès réservé à l'administratrice.")
+ 
+    registration = db.query(models.AlphaRegistration).filter(
+        models.AlphaRegistration.id == registration_id
+    ).first()
+    if not registration:
+        raise HTTPException(status_code=404, detail="Candidature introuvable.")
+ 
+    STATUTS_VALIDES = {"en_attente", "contacte", "actif", "refuse"}
+    if statut:
+        if statut not in STATUTS_VALIDES:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Statut invalide. Valeurs acceptées : {STATUTS_VALIDES}"
+            )
+        registration.statut = statut
+ 
+    if notes_admin is not None:
+        registration.notes_admin = notes_admin
+ 
+    db.commit()
+    db.refresh(registration)
+    return registration
+
 # ─────────────────────────────────────────────────────────────────────────────
 # ROUTES IMAGES (Génératiuon d'images par chapitre, protégées auteur uniquement)
 # ─────────────────────────────────────────────────────────────────────────────

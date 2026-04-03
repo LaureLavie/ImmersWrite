@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, field_validator
-from typing import Optional, List
+from typing import Optional, List, Any
 from datetime import datetime
 from models import UserRole
 
@@ -76,6 +76,56 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: Optional[str] = None
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Inscription Formulaire
+# ──────────────────────────────────────────────────────────────────────────────
+
+class AlphaRegistrationCreate(BaseModel):
+    role:          str
+    email:         Optional[EmailStr]  = None
+    answers:       Optional[dict[str, Any]] = None
+    echo_ressenti: Optional[str]       = None
+ 
+    @field_validator("role")
+    @classmethod
+    def role_valide(cls, v):
+        if v not in ("lecteur", "auteur"):
+            raise ValueError("Le rôle doit être 'lecteur' ou 'auteur'.")
+        return v
+ 
+    @field_validator("echo_ressenti")
+    @classmethod
+    def echo_valide(cls, v):
+        valides = {"emerveillement", "resonance", "intrigue", "tristesse", "frisson", None}
+        if v not in valides:
+            raise ValueError(f"Écho invalide : {v}")
+        return v
+ 
+ 
+class AlphaRegistrationResponse(BaseModel):
+    id:            int
+    role:          str
+    email:         Optional[str] = None
+    echo_ressenti: Optional[str] = None
+    statut:        str
+    created_at:    datetime
+ 
+    model_config = {"from_attributes": True}
+ 
+ 
+# Dashboard admin — liste toutes les candidatures
+class AlphaRegistrationAdmin(BaseModel):
+    id:            int
+    role:          str
+    email:         Optional[str] = None
+    answers:       Optional[dict] = None
+    echo_ressenti: Optional[str] = None
+    statut:        str
+    notes_admin:   Optional[str] = None
+    created_at:    datetime
+ 
+    model_config = {"from_attributes": True}
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Suppression de projet
