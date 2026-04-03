@@ -60,5 +60,5 @@ jobs:
             docker compose pull
             docker compose up -d --remove-orphans
             docker image prune -f
-            sudo systemctl reload nginx
+            docker compose restart nginx
             echo "✅ Déploiement terminé — $(date)"
