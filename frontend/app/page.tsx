@@ -76,8 +76,8 @@ export default function WelcomePage() {
         </p>
       </section>
 
-      {/* ── Deux propositions de valeur ── */}
-      <section className="welcome-propositions">
+      {/* ── Formulaire ── */}
+      <section className="welcome-form">
         <AlphaTesterSection />
       </section>
 
