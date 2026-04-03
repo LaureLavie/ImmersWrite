@@ -8,6 +8,7 @@ import LogoIW from "../public/LogoIW.svg";
 import { getAuthToken, getAuthRole } from "@/lib/auth/cookies";
 import "@/styles/global.css";
 import "@/styles/welcome.css";
+import AlphaTesterSection from "@/components/AlphaTesterSection";
 
 export default function WelcomePage() {
   const router = useRouter();
@@ -67,10 +68,11 @@ export default function WelcomePage() {
         <p className="welcome-manifeste-text">
           Dans un monde numérique saturé, Immers'Write est un refuge.
           <br />
-          Une plateforme de storytelling augmenté qui marie littérature
-          et intelligence artificielle générative 
-          <br /> — pour que chaque histoire
-          devienne une expérience multisensorielle : texte, image, son.
+          Une plateforme de storytelling augmenté
+          <br /> qui marie littérature
+          et intelligence artificielle générative
+          <br /> pour que chaque histoire
+          <br /> devienne une expérience immersive : on lit, on voit, on entend.
         </p>
       </section>
 
@@ -94,22 +96,7 @@ export default function WelcomePage() {
         </div>
 
         <div className="welcome-card">
-          <div className="welcome-card-header">          
-            <h2 className="welcome-card-title">Pour l'Artiste</h2>
-          </div>
-          <blockquote className="welcome-card-quote">
-            "Tu n'écris pas seulement des histoires,
-            <br />tu crées des mondes."
-            <br /> Un atelier tout-en-un pour donner vie à ton univers nativement.
-            <br /> Génère des illustrations avec DALL·E, importe tes ambiances sonores,
-            publie tes chapitres — sans jongler entre dix outils.
-          </blockquote>
-          <ul className="welcome-card-features">
-            <li>✦ Éditeur de texte épuré</li>
-            <li>✦ Génération d'images IA intégrée</li>
-            <li>✦ Import de médias (sons, images)</li>
-            <li>✦ En V2 : Génération de musique et de texte</li>
-          </ul>
+        <AlphaTesterSection />
         </div>
       </section>
 
