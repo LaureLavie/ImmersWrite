@@ -121,7 +121,7 @@ export default function ChapterEditPage() {
       variant: "warning",
       title: "Publier ce chapitre ?",
       message: "Il sera visible par tous les lecteurs dès maintenant.",
-      detail: "Attention : une fois publié, il ne pourra plus être modifié.",
+      detail: "Attention : une fois publié, il est difficile de le modifier.",
       confirmLabel: "Publier ✦",
       cancelLabel: "Pas encore",
       onConfirm: () => { closeModal(); doPublish(); },
@@ -230,8 +230,7 @@ export default function ChapterEditPage() {
     );
   }
 
-  const isLocked = chapter.is_published;
-
+  
   return (
     <div className="dashboard-page">
       <Navbar />
@@ -243,10 +242,10 @@ export default function ChapterEditPage() {
           <Link href="/dashboard" className="link editor-back">← Retour</Link>
           <span className="editor-chapter-label">
             Chapitre {String(order).padStart(2, "0")}
-            {isLocked && <span className="dashboard-badge published"> · Publié</span>}
+            { <span className="dashboard-badge published"> · Publié</span>}
           </span>
           <div className="editor-toolbar-actions">
-            {!isLocked && (
+            { (
               <>
                 <button
                   className="btn-choice btn-sm"
@@ -279,21 +278,20 @@ export default function ChapterEditPage() {
             placeholder="Titre du chapitre..."
             value={title}
             onChange={e => { setTitle(e.target.value); setModified(true); }}
-            disabled={isLocked}
+            disabled={false}
           />
           <textarea
             className="editor-content-textarea"
-            placeholder={
-              isLocked
+            placeholder={chapter
                 ? "Ce chapitre est publié."
                 : "Commence à écrire ton histoire ici...\n\nLaisse les mots couler, sans te juger."
             }
             value={content}
             onChange={e => { setContent(e.target.value); setModified(true); }}
-            disabled={isLocked}
+            disabled={false}
             rows={20}
           />
-          {!isLocked && (
+          { (
             <p className="editor-hint">
               {content.length > 0 ? `${content.length} caractères` : ""}
               {modified ? " · ⚠ Non sauvegardé" : ""}
@@ -301,13 +299,13 @@ export default function ChapterEditPage() {
           )}
         </section>
 
-        {/* ── US-07 : Image IA ── */}
+        {/* Image IA ── */}
         <section className="editor-section">
           <h2>Image IA</h2>
           {imageUrl ? (
             <div className="editor-image-preview">
               <img src={imageUrl} alt="Illustration générée" className="editor-generated-image" />
-              {!isLocked && (
+              { (
                 <button
                   className="btn-delete btn-sm"
                   onClick={() => {
@@ -320,7 +318,7 @@ export default function ChapterEditPage() {
                 </button>
               )}
             </div>
-          ) : !isLocked && (
+          ) : (
             <div className="editor-image-generator">
               <p className="editor-section-hint">
                 Génère une illustration unique pour ce chapitre.
@@ -345,7 +343,7 @@ export default function ChapterEditPage() {
           )}
         </section>
 
-        {/* ── US-06 : Médias importés ── */}
+        {/* ── Médias importés ── */}
         <section className="editor-section">
           <h2>Médias importés</h2>
           <p className="editor-section-hint">
@@ -367,7 +365,7 @@ export default function ChapterEditPage() {
                       {media.url.length > 50 ? media.url.substring(0, 50) + "..." : media.url}
                     </p>
                   </div>
-                  {!isLocked && (
+                  { (
                     <button
                       className="btn-delete btn-sm"
                       onClick={() => handleDeleteMedia(media.id, media.title ?? media.url)}
@@ -381,7 +379,7 @@ export default function ChapterEditPage() {
           )}
 
           {/* Formulaire d'ajout */}
-          {!isLocked && (
+          { (
             <div className="editor-media-form">
               <div className="editor-media-type-selector">
                 <button
@@ -435,7 +433,7 @@ export default function ChapterEditPage() {
 
       </div>
 
-      {/* ConfirmModal — même pattern que dans dashboard/page.tsx */}
+      {/* ConfirmModal  */}
       {config && (
         <ConfirmModal isOpen={isOpen} {...config} />
       )}

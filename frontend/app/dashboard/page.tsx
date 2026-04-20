@@ -9,12 +9,12 @@ import ConfirmModal from "@/components/ConfirmModal";
 import { useModal } from "@/hooks/useModal";
 import { getAuthToken } from "@/lib/auth/cookies";
 import { getProjectStats, type ProjectStats } from "@/lib/api/engagement";
-import {
+import {  
   getMyProject,
   createProject,
   deleteChapter,
   deleteProject,
-  type Project,
+  type Project, 
 } from "@/lib/api/projects";
 import "@/styles/global.css";
 import "@/styles/responsive.css";
@@ -341,7 +341,7 @@ export default function DashboardPage() {
                   )}
                   <div className="dashboard-project-meta">
                     <span className="dashboard-badge">
-                      {project.is_published ? "✓ Publié" : "Brouillon"}
+                      {project.is_published ? "Publié" : "Brouillon"}
                     </span>
                     <Link
                       href={`/book/${project.slug}`}
@@ -445,21 +445,21 @@ export default function DashboardPage() {
                         </div>
                       </div>
                       <div className="dashboard-chapter-actions">
-                        {!chapter.is_published && (
+                        {chapter.is_published && (
                           <Link
-                            href={`/dashboard/chapter/${chapter.order}/edit`}
-                            className="btn-choice btn-sm"
+                          href={`/book/${project.slug}/${chapter.order}`}
+                          className="link"
+                          target="_blank"
                           >
-                            Éditer
+                            Lire →
                           </Link>
                         )}
                         {chapter.is_published && (
                           <Link
-                            href={`/book/${project.slug}/${chapter.order}`}
-                            className="link"
-                            target="_blank"
+                            href={`/dashboard/chapter/${chapter.order}/edit`}
+                            className="btn-choice btn-sm"
                           >
-                            Lire →
+                            Modifier
                           </Link>
                         )}
                         <button
