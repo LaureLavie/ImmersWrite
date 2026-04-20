@@ -299,8 +299,10 @@
 .dashboard-chapter-order {
   font-family: var(--font-body);
   font-size: 0.8rem;
-  color: var(--amber);
-  opacity: 0.5;
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  opacity: 0.9;
   min-width: 1.5rem;
 }
 
@@ -333,6 +335,20 @@
   flex-shrink: 0;
 }
 
+.dashboard-project-danger-zone{
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.dashboard-project-danger-zone p{
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  background: var(--gradient-careful);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
 .chapter-editor {
   gap: 1.5rem;

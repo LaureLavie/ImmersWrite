@@ -61,4 +61,4 @@ jobs:
             docker compose up -d --remove-orphans
             docker image prune -f
             docker compose restart nginx
-            echo "✅ Déploiement terminé — $(date)"
+            echo "Déploiement terminé — $(date)"
