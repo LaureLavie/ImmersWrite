@@ -352,13 +352,13 @@ export default function DashboardPage() {
                     </Link>
                   </div>
                   <div className="dashboard-project-danger-zone">
-                    <p className="dashboard-danger-label">Espace Suppression</p>
+                
                     <button
                       className="btn-delete btn-sm"
                       onClick={handleDeleteProject}
                       disabled={deletingProject}
                     >
-                      {deletingProject ? "Suppression..." : "Supprimer le projet"}
+                      {deletingProject ? "Suppression..." : "Supprimer mon projet"}
                     </button>
                     <p className="dashboard-danger-hint">
                       Supprime le projet et tous ses chapitres. Irréversible.
