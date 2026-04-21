@@ -5,8 +5,11 @@ import jwt
 from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
 from openai import AsyncOpenAI
-
+import elevenlabs
+from elevenlabs.client import ElevenLabs
 load_dotenv()
+
+eleven_client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
@@ -76,3 +79,23 @@ async def generate_image(prompt: str) -> str:
         n=1,
     )
     return response.data[0].url
+
+
+async def generate_audio(prompt: str) -> str:
+    """Appelle ElevenLabs et retourne l'URL de l'audio."""
+    response = await eleven_client.generate(
+        model="eleven-labs",
+        prompt=prompt,
+        quality="standard", 
+        n=1,
+    )
+    return response.data[0].url
+
+async def generate_audio(prompt: str) -> bytes:
+    """Appelle ElevenLabs (v0.2.27 syntax)."""
+    audio = eleven_client.generate(
+        text=prompt,
+        voice="Bella", 
+        model="eleven_multilingual_v2"
+    )
+    return audio
