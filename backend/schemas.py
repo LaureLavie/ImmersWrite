@@ -197,6 +197,8 @@ class ChapterResponse(BaseModel):
     image_title: Optional[str] = None
     sound_url: Optional[str] = None
     sound_title: Optional[str] = None
+    music_url: Optional[str] = None
+    music_title: Optional[str] = None
     is_published: bool
     created_at: datetime
     updated_at: Optional[datetime] = None

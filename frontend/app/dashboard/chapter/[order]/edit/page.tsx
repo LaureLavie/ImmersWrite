@@ -33,6 +33,7 @@ export default function ChapterEditPage() {
   const [success, setSuccess] = useState("");
 
   const [coverUrl, setCoverUrl] = useState("");
+  const [musicUrl, setMusicUrl] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
@@ -246,6 +247,16 @@ export default function ChapterEditPage() {
                 onChange={e => { setCoverUrl(e.target.value); setModified(true); }}
             disabled={false}
               />
+        <label htmlFor="music_url">URL de la musique (optionnel)</label>
+              <input
+                id="music_url"
+                className="input"
+                type="text"
+                placeholder="https://res.cloudinary.com/projet/ma-musique.mp3"
+                value={musicUrl}
+                onChange={e => { setMusicUrl(e.target.value); setModified(true); }}
+            disabled={false}
+              />
 
         {/* ── Barre d'outils ── */}
         <div className="editor-toolbar">
@@ -358,7 +369,7 @@ export default function ChapterEditPage() {
             (Max 2 images + 1 son par chapitre)
           </p>
 
-          {/* Liste existants */}
+          {/* Liste existante */}
           {chapter.medias.length > 0 && (
             <div className="editor-media-list">
               {chapter.medias.map(media => (
