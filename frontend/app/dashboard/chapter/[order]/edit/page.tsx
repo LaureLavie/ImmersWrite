@@ -242,7 +242,7 @@ export default function ChapterEditPage() {
           <Link href="/dashboard" className="link editor-back">← Retour</Link>
           <span className="editor-chapter-label">
             Chapitre {String(order).padStart(2, "0")}
-            { <span className="dashboard-badge published"> · Publié</span>}
+            {chapter.is_published && <span className="dashboard-badge published"> · Publié</span>}
           </span>
           <div className="editor-toolbar-actions">
             { (
@@ -270,7 +270,7 @@ export default function ChapterEditPage() {
         {success && <div className="editor-success">{success}</div>}
         {error && <div className="dashboard-error"><p>{error}</p></div>}
 
-        {/* ── US-05 : Éditeur de texte ── */}
+        {/* ── Éditeur de texte ── */}
         <section className="editor-section">
           <input
             className="editor-title-input"
@@ -282,10 +282,7 @@ export default function ChapterEditPage() {
           />
           <textarea
             className="editor-content-textarea"
-            placeholder={chapter
-                ? "Ce chapitre est publié."
-                : "Commence à écrire ton histoire ici...\n\nLaisse les mots couler, sans te juger."
-            }
+            placeholder="Commence à écrire ton histoire ici...\n\nLaisse l'inspiration venir, sans te juger."
             value={content}
             onChange={e => { setContent(e.target.value); setModified(true); }}
             disabled={false}
@@ -403,7 +400,7 @@ export default function ChapterEditPage() {
                 placeholder={
                   mediaType === "image"
                     ? "URL de l'image (Cloudinary, etc.)"
-                    : "URL de l'audio (soundcloud, etc)"
+                    : "URL de l'audio (Cloudinary, etc.)"
                 }
                 value={mediaUrl}
                 onChange={e => setMediaUrl(e.target.value)}
