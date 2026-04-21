@@ -172,6 +172,18 @@ export default function ChapterPage() {
 
             {/* les médias importés */}
 
+            {/* ── Sons importés ── */}
+          {importedSounds && (
+          <section className="chapter-audio-section">
+            {importedSounds.map((media: Media) => (
+              <ImmersAudioPlayer
+                key={media.id}
+                url={media.url}
+                title={media.title}
+              />
+            ))}
+          </section>
+          )}
             {/* ── Images importées ── */}
             {importedImages.length > 0 && (
               <div className="chapter-imported-images">
@@ -191,18 +203,6 @@ export default function ChapterPage() {
                 ))}
               </div>
             )}   
-            {/* ── Sons importés ── */}
-          {chapter.importedSounds && (
-          <section className="chapter-audio-section">
-            {chapter.importedSounds.map((media: Media) => (
-              <ImmersAudioPlayer
-                key={media.id}
-                url={media.url}
-                title={media.title}
-              />
-            ))}
-          </section>
-          )}
 
             {/* Séparateur décoratif */}
             <div className="chapter-divider">
