@@ -32,6 +32,7 @@ export default function ChapterEditPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const [coverUrl, setCoverUrl] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
@@ -51,7 +52,6 @@ export default function ChapterEditPage() {
 
 
   const { isOpen, config, openModal, closeModal } = useModal();
-
 
   useEffect(() => {
     if (!isNaN(order)) loadChapter();
@@ -236,6 +236,16 @@ export default function ChapterEditPage() {
       <Navbar />
 
       <div className="dashboard-content chapter-editor">
+      <label htmlFor="cover_url">Image de couverture du chapitre (optionnel)</label>
+              <input
+                id="cover_url"
+                className="input"
+                type="text"
+                placeholder="https://res.cloudinary.com/projet/ma-couverture.jpg"
+                value={coverUrl}
+                onChange={e => { setCoverUrl(e.target.value); setModified(true); }}
+            disabled={false}
+              />
 
         {/* ── Barre d'outils ── */}
         <div className="editor-toolbar">

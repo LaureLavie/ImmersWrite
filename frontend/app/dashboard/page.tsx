@@ -265,7 +265,7 @@ export default function DashboardPage() {
                 id="author_name"
                 className="input"
                 type="text"
-                placeholder="Laure Lavie"
+                placeholder="Ton nom de plume..."
                 value={form.author_name}
                 onChange={e => setForm(f => ({ ...f, author_name: e.target.value }))}
                 required
