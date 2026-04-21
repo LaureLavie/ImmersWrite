@@ -145,8 +145,7 @@ export default function ChapterPage() {
           className="chapter-immersive-bg"
         />
       )}
-
-      
+     
 
       <div className="chapter-page-content">
         <Navbar />
@@ -177,17 +176,8 @@ export default function ChapterPage() {
                 Ce chapitre est en cours d'écriture...
               </p>
             )}
-        
-            {/* les médias importés... */}
-            {importedSounds.map((media: Media) => (
-              <ImmersAudioPlayer
-                key={media.id}
-                url={media.url}
-                title={media.title}
-              />
-          ))}
- 
-            {/* ── Images importées (medias type "image") ── */}
+            {/* les médias importés */}
+            {/* ── Images importées ── */}
             {importedImages.length > 0 && (
               <div className="chapter-imported-images">
                 {importedImages.map((media: Media) => (
@@ -196,7 +186,7 @@ export default function ChapterPage() {
                       src={media.url}
                       alt={media.title || "Illustration"}
                       className="chapter-imported-image"
-                    />
+                      />
                     {media.title && (
                       <figcaption className="chapter-imported-caption">
                         {media.title}
@@ -206,6 +196,14 @@ export default function ChapterPage() {
                 ))}
               </div>
             )}   
+
+            {importedSounds.map((media: Media) => (
+              <ImmersAudioPlayer
+                key={media.id}
+                url={media.url}
+                title={media.title}
+              />
+          ))}
 
             {/* Séparateur décoratif */}
             <div className="chapter-divider">

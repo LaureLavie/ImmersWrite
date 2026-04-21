@@ -851,10 +851,6 @@ def add_chapter_media(
     project = _get_author_project_or_404(current_user.id, db)
     chapter = _get_chapter_or_404(project.id, order, db)
 
-    if chapter.is_published:
-        raise HTTPException(status_code=403, detail="Chapitre publié, impossible d'ajouter des médias.")
-
-
     if media_data.type not in ("image", "sound"):
         raise HTTPException(status_code=400, detail="Type invalide. Utilise 'image' ou 'sound'.")
 
@@ -1155,3 +1151,55 @@ def get_project_stats(
         total_echoes=total_echoes,
         chapters=chapters_stats,
     )
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ROUTES AUDIO (Génératiuon d'audio par chapitre, protégées auteur uniquement)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def get_user_audio_count(user_id: int, db: Session) -> int:
+    return db.query(models.GeneratedAudio).filter(
+        models.GeneratedAudio.user_id == user_id
+    ).count()
+
+
+def save_audio_to_db(user_id: int, chapter_id: int, url: str, prompt: str, db: Session) -> models.GeneratedAudio:
+    audio = models.GeneratedAudio(
+        user_id=user_id,
+        chapter_id=chapter_id,
+        url=url,
+        prompt=prompt
+    )
+    db.add(audio)
+    db.commit()
+    db.refresh(audio)
+    return audio
+
+
+@app.post("/audio/generate", response_model=schemas.AudioResponse)
+async def generate_chapter_audio(
+    request: schemas.AudioRequest,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(require_auteur), 
+):
+    # 1. Vérifier le quota
+    count = get_user_audio_count(current_user.id, db)
+    if count >= 10:
+        raise HTTPException(
+            status_code=429,
+            detail=f"Quota atteint : {count}/10 audios utilisés pour la phase alpha."
+        )
+
+    # 2. Appeler ElevenLabs (generate_audio vient de utils.py)
+    from utils import generate_audio as elevenlabs_generate
+    audio_url = await elevenlabs_generate(request.prompt)
+
+    # 3. Sauvegarder en BDD
+    saved_audio = save_audio_to_db(
+        user_id=current_user.id,
+        chapter_id=request.chapter_id,
+        url=audio_url,
+        prompt=request.prompt,
+        db=db
+    )
+
+    return saved_audio

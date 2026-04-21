@@ -90,7 +90,7 @@ export default function ImmersAudioPlayer({ url, title }: ImmersAudioPlayerProps
 
   return (
     <div className="immersa-player">
-      {/* La balise <audio> est invisible — c'est juste le moteur */}
+      {/* La balise <audio> est invisible */}
       <audio
         ref={audioRef}
         src={url}
