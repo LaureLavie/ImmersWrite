@@ -261,18 +261,18 @@ async def register_alpha_tester(
     # Email de confirmation si l'utilisateur a laissé son adresse
     if new_registration.email:
         message = MessageSchema(
-            subject="Immers'Write — Ta candidature alpha a bien été reçue ✦",
+            subject="Immers'Write — Ton inscription a bien été reçue ✦",
             recipients=[new_registration.email],
             body=f"""<div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #1a1a2e;">
       <h1 style="color: #B38839; font-size: 1.6rem; margin-bottom: 1rem;">
         {("L'atelier t'attend, Artiste." if data.role == 'auteur' else "Bienvenue de l'autre côté du seuil, Passeur.")}
       </h1>
       <p style="line-height: 1.8; font-size: 1rem;">
-        Ta candidature pour la phase alpha d'Immers'Write a bien été reçue.
+        Ton inscription pour la version test d'Immers'Write a bien été reçue.
       </p>
       <p style="line-height: 1.8; font-size: 1rem;">
-        Tu seras parmi les premiers à franchir le seuil quand l'alpha ouvrira
-        ses portes en <strong>juin 2026</strong>.
+        Tu seras parmi les premiers à franchir le seuil quand tu seras prêt à ouvrir
+        ton immagination en <strong>juin 2026</strong>.
       </p>
       <p style="line-height: 1.8; font-size: 1rem;">
         D'ici là, suis l'aventure sur le blog :

@@ -165,18 +165,22 @@ class MediaResponse(BaseModel):
 
 class ChapterCreate(BaseModel):
     order: int
+    cover_url: Optional[str] = None
     title: str
     content: Optional[str] = None
     image_url: Optional[str] = None
+    image_title: Optional[str] = None
     sound_url: Optional[str] = None
     sound_title: Optional[str] = None
     is_published: bool = False
 
 
 class ChapterUpdate(BaseModel):
+    cover_url: Optional[str] = None
     title: Optional[str] = None
     content: Optional[str] = None
     image_url: Optional[str] = None
+    image_title: Optional[str] = None
     sound_url: Optional[str] = None
     sound_title: Optional[str] = None
     is_published: Optional[bool] = None
@@ -186,9 +190,11 @@ class ChapterResponse(BaseModel):
     id: int
     book_id: int
     order: int
+    cover_url: Optional[str] = None
     title: str
     content: Optional[str] = None
     image_url: Optional[str] = None
+    image_title: Optional[str] = None
     sound_url: Optional[str] = None
     sound_title: Optional[str] = None
     is_published: bool
