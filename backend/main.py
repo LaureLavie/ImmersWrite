@@ -773,12 +773,7 @@ def update_my_chapter(
     project = _get_author_project_or_404(current_user.id, db)
     chapter = _get_chapter_or_404(project.id, order, db)
 
-    # Verrou : chapitre publié = lecture seule (PUB-04)
-    if chapter.is_published:
-        raise HTTPException(
-            status_code=403,
-            detail="Ce chapitre est publié. Tu ne peux plus le modifier.",
-        )
+   
 
     for key, value in data.model_dump(exclude_unset=True).items():
         setattr(chapter, key, value)
