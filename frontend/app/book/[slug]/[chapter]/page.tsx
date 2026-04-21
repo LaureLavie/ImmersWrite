@@ -131,8 +131,8 @@ export default function ChapterPage() {
     );
   }
 
-  const importedSounds  = chapter.medias.filter((m: Media) => m.type === "sound");
   const importedImages  = chapter.medias.filter((m: Media) => m.type === "image");
+  const importedSounds  = chapter.medias.filter((m: Media) => m.type === "sound");
 
   return (
     <div className={`chapter-page ${!chapter.image_url ? "chapter-page-no-image" : ""}`}>
@@ -156,15 +156,8 @@ export default function ChapterPage() {
           <h1 className="chapter-title">{chapter.title}</h1>
         </section>   
 
-            {/* ── Audio principal du chapitre ── */}
-      {chapter.sound_url && (
-        <section className="chapter-audio-section">
-          <ImmersAudioPlayer
-            url={chapter.sound_url}
-            title={chapter.sound_title}
-          />
-        </section>
-      )}
+      {/* ── Audio principal du chapitre ── */}    
+      
 
         {/* ── Texte du chapitre ── */}
         <section className="chapter-reading-section">
@@ -176,7 +169,9 @@ export default function ChapterPage() {
                 Ce chapitre est en cours d'écriture...
               </p>
             )}
+
             {/* les médias importés */}
+
             {/* ── Images importées ── */}
             {importedImages.length > 0 && (
               <div className="chapter-imported-images">
@@ -196,14 +191,18 @@ export default function ChapterPage() {
                 ))}
               </div>
             )}   
-
-            {importedSounds.map((media: Media) => (
+            {/* ── Sons importés ── */}
+          {chapter.importedSounds && (
+          <section className="chapter-audio-section">
+            {chapter.importedSounds.map((media: Media) => (
               <ImmersAudioPlayer
                 key={media.id}
                 url={media.url}
                 title={media.title}
               />
-          ))}
+            ))}
+          </section>
+          )}
 
             {/* Séparateur décoratif */}
             <div className="chapter-divider">
