@@ -5,11 +5,15 @@ export interface Chapter {
   id: number;
   book_id: number;
   order: number;
+  cover_url: string | null;
   title: string;
   content: string | null;
-  image_url: string | null;      
+  image_url: string | null;
+  image_title: string | null;      
   sound_url: string | null;      
   sound_title: string | null;
+  importedSounds: any;
+  importedImages: any;
   is_published: boolean;
   medias: Media[];
   created_at: string;

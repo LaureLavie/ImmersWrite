@@ -33,7 +33,6 @@ export default function ChapterEditPage() {
   const [success, setSuccess] = useState("");
 
   const [coverUrl, setCoverUrl] = useState("");
-  const [musicUrl, setMusicUrl] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
@@ -237,26 +236,8 @@ export default function ChapterEditPage() {
       <Navbar />
 
       <div className="dashboard-content chapter-editor">
-      <label htmlFor="cover_url">Image de couverture du chapitre (optionnel)</label>
-              <input
-                id="cover_url"
-                className="input"
-                type="text"
-                placeholder="https://res.cloudinary.com/projet/ma-couverture.jpg"
-                value={coverUrl}
-                onChange={e => { setCoverUrl(e.target.value); setModified(true); }}
-            disabled={false}
-              />
-        <label htmlFor="music_url">URL de la musique (optionnel)</label>
-              <input
-                id="music_url"
-                className="input"
-                type="text"
-                placeholder="https://res.cloudinary.com/projet/ma-musique.mp3"
-                value={musicUrl}
-                onChange={e => { setMusicUrl(e.target.value); setModified(true); }}
-            disabled={false}
-              />
+      
+   
 
         {/* ── Barre d'outils ── */}
         <div className="editor-toolbar">
@@ -291,8 +272,10 @@ export default function ChapterEditPage() {
         {success && <div className="editor-success">{success}</div>}
         {error && <div className="dashboard-error"><p>{error}</p></div>}
 
+
         {/* ── Éditeur de texte ── */}
         <section className="editor-section">
+       
           <input
             className="editor-title-input"
             type="text"
@@ -363,6 +346,7 @@ export default function ChapterEditPage() {
 
         {/* ── Médias importés ── */}
         <section className="editor-section">
+      
           <h2>Médias importés</h2>
           <p className="editor-section-hint">
             Enrichis ton chapitre avec des images ou une ambiance sonore.
@@ -399,6 +383,7 @@ export default function ChapterEditPage() {
           {/* Formulaire d'ajout */}
           { (
             <div className="editor-media-form">
+          
               <div className="editor-media-type-selector">
                 <button
                   type="button"
@@ -415,6 +400,14 @@ export default function ChapterEditPage() {
                   Son
                 </button>
               </div>
+              <input
+              className="input"
+              type="url"
+              placeholder="URL de l'image de couverture du chapitre (optionnel)"
+              value={coverUrl}
+              onChange={e => { setCoverUrl(e.target.value); setModified(true); }}
+              disabled={false}
+              />
               <input
                 className="input"
                 type="url"
