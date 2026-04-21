@@ -156,7 +156,15 @@ export default function ChapterPage() {
           <h1 className="chapter-title">{chapter.title}</h1>
         </section>   
 
-      {/* ── Audio principal du chapitre ── */}    
+      {/* ── Audio principal du chapitre ── */} 
+      {chapter.sound_url && (
+        <section className="chapter-audio-section">
+          <ImmersAudioPlayer
+            url={chapter.sound_url}
+            title={`Bande-son du chapitre ${chapter.order}`}
+          />
+        </section>
+      )}   
       
 
         {/* ── Texte du chapitre ── */}
