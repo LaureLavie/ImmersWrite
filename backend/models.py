@@ -125,6 +125,16 @@ class GeneratedImage(Base):
     url        = Column(String, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
+class GeneratedAudio(Base):
+    __tablename__ = "generated_audios"
+
+    id         = Column(Integer, primary_key=True, index=True)
+    user_id    = Column(Integer, ForeignKey("users.id"), nullable=False)
+    chapter_id = Column(Integer, ForeignKey("chapters.id"), nullable=False)
+    prompt     = Column(String, nullable=False)
+    url        = Column(String, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
 
 class ChapterView(Base):
     __tablename__ = "chapter_views"
