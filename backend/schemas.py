@@ -262,6 +262,25 @@ class ImageResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 # ──────────────────────────────────────────────────────────────────────────────
+# Audio IA
+# ──────────────────────────────────────────────────────────────────────────────
+
+class AudioRequest(BaseModel):
+    prompt: str
+    chapter_id: int
+
+
+class AudioResponse(BaseModel):
+    id: int
+    user_id: int
+    chapter_id: int
+    prompt: str
+    url: str
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+# ──────────────────────────────────────────────────────────────────────────────
 # Vues
 # ──────────────────────────────────────────────────────────────────────────────
 
