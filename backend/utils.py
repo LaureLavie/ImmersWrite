@@ -5,8 +5,8 @@ import jwt
 from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
 from openai import AsyncOpenAI
-import elevenlabs
 from elevenlabs.client import ElevenLabs
+import base64
 load_dotenv()
 
 eleven_client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
@@ -67,6 +67,7 @@ def verify_reset_token(token: str) -> str:
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=400, detail="Lien invalide.")
     
+    
 client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 async def generate_image(prompt: str) -> str:
@@ -81,21 +82,31 @@ async def generate_image(prompt: str) -> str:
     return response.data[0].url
 
 
-async def generate_audio(prompt: str) -> str:
-    """Appelle ElevenLabs et retourne l'URL de l'audio."""
-    response = await eleven_client.generate(
-        model="eleven-labs",
-        prompt=prompt,
-        quality="standard", 
-        n=1,
-    )
-    return response.data[0].url
-
-async def generate_audio(prompt: str) -> bytes:
-    """Appelle ElevenLabs (v0.2.27 syntax)."""
-    audio = eleven_client.generate(
-        text=prompt,
-        voice="Bella", 
-        model="eleven_multilingual_v2"
-    )
-    return audio
+def generate_audio_sync(text: str) -> str:
+    """
+    Appelle ElevenLabs (v0.2.27 sync API) et retourne l'audio en base64.
+    
+    Note : Pour l'alpha, l'audio est retourné en base64.
+    Pour le sauvegarder définitivement, l'auteur doit :
+    1. Télécharger le fichier depuis le navigateur
+    2. L'uploader sur Cloudinary
+    3. Coller l'URL Cloudinary dans le champ "son principal"
+    
+    TODO : Intégration directe Cloudinary upload dans une version future.
+    """
+    try:
+        # ElevenLabs v0.2.27 : generate() retourne un itérable de bytes
+        audio_generator = eleven_client.generate(
+            text=text,
+            voice="Bella",          # Voix française disponible
+            model="eleven_multilingual_v2"
+        )
+        # Collecter tous les chunks de bytes
+        audio_bytes = b"".join(audio_generator)
+        # Encoder en base64 pour transmission JSON
+        return base64.b64encode(audio_bytes).decode("utf-8")
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erreur de génération audio ElevenLabs : {str(e)}"
+        )

@@ -90,7 +90,6 @@ export default function ChapterPage() {
         setTotalChapters(allChapters.length);
         setEchoCounts(echosData);
         setComments(commentsData);
-
         recordView(slug, order);
       } catch {
         setError("Ce chapitre n'existe pas ou n'est plus disponible.");
@@ -135,12 +134,12 @@ export default function ChapterPage() {
   const importedSounds  = chapter.medias.filter((m: Media) => m.type === "sound");
 
   return (
-    <div className={`chapter-page ${!chapter.image_url ? "chapter-page-no-image" : ""}`}>
+    <div className={`chapter-page ${!chapter.cover_url ? "chapter-page-no-image" : ""}`}>
 
       {/* Image de fond immersive (Cloudinary) */}
-      {chapter.image_url && (
+      {chapter.cover_url && (
         <img
-          src={chapter.image_url}
+          src={chapter.cover_url}
           alt={chapter.title}
           className="chapter-immersive-bg"
         />
@@ -157,15 +156,25 @@ export default function ChapterPage() {
         </section>   
 
       {/* ── Audio principal du chapitre ── */} 
-      {chapter.sound_url && (
+      {(chapter.sound_url || importedSounds.length > 0) && (
         <section className="chapter-audio-section">
+          {chapter.sound_url && (
           <ImmersAudioPlayer
             url={chapter.sound_url}
-            title={`Bande-son du chapitre ${chapter.order}`}
+            title={`${chapter.sound_title ?? 'Ambiance - Chapitre'} ${chapter.order}`}
           />
+          )}
+
+          {importedSounds.map((media: Media) => (
+            <ImmersAudioPlayer
+              key={media.id}
+              url={media.url}
+              title={media.title}
+            />
+          ))}
         </section>
-      )}   
-      
+      )}
+
 
         {/* ── Texte du chapitre ── */}
         <section className="chapter-reading-section">
@@ -178,20 +187,22 @@ export default function ChapterPage() {
               </p>
             )}
 
-            {/* les médias importés */}
+            {/* Image générée par IA */}
+            {chapter.image_url && (
+              <figure className="chapter-imported-figure" style={{ marginTop: "2.5rem" }}>
+                <img
+                  src={chapter.image_url}
+                  alt={chapter.image_title ?? `Illustration du chapitre ${chapter.order}`}
+                  className="chapter-imported-image"
+                />
+                {chapter.image_title && (
+                  <figcaption className="chapter-imported-caption">
+                    {chapter.image_title}
+                  </figcaption>
+                )}
+              </figure>
+            )}
 
-            {/* ── Sons importés ── */}
-          {importedSounds && (
-          <section className="chapter-audio-section">
-            {importedSounds.map((media: Media) => (
-              <ImmersAudioPlayer
-                key={media.id}
-                url={media.url}
-                title={media.title}
-              />
-            ))}
-          </section>
-          )}
             {/* ── Images importées ── */}
             {importedImages.length > 0 && (
               <div className="chapter-imported-images">
