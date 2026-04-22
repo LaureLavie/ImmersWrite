@@ -5,11 +5,12 @@ import jwt
 from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
 from openai import AsyncOpenAI
-from elevenlabs.client import ElevenLabs
+from elevenlabs.client import AsyncElevenLabs
+
 import base64
 load_dotenv()
 
-eleven_client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
+eleven_client = AsyncElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
