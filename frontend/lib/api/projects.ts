@@ -16,9 +16,11 @@ export interface Chapter {
   id: number;
   book_id: number;
   order: number;
+  cover_url: string | null;
   title: string;
   content: string | null;
   image_url: string | null;
+  image_title: string | null;
   sound_url: string | null;
   sound_title: string | null;
   is_published: boolean;
@@ -146,7 +148,7 @@ export async function createChapter(
 export async function saveChapter(
   token: string,
   order: number,
-  data: { title?: string; content?: string; image_url?: string; sound_url?: string; sound_title?: string }
+  data: { title?: string; content?: string; cover_url?: string; image_url?: string; image_title?: string; sound_url?: string; sound_title?: string }
 ): Promise<Chapter> {
   const res = await fetch(`${API_URL}/author/project/chapters/${order}`, {
     method: "PUT",

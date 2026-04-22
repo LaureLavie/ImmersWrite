@@ -15,7 +15,9 @@ from utils import (
     generate_reset_token,
     verify_reset_token,
     generate_image,
+    generate_audio_sync,
 )
+from pydantic import BaseModel as _BaseModel
 import jwt
 from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
@@ -1155,51 +1157,64 @@ def get_project_stats(
 # ─────────────────────────────────────────────────────────────────────────────
 # ROUTES AUDIO (Génératiuon d'audio par chapitre, protégées auteur uniquement)
 # ─────────────────────────────────────────────────────────────────────────────
-
-def get_user_audio_count(user_id: int, db: Session) -> int:
-    return db.query(models.GeneratedAudio).filter(
-        models.GeneratedAudio.user_id == user_id
-    ).count()
-
-
-def save_audio_to_db(user_id: int, chapter_id: int, url: str, prompt: str, db: Session) -> models.GeneratedAudio:
-    audio = models.GeneratedAudio(
-        user_id=user_id,
-        chapter_id=chapter_id,
-        url=url,
-        prompt=prompt
-    )
-    db.add(audio)
-    db.commit()
-    db.refresh(audio)
-    return audio
-
-
-@app.post("/audio/generate", response_model=schemas.AudioResponse)
+class _AudioGenerateRequest(_BaseModel):
+    prompt: str
+    chapter_id: int
+ 
+ 
+@app.post("/audio/generate")
 async def generate_chapter_audio(
-    request: schemas.AudioRequest,
+    request: _AudioGenerateRequest,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(require_auteur), 
+    current_user: models.User = Depends(require_auteur),
 ):
-    # 1. Vérifier le quota
-    count = get_user_audio_count(current_user.id, db)
-    if count >= 10:
+    """
+    Génère une ambiance sonore via ElevenLabs pour un chapitre.
+    
+    Retourne l'audio encodé en base64 (pas de stockage permanent en alpha).
+    L'auteur doit ensuite uploader le fichier sur Cloudinary et coller l'URL.
+    
+    Quota : 5 générations audio par utilisateur en phase alpha.
+    """
+    # Vérifier le quota audio
+    audio_count = db.query(models.GeneratedAudio).filter(
+        models.GeneratedAudio.user_id == current_user.id
+    ).count()
+    if audio_count >= 5:
         raise HTTPException(
             status_code=429,
-            detail=f"Quota atteint : {count}/10 audios utilisés pour la phase alpha."
+            detail=f"Quota atteint : {audio_count}/5 audios générés pour la phase alpha."
         )
-
-    # 2. Appeler ElevenLabs (generate_audio vient de utils.py)
-    from utils import generate_audio as elevenlabs_generate
-    audio_url = await elevenlabs_generate(request.prompt)
-
-    # 3. Sauvegarder en BDD
-    saved_audio = save_audio_to_db(
+ 
+    # Vérifier que le chapitre appartient à l'auteur
+    project = db.query(models.Book).filter(
+        models.Book.user_id == current_user.id
+    ).first()
+    if not project:
+        raise HTTPException(status_code=404, detail="Projet introuvable.")
+ 
+    chapter = db.query(models.Chapter).filter(
+        models.Chapter.id == request.chapter_id,
+        models.Chapter.book_id == project.id,
+    ).first()
+    if not chapter:
+        raise HTTPException(status_code=404, detail="Chapitre introuvable.")
+ 
+    # Générer l'audio via ElevenLabs
+    from utils import generate_audio_sync
+    audio_base64 = generate_audio_sync(request.prompt)
+ 
+    # Enregistrer en BDD (pour le quota — URL vide car pas de stockage permanent en alpha)
+    new_audio = models.GeneratedAudio(
         user_id=current_user.id,
         chapter_id=request.chapter_id,
-        url=audio_url,
         prompt=request.prompt,
-        db=db
+        url="base64_temp",  
     )
-
-    return saved_audio
+    db.add(new_audio)
+    db.commit()
+ 
+    return {
+        "audio_base64": audio_base64,
+        "message": "Audio généré. Télécharge le fichier et uploade-le sur Cloudinary pour le sauvegarder."
+    }
