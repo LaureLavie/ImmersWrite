@@ -121,7 +121,7 @@
 }
 
 .chapter-reading-section {
-  padding: 3rem 1.2rem;
+  padding: 3rem 1rem;
 }
 
 .chapter-content {
@@ -130,7 +130,7 @@
 }
 
 .chapter-nav {
-  padding: 1.5rem 1rem;
+  padding: 2rem 1rem;
   gap: 0.5rem;
 }
 
@@ -174,8 +174,18 @@
 .editor-title-input {
   font-size: 1.4rem;
 }
-}
 
+.editor-media-form {
+  flex-direction: column;
+  gap: 2rem;
+}
+.editor-media-type-selector {
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  align-self: center;
+}
+}
 
 @media (min-width: 769px) and (max-width: 1024px) {
   .navbar {
