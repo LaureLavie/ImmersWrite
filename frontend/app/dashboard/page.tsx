@@ -12,9 +12,10 @@ import { getProjectStats, type ProjectStats } from "@/lib/api/engagement";
 import {  
   getMyProject,
   createProject,
-  deleteChapter,
+  updateProject, 
   deleteProject,
-  type Project, 
+  deleteChapter,
+  type Project,
 } from "@/lib/api/projects";
 import "@/styles/global.css";
 import "@/styles/responsive.css";
@@ -27,6 +28,9 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [creating, setCreating] = useState(false);
+
+  const [editing, setEditing] = useState(false);
+  const [editSuccess, setEditSuccess] = useState("");
   const [saving, setSaving] = useState(false);
   const [deletingProject, setDeletingProject] = useState(false);
   const [stats, setStats] = useState<ProjectStats | null>(null);
@@ -40,6 +44,13 @@ export default function DashboardPage() {
     description: "",
     cover_url: "",
     slug: "",
+  });
+
+  const [editForm, setEditForm] = useState({
+    title: "",
+    author_name: "",
+    description: "",
+    cover_url: "",
   });
 
   useEffect(() => { loadProject(); }, []);
@@ -73,6 +84,44 @@ export default function DashboardPage() {
 
   function handleTitleChange(title: string) {
     setForm(f => ({ ...f, title, slug: titleToSlug(title) }));
+  }
+
+  function openEditForm() {
+    if (!project) return;
+    setEditForm({
+      title: project.title,
+      author_name: project.author,
+      description: project.description ?? "",
+      cover_url: project.cover_url ?? "",
+    });
+    setEditing(true);
+    setError("");
+  }
+
+  async function handleEditSave(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    if (!editForm.title.trim()) { setError("Le titre est obligatoire."); return; }
+    if (!editForm.author_name.trim()) { setError("Le nom d'auteur est obligatoire."); return; }
+    const token = getAuthToken();
+    if (!token) return;
+    setSaving(true);
+    try {
+      const updated = await updateProject(token, {
+        title: editForm.title,
+        author_name: editForm.author_name,
+        description: editForm.description || undefined,
+        cover_url: editForm.cover_url || undefined,
+      });
+      setProject(updated);
+      setEditing(false);
+      setEditSuccess("Projet mis à jour ✦");
+      setTimeout(() => setEditSuccess(""), 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erreur lors de la mise à jour.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   async function handleCreate(e: React.FormEvent) {
@@ -231,6 +280,10 @@ export default function DashboardPage() {
           <div className="dashboard-error"><p>{error}</p></div>
         )}
 
+        {editSuccess && (
+          <div className="editor-success">{editSuccess}</div>
+        )}
+
         {/* PAS DE PROJET → création */}
         {!project && !creating && (
           <div className="dashboard-empty">
@@ -321,8 +374,72 @@ export default function DashboardPage() {
           </div>
         )}
 
+        {/* FORMULAIRE D'ÉDITION */}
+
+        {project && editing && (
+          <div className="card dashboard-form-card">
+            <h2>Modifier le projet</h2>
+            <form onSubmit={handleEditSave}>
+              <label htmlFor="edit-title">Titre de l'histoire *</label>
+              <input
+                id="edit-title"
+                className="input"
+                type="text"
+                value={editForm.title}
+                onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))}
+                required
+              />
+ 
+              <label htmlFor="edit-author">Nom d'auteur *</label>
+              <input
+                id="edit-author"
+                className="input"
+                type="text"
+                value={editForm.author_name}
+                onChange={e => setEditForm(f => ({ ...f, author_name: e.target.value }))}
+                required
+              />
+ 
+              <label htmlFor="edit-description">Description</label>
+              <textarea
+                id="edit-description"
+                className="input dashboard-textarea"
+                placeholder="Une brève description de ton univers..."
+                value={editForm.description}
+                onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))}
+                rows={3}
+              />
+ 
+              <label htmlFor="edit-cover">URL de la couverture</label>
+              <input
+                id="edit-cover"
+                className="input"
+                type="text"
+                placeholder="https://res.cloudinary.com/..."
+                value={editForm.cover_url}
+                onChange={e => setEditForm(f => ({ ...f, cover_url: e.target.value }))}
+              />
+ 
+              {error && <p className="dashboard-error-inline">{error}</p>}
+ 
+              <div className="button-container">
+                <button
+                  type="button"
+                  className="btn-logout"
+                  onClick={() => { setEditing(false); setError(""); }}
+                >
+                  Annuler
+                </button>
+                <button type="submit" className="btn-gold" disabled={saving}>
+                  {saving ? "Sauvegarde..." : "Sauvegarder ✦"}
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
         {/* PROJET EXISTANT */}
-        {project && (
+        {project && !editing && (
           <>
             <div className="dashboard-project-card card">
               <div className="dashboard-project-info">
@@ -351,6 +468,16 @@ export default function DashboardPage() {
                       Prévisualiser →
                     </Link>
                   </div>
+
+                  <div className="button-container" style={{ justifyContent: "flex-start", marginTop: "1rem" }}>
+                    <button
+                      className="btn-choice btn-sm"
+                      onClick={openEditForm}
+                    >
+                      Modifier le projet
+                    </button>
+                  </div>
+
                   <div className="dashboard-project-danger-zone">
                 
                     <button
