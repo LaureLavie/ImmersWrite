@@ -36,7 +36,12 @@
     text-decoration: none;
     transition: opacity 0.2s ease, color 0.2s ease;
   }
-  
+  .footer-legal-link:link{
+    color: var(--lunar);
+    opacity: 0.7;
+    text-decoration: none;
+  }
+
   .footer-legal-link:hover {
     opacity: 0.85;
     color: var(--amber);
