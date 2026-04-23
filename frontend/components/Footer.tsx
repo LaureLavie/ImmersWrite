@@ -6,6 +6,7 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer-legal-links">
+      <span className="footer-legal-sep" aria-hidden="true">✦</span>
         <Link href="/legal/mentions-legales" className="footer-legal-link">
           Mentions légales
         </Link>
@@ -17,6 +18,7 @@ export default function Footer() {
         <Link href="/legal/politique-confidentialite" className="footer-legal-link">
           Confidentialité
         </Link>
+        <span className="footer-legal-sep" aria-hidden="true">✦</span>
       </div>
       <p>© 2026 Immers'Write — Laure Lavie</p>
       <p className="welcome-footer-sub">
