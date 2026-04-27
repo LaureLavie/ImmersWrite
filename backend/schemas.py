@@ -366,3 +366,25 @@ class ProjectStatsResponse(BaseModel):
     total_views: int
     total_echoes: int
     chapters: list[ChapterStatsItem]
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Questionnaire
+# ──────────────────────────────────────────────────────────────────────────────
+class QuestionnaireCreate(BaseModel):
+    profil:            Optional[str]       = None
+    plateformes:       Optional[List[str]] = None   
+    frustrations:      Optional[List[str]] = None
+    rapport_ia:        Optional[str]       = None
+    feature_cle:       Optional[str]       = None
+    experience_ideale: Optional[str]       = None
+    budget:            Optional[str]       = None
+    note:              Optional[int]       = None   
+    email:             Optional[str]       = None   
+    message:           Optional[str]       = None
+ 
+ 
+class QuestionnaireOut(BaseModel):
+    id:         int
+    created_at: datetime
+ 
+    model_config = {"from_attributes": True}
