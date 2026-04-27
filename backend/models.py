@@ -180,3 +180,18 @@ class Comment(Base):
         cascade="all, delete-orphan",
     )
     parent   = relationship("Comment", back_populates="replies", remote_side="Comment.id")
+
+class QuestionnaireResponse(Base):
+    __tablename__ = "questionnaire_responses"
+ 
+    id           = Column(Integer, primary_key=True, index=True)
+    profil       = Column(String, nullable=True)
+    plateformes  = Column(Text, nullable=True)
+    frustrations = Column(Text, nullable=True)
+    rapport_ia   = Column(String, nullable=True)
+    feature_cle  = Column(String, nullable=True)
+    budget       = Column(String, nullable=True)
+    note         = Column(Integer, nullable=True)
+    email        = Column(String, nullable=True)
+    message      = Column(Text, nullable=True)
+    created_at   = Column(DateTime(timezone=True), server_default=func.now())

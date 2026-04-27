@@ -1218,3 +1218,76 @@ async def generate_chapter_audio(
         "audio_base64": audio_base64,
         "message": "Audio généré. Télécharge le fichier et uploade-le sur Cloudinary pour le sauvegarder."
     }
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ROUTE QUESTIONNAIRE — soumission publique
+# ─────────────────────────────────────────────────────────────────────────────
+ 
+@app.post("/questionnaire", response_model=schemas.QuestionnaireOut, status_code=201)
+async def submit_questionnaire(
+    data: schemas.QuestionnaireCreate,
+    db: Session = Depends(get_db),
+):
+    """
+    Public — reçoit les réponses du questionnaire et les persiste en BDD.
+    Envoie aussi un email de notification à l'admin.
+    """
+    # Convertit les listes en chaînes CSV pour stockage simple
+    entry = models.QuestionnaireResponse(
+        profil            = data.profil,
+        plateformes       = ", ".join(data.plateformes)  if data.plateformes  else None,
+        frustrations      = ", ".join(data.frustrations) if data.frustrations else None,
+        rapport_ia        = data.rapport_ia,
+        feature_cle       = data.feature_cle,
+        experience_ideale = data.experience_ideale,
+        budget            = data.budget,
+        note              = data.note,
+        email             = data.email or None,
+        message           = data.message or None,
+    )
+    db.add(entry)
+    db.commit()
+    db.refresh(entry)
+ 
+    # ── Notification email admin (optionnel — ne bloque pas la réponse) ──────
+    try:
+        admin_email = os.getenv("MAIL_FROM")
+        if admin_email:
+            body_lines = [
+                f"<h2>Nouvelle réponse au questionnaire #{entry.id}</h2>",
+                f"<p><b>Profil :</b> {entry.profil or '—'}</p>",
+                f"<p><b>Plateformes :</b> {entry.plateformes or '—'}</p>",
+                f"<p><b>Frustrations :</b> {entry.frustrations or '—'}</p>",
+                f"<p><b>Rapport IA :</b> {entry.rapport_ia or '—'}</p>",
+                f"<p><b>Feature clé :</b> {entry.feature_cle or '—'}</p>",
+                f"<p><b>Expérience idéale :</b> {entry.experience_ideale or '—'}</p>",
+                f"<p><b>Budget :</b> {entry.budget or '—'}</p>",
+                f"<p><b>Note :</b> {'⭐' * (entry.note or 0)} ({entry.note or '—'}/5)</p>",
+                f"<p><b>Email contact :</b> {entry.email or '—'}</p>",
+                f"<p><b>Message libre :</b> {entry.message or '—'}</p>",
+            ]
+            message = MessageSchema(
+                subject=f"✦ Nouveau répondant questionnaire Immers'Write #{entry.id}",
+                recipients=[admin_email],
+                body="".join(body_lines),
+                subtype="html",
+            )
+            fm = FastMail(conf)
+            await fm.send_message(message)
+    except Exception:
+        pass  # L'email échoue silencieusement, la réponse est quand même sauvegardée
+ 
+    return entry
+ 
+ 
+@app.get("/admin/questionnaire", response_model=list[schemas.QuestionnaireOut])
+def list_questionnaire_responses(
+    db: Session = Depends(get_db),
+    _: models.User = Depends(require_auteur),
+):
+    """Auteur uniquement — liste toutes les réponses au questionnaire."""
+    return (
+        db.query(models.QuestionnaireResponse)
+        .order_by(models.QuestionnaireResponse.created_at.desc())
+        .all()
+    )

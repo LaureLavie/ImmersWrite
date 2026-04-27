@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 
 // Pages TOUJOURS accessibles à tous (même non connecté)
 // La page d'accueil "/" est publique — c'est la landing page Bienvenue
-const ALWAYS_PUBLIC = ["/"];
+const ALWAYS_PUBLIC = ["/", "/questionnaire", "/contact", "/mentions-legales", "/cgu", "/politique-confidentialite"];
 
 // Pages d'authentification : accessibles sans connexion,
 // mais si l'utilisateur est connecté → on le redirige vers son espace

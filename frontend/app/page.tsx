@@ -105,6 +105,7 @@ export default function WelcomePage() {
 
       {/* ── Contexte projet (alpha) ── */}
       <section className="welcome-alpha-banner">
+      
         <p>
           <span className="welcome-alpha-badge">Phase Alpha · Juin 2026</span><br/>
           Immers'Write est actuellement en cours de développement.

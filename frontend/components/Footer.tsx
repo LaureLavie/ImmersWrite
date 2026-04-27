@@ -6,6 +6,7 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer-legal-links">
+      <Link href="/questionnaire">Partager mon avis →</Link>
       <span className="footer-legal-sep" aria-hidden="true">✦</span>
         <Link href="/legal/mentions-legales" className="footer-legal-link">
           Mentions légales
