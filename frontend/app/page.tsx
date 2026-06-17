@@ -8,7 +8,6 @@ import LogoIW from "../public/LogoIW.svg";
 import { getAuthToken, getAuthRole } from "@/lib/auth/cookies";
 import "@/styles/global.css";
 import "@/styles/welcome.css";
-{/*import AlphaTesterSection from "@/components/AlphaTesterSection";*/}
 
 export default function WelcomePage() {
   const router = useRouter();
@@ -76,13 +75,7 @@ export default function WelcomePage() {
         </p>
       </section>
 
-      {/* ── Formulaire ── */}
-      {/*     <section className="welcome-form">
-        <AlphaTesterSection />
-      </section> */}
-
-
-      {/* ── Citation / vision ── */}
+          {/* ── Citation / vision ── */}
       <section className="welcome-vision">
         <p className="welcome-vision-text">
           Immers'Write n'est pas une plateforme de plus.
