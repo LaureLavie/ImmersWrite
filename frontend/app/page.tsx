@@ -8,7 +8,7 @@ import LogoIW from "../public/LogoIW.svg";
 import { getAuthToken, getAuthRole } from "@/lib/auth/cookies";
 import "@/styles/global.css";
 import "@/styles/welcome.css";
-import AlphaTesterSection from "@/components/AlphaTesterSection";
+{/*import AlphaTesterSection from "@/components/AlphaTesterSection";*/}
 
 export default function WelcomePage() {
   const router = useRouter();
@@ -77,9 +77,9 @@ export default function WelcomePage() {
       </section>
 
       {/* ── Formulaire ── */}
-      <section className="welcome-form">
+      {/*     <section className="welcome-form">
         <AlphaTesterSection />
-      </section>
+      </section> */}
 
 
       {/* ── Citation / vision ── */}
