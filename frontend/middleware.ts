@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // Pages TOUJOURS accessibles à tous (même non connecté)
-// La page d'accueil "/" est publique — c'est la landing page Bienvenue
+// La page d'accueil "/" est publique — c'est désormais la Bibliothèque (lecture libre)
 const ALWAYS_PUBLIC = ["/", "/questionnaire", "/contact", "/mentions-legales", "/cgu", "/politique-confidentialite"];
 
 // Pages d'authentification : accessibles sans connexion,
@@ -41,8 +41,7 @@ export function middleware(request: NextRequest) {
     (p) => pathname === p || pathname.startsWith(p + "/")
   );
 
-  // ── 3. Page toujours publique "/" → laisser passer tout le monde ─────────
-  // (le smart redirect est géré côté client dans le bouton CTA)
+  // ── 3. Page toujours publique "/" (Bibliothèque) → laisser passer tout le monde ──
   if (isAlwaysPublic) {
     return NextResponse.next();
   }
@@ -50,7 +49,7 @@ export function middleware(request: NextRequest) {
   // ── 4. Utilisateur NON connecté ──────────────────────────────────────────
   if (!token) {
     if (isAuthPage) {
-    // Page d'auth accessible → OK
+      // Page d'auth accessible → OK
       return NextResponse.next();
     }
     // Page privée → redirection vers /login avec paramètre de retour
@@ -64,13 +63,13 @@ export function middleware(request: NextRequest) {
     if (role === "auteur") {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
-    // Lecteur ou rôle inconnu → bibliothèque
-    return NextResponse.redirect(new URL("/bibliotheque", request.url));
+    // Lecteur ou rôle inconnu → bibliothèque (page d'accueil)
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   // ── 6. Protection du dashboard : auteurs uniquement ──────────────────────
   if (pathname.startsWith("/dashboard") && role !== "auteur") {
-    return NextResponse.redirect(new URL("/bibliotheque", request.url));
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   // ── 7. Toutes les autres pages privées sont accessibles → OK ─────────────

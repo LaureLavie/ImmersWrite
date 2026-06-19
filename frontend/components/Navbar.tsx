@@ -58,14 +58,14 @@ export default function Navbar() {
             </Link>
           </li>
         )}
-        {/* Bibliothèque → tous les rôles */}
+        {/* Bibliothèque (page d'accueil) → tous les rôles */}
         <li>
-          <Link href="/bibliotheque" className="navlink" onClick={closeMenu}>
+          <Link href="/" className="navlink" onClick={closeMenu}>
             Bibliothèque
           </Link>
         </li>
         <li>
-          <LogoutButton className="btn-logout" label="Déconnexion" />
+          <LogoutButton className="btn-logout" label="Mon Compte" />
         </li>
       </ul>
     </nav>
