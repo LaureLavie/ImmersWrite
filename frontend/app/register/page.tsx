@@ -7,6 +7,7 @@ import LogoIW from "../../public/LogoIW.svg";
 import "@/styles/global.css";
 import "@/styles/auth.css";
 import "@/styles/responsive.css";
+import Link from "next/link";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -89,9 +90,9 @@ export default function RegisterPage() {
     <div className="container">
       <div className="left-container">
         <div className="logo-section">
-          <div className="LogoIW">
-            <Image src={LogoIW} alt="Logo Immers'Write" loading="eager" />
-          </div>
+          <Link className="LogoIW" href="/">
+            <Image src={LogoIW} alt="Logo Immers'Write" loading="eager"/>
+          </Link>
           <div className="tagline">            
             <p>where words become worlds</p>
           </div>

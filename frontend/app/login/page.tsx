@@ -8,6 +8,7 @@ import { saveAuthToken } from "@/lib/auth/cookies";
 import "@/styles/global.css";
 import "@/styles/auth.css";
 import "@/styles/responsive.css";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -86,9 +87,9 @@ export default function LoginPage() {
       <div className="left-container">
         <div className="logo-section ">
         {/* Logo */}
-          <div className="LogoIW">
+          <Link className="LogoIW" href="/">
             <Image src={LogoIW} alt="Logo Immers'Write" loading="eager"/>
-          </div>
+          </Link>
         {/* Tagline */}
           <div className="tagline">            
             <p>
