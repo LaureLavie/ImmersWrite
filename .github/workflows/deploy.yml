@@ -56,9 +56,10 @@ jobs:
           username: ubuntu
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            cd ~/ImmersWrite
-            docker compose pull
-            docker compose up -d --remove-orphans
+            cd ~/ImmersWrite            
+            set -e
+            docker compose pull            
+            docker compose up -d --force-recreate --remove-orphans
             docker image prune -f
             docker compose restart nginx
             echo "Déploiement terminé — $(date)"
