@@ -3,6 +3,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import Navbar from "@/components/Navbar";
 import Echo from "@/components/Echo";
 import ImmersAudioPlayer from "@/components/ImmersAudioPlayer";
@@ -72,7 +77,14 @@ export default function ChapterPage() {
   const [error, setError] = useState<string | null>(null);
   const [echoCounts, setEchoCounts] = useState<EchoCounts | null>(null);
   const [comments, setComments] = useState<CommentType[]>([]);
-
+  const sanitizeSchema = {
+    ...defaultSchema,
+    attributes: {
+      ...defaultSchema.attributes,
+      span: [...(defaultSchema.attributes?.span || []), "style"],
+      div: [...(defaultSchema.attributes?.div || []), "style", "align"],
+    },
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -180,12 +192,19 @@ export default function ChapterPage() {
         <section className="chapter-reading-section">
           <div className="chapter-reading-inner">
             {chapter.content ? (
-              <div className="chapter-content">{chapter.content}</div>
-            ) : (
-              <p className="chapter-content" style={{ opacity: 0.4, fontStyle: "italic", textAlign: "center" }}>
-                Ce chapitre est en cours d'écriture...
-              </p>
-            )}
+  <div className="chapter-content">
+    <ReactMarkdown
+      remarkPlugins={[remarkGfm, remarkBreaks]}
+      rehypePlugins={[rehypeRaw, [rehypeSanitize, sanitizeSchema]]}
+    >
+      {chapter.content}
+    </ReactMarkdown>
+  </div>
+) : (
+  <p className="chapter-content" style={{ opacity: 0.4, fontStyle: "italic", textAlign: "center" }}>
+    Ce chapitre est en cours d'écriture...
+  </p>
+)}
 
             {/* Image générée par IA */}
             {chapter.image_url && (

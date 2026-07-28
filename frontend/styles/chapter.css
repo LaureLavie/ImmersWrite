@@ -93,9 +93,11 @@
   line-height: 2;
   color: var(--lunar);
   opacity: 0.92;
-  white-space: pre-wrap; 
   text-align: justify;
 }
+.chapter-content strong { color: var(--amber); font-weight: 500; }
+.chapter-content em { color: var(--lunar); font-style: italic; }
+.chapter-content p { margin: 0 0 1.2em; }
 
 .chapter-divider {
   display: flex;

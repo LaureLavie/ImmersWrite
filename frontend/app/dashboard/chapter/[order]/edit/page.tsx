@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
@@ -19,6 +19,8 @@ import {
 import "@/styles/global.css";
 import "@/styles/responsive.css";
 import "@/styles/dashboard.css";
+import EditorToolbar from "@/components/EditorToolbar";
+
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -26,6 +28,7 @@ export default function ChapterEditPage() {
   const params = useParams();
   const order = parseInt(params.order as string, 10);
   const router = useRouter();
+  const contentRef = useRef<HTMLTextAreaElement>(null);
 
   const [chapter, setChapter] = useState<Chapter | null>(null);
   const [loading, setLoading] = useState(true);
@@ -369,7 +372,12 @@ export default function ChapterEditPage() {
             onChange={e => { setTitle(e.target.value); setModified(true); }}
             disabled={false}
           />
+          <EditorToolbar
+            textareaRef={contentRef}
+            onChange={(newValue) => { setContent(newValue); setModified(true); }}
+          />
           <textarea
+            ref={contentRef}
             className="editor-content-textarea"
             placeholder="Commence à écrire ton histoire ici...\n\nLaisse l'inspiration venir, sans te juger."
             value={content}

@@ -1,0 +1,29 @@
+/* frontend/styles/editor-toolbar.css */
+.editor-toolbar-format {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgba(179, 136, 57, 0.2);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.02);
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+.editor-toolbar-format button {
+  background: transparent;
+  border: 1px solid rgba(179,136,57,0.25);
+  color: var(--amber);
+  border-radius: 8px;
+  width: 32px; height: 32px;
+  cursor: pointer;
+}
+.editor-toolbar-format button:hover { background: rgba(179,136,57,0.1); }
+.editor-toolbar-sep { width: 1px; height: 20px; background: rgba(179,136,57,0.2); }
+.editor-toolbar-popover-wrap { position: relative; }
+.editor-toolbar-popover {
+  position: absolute; top: 40px; left: 0; z-index: 20;
+  display: flex; gap: 4px; padding: 0.5rem;
+  background: var(--midnight); border: 1px solid var(--amber); border-radius: 10px;
+}
+.editor-toolbar-popover button { width: 28px; height: 28px; border-radius: 6px; }
