@@ -30,6 +30,7 @@ export default function EditorToolbar({ textareaRef, onChange }: Props) {
   };
 
   const colors = [
+    { label: "Lune", value: "#EDEDED"},
     { label: "Ambre", value: "#B38839" },
     { label: "Améthyste", value: "#6B4E9A" },
     { label: "Rose sombre", value: "#5C4A52" },
