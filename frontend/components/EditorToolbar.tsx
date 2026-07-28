@@ -1,6 +1,6 @@
 // frontend/components/EditorToolbar.tsx
 "use client";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { wrapSelection, insertAtCursor } from "@/lib/editor/insertMarkdown";
 import "@/styles/editor-toolbar.css";
 
@@ -21,6 +21,14 @@ export default function EditorToolbar({ textareaRef, onChange }: Props) {
     onChange(fn(ta));
   };
 
+  // Empêche le textarea de perdre le focus/la sélection au clic
+  const preventBlur = (e: React.MouseEvent) => e.preventDefault();
+
+  // Enveloppe la sélection dans un bloc <div align="..."> (au lieu de "texte" en dur)
+  const wrapBlock = (ta: HTMLTextAreaElement, align: string): string => {
+    return wrapSelection(ta, `\n<div align="${align}">\n\n`, `\n\n</div>\n`);
+  };
+
   const colors = [
     { label: "Ambre", value: "#B38839" },
     { label: "Améthyste", value: "#6B4E9A" },
@@ -30,32 +38,41 @@ export default function EditorToolbar({ textareaRef, onChange }: Props) {
 
   return (
     <div className="editor-toolbar-format">
-      <button type="button" title="Gras" onClick={() => apply(ta => wrapSelection(ta, "**"))}>
+      <button type="button" title="Gras"
+        onMouseDown={preventBlur}
+        onClick={() => apply(ta => wrapSelection(ta, "**"))}>
         <b>G</b>
       </button>
-      <button type="button" title="Italique" onClick={() => apply(ta => wrapSelection(ta, "*"))}>
+      <button type="button" title="Italique"
+        onMouseDown={preventBlur}
+        onClick={() => apply(ta => wrapSelection(ta, "*"))}>
         <i>I</i>
       </button>
 
       <span className="editor-toolbar-sep" />
 
       <button type="button" title="Aligner à gauche"
-        onClick={() => apply(ta => insertAtCursor(ta, `\n<div align="left">\n\ntexte\n\n</div>\n`))}>
+        onMouseDown={preventBlur}
+        onClick={() => apply(ta => wrapBlock(ta, "left"))}>
         ⟸
       </button>
       <button type="button" title="Centrer"
-        onClick={() => apply(ta => insertAtCursor(ta, `\n<div align="center">\n\ntexte\n\n</div>\n`))}>
+        onMouseDown={preventBlur}
+        onClick={() => apply(ta => wrapBlock(ta, "center"))}>
         ⟺
       </button>
       <button type="button" title="Justifier"
-        onClick={() => apply(ta => insertAtCursor(ta, `\n<div align="justify">\n\ntexte\n\n</div>\n`))}>
+        onMouseDown={preventBlur}
+        onClick={() => apply(ta => wrapBlock(ta, "justify"))}>
         ☰
       </button>
 
       <span className="editor-toolbar-sep" />
 
       <div className="editor-toolbar-popover-wrap">
-        <button type="button" title="Couleur" onClick={() => setShowColors(v => !v)}>
+        <button type="button" title="Couleur"
+          onMouseDown={preventBlur}
+          onClick={() => setShowColors(v => !v)}>
           🎨
         </button>
         {showColors && (
@@ -66,6 +83,7 @@ export default function EditorToolbar({ textareaRef, onChange }: Props) {
                 type="button"
                 style={{ background: c.value }}
                 title={c.label}
+                onMouseDown={preventBlur}
                 onClick={() => {
                   apply(ta => wrapSelection(ta, `<span style="color:${c.value}">`, `</span>`));
                   setShowColors(false);
@@ -77,7 +95,9 @@ export default function EditorToolbar({ textareaRef, onChange }: Props) {
       </div>
 
       <div className="editor-toolbar-popover-wrap">
-        <button type="button" title="Émoticône" onClick={() => setShowEmojis(v => !v)}>
+        <button type="button" title="Émoticône"
+          onMouseDown={preventBlur}
+          onClick={() => setShowEmojis(v => !v)}>
           ✦
         </button>
         {showEmojis && (
@@ -86,6 +106,7 @@ export default function EditorToolbar({ textareaRef, onChange }: Props) {
               <button
                 key={e}
                 type="button"
+                onMouseDown={preventBlur}
                 onClick={() => {
                   apply(ta => insertAtCursor(ta, e));
                   setShowEmojis(false);

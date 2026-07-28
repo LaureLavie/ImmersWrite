@@ -20,6 +20,7 @@ import {
 import "@/styles/global.css";
 import "@/styles/responsive.css";
 import "@/styles/dashboard.css";
+import ShareButtons from "@/components/ShareButtons";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -467,6 +468,7 @@ export default function DashboardPage() {
                     >
                       Prévisualiser →
                     </Link>
+                    <ShareButtons url={`/book/${project.slug}`} title={project.title} variant="book" />
                   </div>
 
                   <div className="button-container" style={{ justifyContent: "flex-start", marginTop: "1rem" }}>

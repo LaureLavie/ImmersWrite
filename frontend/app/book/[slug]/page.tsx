@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import Link from "next/link";
 import "@/styles/book.css";
 import "@/styles/responsive.css";
+import ShareButtons from "@/components/ShareButtons";
 
 export default function BookPage() {
   const params = useParams();
@@ -93,6 +94,7 @@ export default function BookPage() {
           <Link href="/bibliotheque" className="book-back-link">
             ← retour à la bibliothèque
           </Link>
+          <ShareButtons url={`/book/${slug}`} title={book.title} variant="book" />
         </div>
 
       </div>
