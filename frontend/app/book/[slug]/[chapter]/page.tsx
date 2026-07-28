@@ -19,6 +19,7 @@ import "@/styles/echo-display.css";
 import "@/styles/comments.css";
 import "@/styles/chapter.css";
 import "@/styles/responsive.css";
+import ShareButtons from "@/components/ShareButtons";
 
 function ChapterNav({
   slug,
@@ -288,6 +289,12 @@ export default function ChapterPage() {
           slug={slug}
           currentOrder={order}
           totalChapters={totalChapters}
+        />
+
+        <ShareButtons
+          url={`/book/${slug}/${order}`}
+          title={chapter.title}
+          variant="chapter"
         />
 
         {/* ── Footer retour au livre ── */}
